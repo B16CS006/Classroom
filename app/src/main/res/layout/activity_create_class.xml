@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CreateClassActivity">
+
+    <ProgressBar
+        android:id="@+id/create_class_progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/create_class_image"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="50dp"
+                android:contentDescription="Class Profile Image" />
+
+            <TextView
+                android:id="@+id/create_class_tap_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Tap image to change it"
+                android:textSize="12sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/create_class_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Class Name : "
+                    android:textColor="#333"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/create_class_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:ems="12"
+                    android:hint="Class Name"
+                    android:inputType="textCapWords" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/create_class_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Class Status : "
+                    android:textColor="#333"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/create_class_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:ems="12"
+                    android:hint="Class Status"
+                    android:inputType="textCapSentences|textShortMessage|textMultiLine"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/create_Class_create_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="50dp"
+                android:text="Create"
+                android:textColor="@color/grey_100"
+
+                android:background="@drawable/my_button"/>
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.constraint.ConstraintLayout>

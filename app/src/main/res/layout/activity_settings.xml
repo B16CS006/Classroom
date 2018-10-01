@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity">
+
+    <ImageView
+        android:id="@+id/settings_image"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_centerHorizontal="true"
+        android:contentDescription= "@string/default_avatar" />
+
+    <TextView
+        android:id="@+id/settings_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_phone"
+        android:layout_below="@+id/settings_image"
+        android:textSize="24sp"
+        android:layout_marginTop="25sp"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/settings_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        android:layout_below="@+id/settings_phone"
+        android:textSize="24sp"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/settings_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/status"
+        android:layout_below="@+id/settings_username"
+        android:textSize="16sp"
+        android:textStyle="italic"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/settings_status_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_status"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="10sp"
+        android:paddingEnd="10sp"
+        android:background="@drawable/my_button"
+        android:textColor="@color/grey_100"
+        android:layout_marginBottom="20sp"/>
+    <Button
+        android:id="@+id/settings_image_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/change_image"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="10sp"
+        android:paddingEnd="10sp"
+        android:textColor="@color/grey_100"
+        android:layout_marginBottom="12sp"
+        android:layout_above="@+id/settings_status_btn"
+        android:background="@drawable/my_button" />
+
+</RelativeLayout>
