@@ -21,7 +21,6 @@
         android:textColor="#333"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:inputType="textCapWords"
         android:layout_marginTop="5dp"
         android:layout_marginStart="20dp"
         app:layout_constraintTop_toTopOf="parent"
