@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/single_current_user_dot"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/green_dot"/>
+    <TextView
+        android:id="@+id/single_people_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="People Name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/single_current_user_dot"/>
+
+</android.support.constraint.ConstraintLayout>

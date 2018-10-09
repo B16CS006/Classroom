@@ -8,11 +8,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import com.btp.me.classroom.Class.ClassroomKotlin
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthProvider
+import com.google.firebase.auth.FirebaseAuthRegistrar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -37,6 +40,8 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+//        Toast.makeText(this,"Welcome ${mCurrentUser!!.displayName}!",Toast.LENGTH_LONG).show()
+
         Log.d("chetan", "MainActivity : User : ${mCurrentUser!!.uid}")
         mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
         mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
@@ -53,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        Log.d("chetan", "MainActivity : User : ${mCurrentUser!!.uid}")
+//        Log.d("chetan", "MainActivity or of 4 and 5 : " + (12 or 3) + " and " + 4)
 
         main_create_class.setOnClickListener { sendToCreateClassActivity() }
 
@@ -116,10 +121,10 @@ class MainActivity : AppCompatActivity() {
                     main_class_list.visibility = View.VISIBLE
                 }
 
-                val classId = getRef(position).key
+                classId = getRef(position).key.toString()
                 Log.d("chetan", "The Id is : $classId")
 
-                if (classId == null)
+                if (classId == "null")
                     return
 
                 val classListener = object : ValueEventListener {
@@ -137,6 +142,7 @@ class MainActivity : AppCompatActivity() {
 
                         holder.view.setOnClickListener {
                             Log.d("chetan", "You have click $className class")
+
                             sendToClassHomeActvity(classId)
                         }
                     }
@@ -158,9 +164,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendToClassHomeActvity(id: String) {
-        val startIntent = Intent(this, ClassHomeActivity::class.java)
-        startIntent.putExtra("classId", id)
-        startActivity(startIntent)
+//        val startIntent = Intent(this, ClassHomeActivity::class.java)
+//        startIntent.putExtra("classId", id)
+//        startActivity(startIntent)
+
+        val chatIntent = Intent(this,PublicChatActivity::class.java)
+//        chatIntent.putExtra(MainActivity.CLASSID,id)
+        startActivity(chatIntent)
     }
 
     private fun sendToCreateClassActivity() {
@@ -231,6 +241,11 @@ class MainActivity : AppCompatActivity() {
             Glide.with(view.class_single_image).load(glide_image).into(view.class_single_image)
 
         }
+    }
+
+    companion object {
+        const val CLASSID = "classId"
+        public var  classId : String = "null"
     }
 
 

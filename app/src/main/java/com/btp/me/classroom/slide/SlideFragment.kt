@@ -17,25 +17,24 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import android.widget.WrapperListAdapter
 import com.btp.me.classroom.ClassHomeActivity
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_slide.*
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files.createFile
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
 
-open class SlideFragment() : Fragment() {
+open class SlideFragment : Fragment() {
 
     private var classId: String? = null
     private lateinit var databaseReference: DatabaseReference
-    private var mCurrentUser = FirebaseAuth.getInstance().currentUser
+    private var mCurrentUser :FirebaseUser? = null
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
     private lateinit var floatingActionButton: FloatingActionButton
@@ -49,6 +48,8 @@ open class SlideFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mCurrentUser = FirebaseAuth.getInstance().currentUser
+
         floatingActionButton = activity?.findViewById(R.id.class_home_floating_button) as FloatingActionButton
         floatingActionButton.setImageResource(R.drawable.ic_cloud_upload_white_24dp)
         floatingActionButton.setOnClickListener {
@@ -60,7 +61,7 @@ open class SlideFragment() : Fragment() {
         }
 
         slide_list.setHasFixedSize(true)
-        slide_list.layoutManager = LinearLayoutManager(context)
+        slide_list.layoutManager = LinearLayoutManager(activity)
 
         val context = activity as ClassHomeActivity
         classId = context.classId
@@ -109,7 +110,7 @@ open class SlideFragment() : Fragment() {
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                Log.d("chetan", "Database Reference for slide is on cancelled")
+                Log.d("chetan", "Database Reference for slide is on cancelled, ${p0.message}")
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {

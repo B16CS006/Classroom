@@ -105,4 +105,10 @@
     <string name="progress_downloading">Downloading…</string>
     <string name="download_success">Successfully Downloaded</string>
     <string name="download_failure">Failed to Download</string>
+
+
+
+
+
+    <string name="no_internet">Right now, Your Internet connection is not supporting you.</string>
 </resources>
