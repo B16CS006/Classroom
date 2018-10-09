@@ -11,3 +11,4 @@ class ClassroomKotlin {
 }
 
 data class Slide(var title:String = "", var link:String = "")
+data class ChatMessage(val senderId:String = "...",  val visibility:String = "...", val time:String = "...", val message:String = "...", val type:String = "...",  val senderName:String = "...")

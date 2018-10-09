@@ -1,6 +1,5 @@
 package com.btp.me.classroom
 
-import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -8,14 +7,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import com.btp.me.classroom.Class.ClassroomKotlin
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthProvider
-import com.google.firebase.auth.FirebaseAuthRegistrar
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -121,10 +117,10 @@ class MainActivity : AppCompatActivity() {
                     main_class_list.visibility = View.VISIBLE
                 }
 
-                classId = getRef(position).key.toString()
-                Log.d("chetan", "The Id is : $classId")
+                val id = getRef(position).key.toString()
+                Log.d("chetan", "The Id is : $id")
 
-                if (classId == "null")
+                if (id == "null")
                     return
 
                 val classListener = object : ValueEventListener {
@@ -143,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                         holder.view.setOnClickListener {
                             Log.d("chetan", "You have click $className class")
 
-                            sendToClassHomeActvity(classId)
+                            sendToClassHomeActvity(id)
                         }
                     }
 
@@ -152,7 +148,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                mClassroomReference!!.child(classId).addValueEventListener(classListener as ValueEventListener)
+                mClassroomReference!!.child(id).addValueEventListener(classListener as ValueEventListener)
 //                holder.bind(model)
             }
         }
@@ -170,6 +166,7 @@ class MainActivity : AppCompatActivity() {
 
         val chatIntent = Intent(this,PublicChatActivity::class.java)
 //        chatIntent.putExtra(MainActivity.CLASSID,id)
+        classId = id
         startActivity(chatIntent)
     }
 
