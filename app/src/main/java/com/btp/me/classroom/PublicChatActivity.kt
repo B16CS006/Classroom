@@ -201,11 +201,11 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun addMessageBox(message: String,type:BoxType){
-        val textView: TextView = TextView(this)
+        val textView = TextView(this)
         textView.text = message
         textView.setTextColor(Color.parseColor("#000000"))
         val textViewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-        textViewParams.weight = 1f
+        textViewParams.weight = 8f
 
         when(type){
             BoxType.MY_COMMAND_BOX->{
