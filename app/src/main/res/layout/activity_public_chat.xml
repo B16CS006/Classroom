@@ -8,27 +8,27 @@
     android:orientation="vertical"
     tools:context="com.btp.me.classroom.PublicChatActivity">
 
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/public_chat_list"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1" />-->
-    <ScrollView
-        android:id="@+id/public_chat_scrollView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/public_chat_recycler_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
-        <LinearLayout
-            android:id="@+id/public_chat_list"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="4dp"
-            android:weightSum="10"/>
+        android:layout_weight="1" />
+    <!--<ScrollView-->
+    <!--android:id="@+id/public_chat_scrollView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:layout_weight="1">-->
+    <!--<LinearLayout-->
+    <!--android:id="@+id/public_chat_list"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_marginStart="10dp"-->
+    <!--android:layout_marginEnd="10dp"-->
+    <!--android:layout_marginBottom="4dp"-->
+    <!--android:weightSum="10"/>-->
 
-    </ScrollView>
+    <!--</ScrollView>-->
 
     <LinearLayout
         android:id="@+id/layout_messageArea"
@@ -36,33 +36,33 @@
         android:layout_height="wrap_content"
         android:layout_margin="4dp">
 
-    <EditText
-        android:id="@+id/public_chat_type_message"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="bottom"
-        android:scrollbars="vertical"
-        android:scrollbarStyle="insideInset"
-        android:background="@drawable/type_message"
-        android:hint="Type a message..."
-        android:maxLines="6"
-        android:textColorHint="#CFD8DC"
-        android:textSize="19sp"
-        android:paddingTop="11dp"
-        android:paddingBottom="11dp"
-        android:paddingStart="22dp"
-        android:paddingEnd="22dp" />
+        <EditText
+            android:id="@+id/public_chat_type_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@drawable/type_message"
+            android:hint="Type a message..."
+            android:maxLines="6"
+            android:paddingBottom="11dp"
+            android:paddingEnd="22dp"
+            android:paddingStart="22dp"
+            android:paddingTop="11dp"
+            android:scrollbarStyle="insideInset"
+            android:scrollbars="vertical"
+            android:textColorHint="#CFD8DC"
+            android:textSize="19sp" />
 
-    <ImageButton
-        android:id="@+id/public_chat_send_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="4dp"
-        android:background="@drawable/round_button"
-        android:contentDescription="send"
-        android:layout_gravity="bottom"
-        android:src="@drawable/ic_send_blue_24dp" />
+        <ImageButton
+            android:id="@+id/public_chat_send_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/round_button"
+            android:contentDescription="send"
+            android:src="@drawable/ic_send_blue_24dp" />
 
 
     </LinearLayout>

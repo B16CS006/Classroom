@@ -36,7 +36,7 @@ class MyDownloadingService : MyBaseTaskService() {
             val downloadPath = intent.getStringExtra(EXTRA_DOWNLOAD_PATH)
             Log.d("chetan","Downloading path $downloadPath")
 
-            val bundle = intent.getBundleExtra(EXTRA_FILE_PATH)
+//            val bundle = intent.getBundleExtra(EXTRA_FILE_PATH)
 
             val fileName = intent.extras[EXTRA_FILE_PATH] as File
             Log.d("chetan","file Path $fileName")

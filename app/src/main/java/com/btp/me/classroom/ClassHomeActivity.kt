@@ -1,8 +1,5 @@
 package com.btp.me.classroom
 
-import android.app.Activity
-import android.app.Dialog
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
