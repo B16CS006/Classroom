@@ -69,6 +69,7 @@ open class SlideFragment : Fragment() {
 
 
         val slideList = ArrayList<HashMap<String, String>>()
+
         val slideAdapter = object : RecyclerView.Adapter<MyViewHolder>() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
                 Log.d("chetan", "Slide adapter on create viewHolder")

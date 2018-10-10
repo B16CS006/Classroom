@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.recyclerview.R.attr.reverseLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -110,14 +111,12 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(message,"message","everyone")
             }
         }
-
     }
 
     private fun sendMessage(message: String, type: String, visibility:String) {
         val map = HashMap<String,String>()
         if(userName == "null") return
         val time = System.currentTimeMillis().toString()
-
 
         map["message"] = message
         map["senderName"] = userName
@@ -157,22 +156,8 @@ class PublicChatActivity : AppCompatActivity() {
 
                     val map = Gson().fromJson(dataSnapshot.value.toString(),ChatMessage::class.java)
 
-//                    val visibility = dataSnapshot.child("visibility").value.toString()
-//                    val type = dataSnapshot.child("type").value.toString()
-//                    val senderId = dataSnapshot.child("senderId").value.toString()
-//                    val message = dataSnapshot.child("message").value.toString()
-//                    val time = dataSnapshot.child("time").value.toString()
-//                    val senderName = dataSnapshot.child("senderName").value.toString()
-
-//                    val visibility = map.visibility
-//                    val type = map.type
-//                    val senderId = map.senderId
-//                    val senderName = map.senderName
-//                    val time = map.time
-//                    val message = map.message
 
                     if (map.visibility == "me" && map.senderId != mCurrentUser?.uid){
-//                        map.viewType = MessageType.NONE
                         continue
                     }
 
@@ -189,22 +174,10 @@ class PublicChatActivity : AppCompatActivity() {
                     }
                     chatList.add(map)
                 }
-
                 val adapter = ChatAdapter(chatList)
-
                 public_chat_recycler_list.adapter = adapter
-
-
-
-
-
-
-
-//                public_chat_scrollView.post {
-//                    kotlin.run {
-//                        public_chat_scrollView.fullScroll(View.FOCUS_DOWN)
-//                    }
-//                }
+                public_chat_recycler_list.scrollToPosition(chatList.size -1)
+                public_chat_recycler_list.post{ kotlin.run { public_chat_recycler_list.scrollToPosition(chatList.size -1) } }
             }
         })
     }
