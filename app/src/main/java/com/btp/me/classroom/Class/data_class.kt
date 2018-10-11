@@ -1,7 +1,5 @@
 package com.btp.me.classroom.Class
 
-import android.util.Log
-
 
 //class ClassroomKotlin(var name:String, var status:String, var profileImage:String)
 
@@ -27,29 +25,32 @@ abstract class MyColor{
     companion object {
         val colorCode = arrayListOf<String>("#FFA631","#5D8CAE","#008000","#FFFF00","#00FFFF","#875F9A","#2ABB9B","#A17917","#C93756","#FA8072")
         val colorName = arrayListOf<String>("orange","ultraMarine","green","yellow","aqua","purple","jungleGreen","brown","crimson","salmon")
+
+        val colorCount = colorCode.size
+
         fun chooseColor(string:String): String{
             var sum = 0
             for(ch in string){
                 sum += ch.toInt()
             }
-            if(sum<0)
-                sum = -sum
-
-            while(sum>9){
-                sum = sumOfDigits(sum)
-            }
-
-            return colorCode[sum%10]
+            return colorCode[sum% colorCount] // colorCode[sumOfDigits(sum)]
         }
 
         private fun sumOfDigits(number:Int):Int{
-            var num = number
-            var result = 0
-            while(num > 0){
-                result += num%10
-                num /= 10
+            var result:Int
+            if(number <0)
+                result = -number
+            else
+                result = number
+
+            while (result>= colorCount) {
+                var temp = 0
+                while (result > 0) {
+                    temp += result % 10
+                    result /= 10
+                }
+                result = temp
             }
-//            Log.d("sum","num : $number and result : $result")
             return result
         }
     }
