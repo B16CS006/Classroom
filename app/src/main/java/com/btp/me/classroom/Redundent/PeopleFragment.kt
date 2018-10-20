@@ -1,10 +1,7 @@
-package com.btp.me.classroom.people
+package com.btp.me.classroom.Redundent
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,7 +17,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.fragment_people.*
+import kotlinx.android.synthetic.main.activity_class_members.*
 
 open class PeopleFragment : Fragment() {
 
@@ -36,13 +33,12 @@ open class PeopleFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_people, container, false)
+        return inflater.inflate(R.layout.activity_class_members, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        peoples_teacher_list.layoutManager = LinearLayoutManager(context)
-        peoples_students_list.layoutManager = LinearLayoutManager(context)
+
 
         mCurrentUser = FirebaseAuth.getInstance().currentUser
         val context = activity as ClassHomeActivity
@@ -142,7 +138,7 @@ open class PeopleFragment : Fragment() {
         val teacherAdater = object: RecyclerView.Adapter<PeopleViewHolder>(){
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Teacher adapter on create viewHolder")
-                return PeopleFragment.PeopleViewHolder(LayoutInflater.from(parent.context)
+                return PeopleViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.single_people_layout, parent, false))
             }
 
@@ -162,7 +158,7 @@ open class PeopleFragment : Fragment() {
         val studentAdapter = object :RecyclerView.Adapter<PeopleViewHolder>(){
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Student adapter on create viewHolder")
-                return PeopleFragment.PeopleViewHolder(LayoutInflater.from(parent.context)
+                return PeopleViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.single_people_layout, parent, false))
             }
 

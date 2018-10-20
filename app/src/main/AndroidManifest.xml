@@ -41,9 +41,9 @@
             android:exported="true" />
 
         <activity android:name=".JoinClass" />
-        <activity android:name=".people.Peoples" />
+        <activity android:name=".people.ClassMembersActivity" />
         <activity android:name=".PublicChatActivity" />
-        <activity android:name=".slide.SlideActivity"></activity>
+        <activity android:name=".slide.SlideActivity"/>
     </application>
 
 </manifest>

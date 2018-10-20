@@ -10,6 +10,7 @@ import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.adapter.ChatAdapter
+import com.btp.me.classroom.people.ClassMembersActivity
 import com.btp.me.classroom.slide.SlideActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -92,22 +93,32 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun isCommand(command: String): Boolean {
-        public_chat_type_message.text.clear()
-
         if (command[0] != '~')
             return false
         when (command.removePrefix("~").toLowerCase()) {
-            "classname" -> {
-                sendMessage(command.removePrefix("~"), "command", "me")
+            commandList[0] -> {
+                sendMessage(commandList[0], "command", "me")
                 Toast.makeText(this, title, Toast.LENGTH_LONG).show()
             }
-            "goto slide" -> {
-                sendMessage(command.removePrefix("~"), "command", "me")
+            commandList[1] -> {
+                sendMessage(commandList[1], "command", "me")
                 sendToSlideActivity()
             }
+            commandList[2] ->{
+                sendMessage(commandList[2],"command","me")
+                sendToMembersActivity()
+            }
+            else ->{
+                Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
+                return true
+            }
         }
+
+        public_chat_type_message.text.clear()
         return true
     }
+
+
 
 
     private fun getTypeMessage() {                                                // The Message typed by the user in input box
@@ -117,6 +128,7 @@ class PublicChatActivity : AppCompatActivity() {
                 Log.d(TAG, "Is a command : $message")
             } else {
                 Log.d(TAG, "Not a command : $message")
+                public_chat_type_message.text.clear()
                 sendMessage(message, "message", "everyone")
             }
         }
@@ -271,7 +283,9 @@ class PublicChatActivity : AppCompatActivity() {
 //    }
 
     private fun sendToMainActivity() {
-
+        val intent = Intent(this,MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun sendToHomepage(): FirebaseUser? {
@@ -293,6 +307,16 @@ class PublicChatActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun sendToMembersActivity() {
+        if (classId == "null") {
+            sendToMainActivity()
+            return
+        }
+
+        val intent = Intent(this,ClassMembersActivity::class.java)
+        startActivity(intent)
+    }
+
     companion object {
         private const val TAG = "chetan"
         private var userName = "null"
@@ -302,6 +326,8 @@ class PublicChatActivity : AppCompatActivity() {
 //        private enum class BoxType {MY_MESSAGE_BOX, MY_FIRST_MESSAGE_BOX, MY_COMMAND_BOX, OTHER_MESSAGE_BOX, OTHER_FIRST_MESSAGE_BOX, MY_COMMAND_RESULT_BOX}
 
         const val CLASSID = "ClassId"
+
+        val commandList = arrayListOf<String>("classname","goto slide","goto members")
 
 
     }

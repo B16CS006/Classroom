@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.btp.me.classroom.fragment.AssignmentFragment
-import com.btp.me.classroom.people.PeopleFragment
+import com.btp.me.classroom.Redundent.PeopleFragment
 import com.btp.me.classroom.slide.SlideActivity
 
 class ClassHomeSelectionAdapter(fm:FragmentManager) :FragmentPagerAdapter(fm) {
