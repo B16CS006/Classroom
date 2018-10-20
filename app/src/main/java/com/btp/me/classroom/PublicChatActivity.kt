@@ -122,7 +122,7 @@ class PublicChatActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
         val dateTime = System.currentTimeMillis()
         val date = dateFormat.parse(dateFormat.format(dateTime)).time
-        val time = dateTime - date
+//        val time = dateTime - date
 
 
         Log.d("chetan", "date $dateTime : $date.")
@@ -132,18 +132,17 @@ class PublicChatActivity : AppCompatActivity() {
         map["senderId"] = mCurrentUser?.uid.toString()
         map["visibility"] = visibility
         map["type"] = type
-        map["time"] = time.toString()
+        map["time"] = dateTime.toString()
 
         val json = JSONObject(map).toString()
 
-        mRootRef.child("Message/$classId/$date/$time").setValue(json).addOnSuccessListener {
+        mRootRef.child("Message/$classId/$date/$dateTime").setValue(json).addOnSuccessListener {
             public_chat_type_message.text.clear()
         }.addOnFailureListener { exception ->
             Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show()
             Log.d(TAG, "No internet connection : ${exception.message}")
         }
     }
-
 
     private fun getSendMessageFromDatabase() {
         mRootRef.child("Message/$classId").addValueEventListener(object : ValueEventListener {
@@ -177,7 +176,7 @@ class PublicChatActivity : AppCompatActivity() {
 
                         val map = Gson().fromJson(dataSnapshot.value.toString(), ChatMessage::class.java)
 
-                        map.time = timeFormat.format(Date(dayDataSnapshot.key!!.toLong() + map.time.toLong()))
+                        map.time = timeFormat.format(Date(map.time.toLong()))
 
 
                         if (map.visibility == "me" && map.senderId != mCurrentUser?.uid) {
