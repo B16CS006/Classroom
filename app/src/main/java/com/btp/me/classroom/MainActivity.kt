@@ -29,8 +29,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-
         mCurrentUser = FirebaseAuth.getInstance().currentUser
 
         if (mCurrentUser == null) {
@@ -44,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
         mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
 
-        mClassroomReference.keepSynced(true)
-        mClassEnrollReference.keepSynced(true)
+//        mClassroomReference.keepSynced(true)
+//        mClassEnrollReference.keepSynced(true)
 
 
         main_class_list.setHasFixedSize(true)
