@@ -108,6 +108,10 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[2],"command","me")
                 sendToMembersActivity()
             }
+            commandList[3] ->{
+                sendMessage(commandList[3],"command","me")
+                Toast.makeText(this, userName,Toast.LENGTH_LONG).show()
+            }
             else ->{
                 Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
                 return true
@@ -327,7 +331,7 @@ class PublicChatActivity : AppCompatActivity() {
 
         const val CLASSID = "ClassId"
 
-        val commandList = arrayListOf<String>("classname","goto slide","goto members")
+        val commandList = arrayListOf<String>("classname","goto slide","goto members","whoami")
 
 
     }
