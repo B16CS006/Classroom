@@ -44,7 +44,12 @@ class PublicChatActivity : AppCompatActivity() {
 
 
         // get User Name
-        mRootRef.child("Users/${mCurrentUser?.uid}/name").addListenerForSingleValueEvent(object : ValueEventListener {
+
+
+        val classNameReference = mRootRef.child("Users/${mCurrentUser?.uid}/name")
+        classNameReference.keepSynced(true)
+
+        classNameReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
@@ -68,7 +73,10 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun setTitle() {
-        mRootRef.child("Classroom/$classId/name").addValueEventListener(object : ValueEventListener {
+        val database = mRootRef.child("Classroom/$classId/name")
+        database.keepSynced(true)
+
+        database.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "No Internet connections")
                 Toast.makeText(this@PublicChatActivity, R.string.no_internet, Toast.LENGTH_LONG).show()
@@ -145,7 +153,7 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun getSendMessageFromDatabase() {
-        mRootRef.child("Message/$classId").addValueEventListener(object : ValueEventListener {
+        mRootRef.child("Message/$classId").orderByKey().limitToLast(10).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "No Internet Connection")
                 Toast.makeText(this@PublicChatActivity, R.string.no_internet, Toast.LENGTH_LONG).show()

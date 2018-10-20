@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
         mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
 
-//        mClassroomReference.keepSynced(true)
-//        mClassEnrollReference.keepSynced(true)
+        mClassroomReference.keepSynced(true)
+        mClassEnrollReference.keepSynced(true)
 
 
         main_class_list.setHasFixedSize(true)
