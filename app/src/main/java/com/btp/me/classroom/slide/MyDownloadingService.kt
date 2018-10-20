@@ -13,6 +13,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
 
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class MyDownloadingService : MyBaseTaskService() {
 
     private lateinit var storageRef: StorageReference
@@ -38,7 +39,7 @@ class MyDownloadingService : MyBaseTaskService() {
 
 //            val bundle = intent.getBundleExtra(EXTRA_FILE_PATH)
 
-            val fileName = intent.extras[EXTRA_FILE_PATH] as File
+            val fileName = intent.extras[EXTRA_FILE_PATH] as File               // Unsafe use of a nullable receiver of type Bundle?
             Log.d("chetan","file Path $fileName")
 
 //            val filename = intent.getStringExtra(EXTRA_FILE_PATH) as File

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:right="10dp">
+    <item android:left="10dp">
         <shape
             android:shape="rectangle">
-            <solid android:color="@color/my_message_color"/>
+            <solid android:color="@color/other_message_color"/>
             <corners
                 android:radius="8dp"/>
         </shape>

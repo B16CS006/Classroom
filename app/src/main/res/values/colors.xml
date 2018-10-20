@@ -10,7 +10,7 @@
     <color name="grey_500">#9E9E9E</color>
     <color name="chat_background">#e0e0e0</color>
     <color name="other_message_color">#fafafa</color>
-    <color name="my_message_color">#b9f6ca</color>
-    <color name="my_command_color">#fff9c4</color>
+    <color name="my_message_color">#69f0ae</color>
+    <color name="my_command_color">#ffd180</color>
     <color name="my_command_result_color">#e3f2fd</color>
 </resources>

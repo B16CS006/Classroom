@@ -1,0 +1,129 @@
+Index: app/src/main/res/layout/my_command_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/my_command_layout.xml	(date 1539244180000)
++++ app/src/main/res/layout/my_command_layout.xml	(date 1539263652000)
+@@ -9,15 +9,17 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center"
+-        android:layout_marginEnd="50dp"
+-        android:layout_marginStart="50dp"
++        android:layout_marginEnd="25dp"
++        android:layout_marginStart="25dp"
+         android:layout_marginTop="8dp"
+         android:background="@drawable/my_command_bubble"
++        android:elevation="4dp"
++        android:gravity="center"
+         android:orientation="vertical"
+-        android:paddingBottom="4dp"
++        android:paddingBottom="2dp"
+         android:paddingEnd="10dp"
+         android:paddingStart="10dp"
+-        android:paddingTop="4dp">
++        android:paddingTop="2dp">
+ 
+         <TextView
+             android:id="@+id/my_command_view"
+Index: app/src/main/res/layout/my_first_message_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/my_first_message_layout.xml	(date 1539244180000)
++++ app/src/main/res/layout/my_first_message_layout.xml	(date 1539263652000)
+@@ -10,9 +10,10 @@
+         android:layout_height="wrap_content"
+         android:layout_gravity="end"
+         android:layout_marginEnd="4dp"
+-        android:layout_marginStart="100dp"
++        android:layout_marginStart="50dp"
+         android:layout_marginTop="8dp"
+         android:background="@drawable/my_first_message_bubble"
++        android:elevation="4dp"
+         android:orientation="vertical"
+         android:paddingBottom="4dp"
+         android:paddingEnd="20dp"
+Index: app/src/main/res/layout/my_message_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/my_message_layout.xml	(date 1539244180000)
++++ app/src/main/res/layout/my_message_layout.xml	(date 1539265817000)
+@@ -9,15 +9,16 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="end"
+-        android:layout_marginEnd="4dp"
+-        android:layout_marginStart="100dp"
++        android:layout_marginEnd="6dp"
++        android:layout_marginStart="50dp"
+         android:layout_marginTop="2dp"
+-        android:background="@drawable/my_message_bubble"
++        android:background="@drawable/balloon_outgoing_normal"
++        android:elevation="4dp"
+         android:orientation="vertical"
+-        android:paddingBottom="4dp"
++        android:paddingBottom="2dp"
+         android:paddingEnd="20dp"
+         android:paddingStart="10dp"
+-        android:paddingTop="4dp">
++        android:paddingTop="2dp">
+ 
+         <TextView
+             android:id="@+id/my_message_view"
+Index: app/src/main/res/layout/other_first_message_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/other_first_message_layout.xml	(date 1539244180000)
++++ app/src/main/res/layout/other_first_message_layout.xml	(date 1539263621000)
+@@ -9,14 +9,15 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="start"
+-        android:layout_marginEnd="100dp"
++        android:layout_marginEnd="50dp"
+         android:layout_marginTop="8dp"
+         android:background="@drawable/other_first_message_bubble"
++        android:elevation="4dp"
+         android:orientation="vertical"
+-        android:paddingBottom="4dp"
++        android:paddingBottom="2dp"
+         android:paddingEnd="10dp"
+         android:paddingStart="20dp"
+-        android:paddingTop="4dp">
++        android:paddingTop="2dp">
+ 
+         <TextView
+             android:id="@+id/other_first_name_view"
+Index: app/src/main/res/layout/other_message_layout.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/other_message_layout.xml	(date 1539244180000)
++++ app/src/main/res/layout/other_message_layout.xml	(date 1539265817000)
+@@ -9,14 +9,15 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="start"
+-        android:layout_marginEnd="100dp"
++        android:layout_marginEnd="50dp"
+         android:layout_marginTop="2dp"
+         android:background="@drawable/other_message_bubble"
++        android:elevation="4dp"
+         android:orientation="vertical"
+-        android:paddingBottom="4dp"
++        android:paddingBottom="2dp"
+         android:paddingEnd="10dp"
+         android:paddingStart="20dp"
+-        android:paddingTop="4dp">
++        android:paddingTop="2dp">
+ 
+         <!--<TextView-->
+         <!--android:id="@+id/other_name_view"-->
