@@ -92,16 +92,16 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun isCommand(command: String): Boolean {
+        public_chat_type_message.text.clear()
+
         if (command[0] != '~')
             return false
         when (command.removePrefix("~").toLowerCase()) {
             "classname" -> {
-                Toast.makeText(this, title, Toast.LENGTH_LONG).show()
-                public_chat_type_message.text.clear()
                 sendMessage(command.removePrefix("~"), "command", "me")
+                Toast.makeText(this, title, Toast.LENGTH_LONG).show()
             }
             "goto slide" -> {
-                public_chat_type_message.text.clear()
                 sendMessage(command.removePrefix("~"), "command", "me")
                 sendToSlideActivity()
             }
@@ -145,7 +145,7 @@ class PublicChatActivity : AppCompatActivity() {
         val json = JSONObject(map).toString()
 
         mRootRef.child("Message/$classId/$date/$dateTime").setValue(json).addOnSuccessListener {
-            public_chat_type_message.text.clear()
+
         }.addOnFailureListener { exception ->
             Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show()
             Log.d(TAG, "No internet connection : ${exception.message}")
