@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
@@ -80,7 +81,7 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
     }
 
     class MyMessageViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        private val layout = view.findViewById<LinearLayout>(R.id.my_message_whole_view)
+//        private val layout = view.findViewById<RelativeLayout>(R.id.my_message_whole_view)
         private val messageView = view.findViewById<TextView>(R.id.my_message_view)
         private val timeView = view.findViewById<TextView>(R.id.my_time_view)
 

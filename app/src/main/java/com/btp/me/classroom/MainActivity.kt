@@ -20,14 +20,16 @@ import kotlinx.android.synthetic.main.classroom_single_layout.view.*
 class MainActivity : AppCompatActivity() {
 
     private var mCurrentUser: FirebaseUser? = null
-    private var mClassroomReference: DatabaseReference? = null
-    private var mClassEnrollReference: DatabaseReference? = null
+    private lateinit var mClassroomReference: DatabaseReference
+    private lateinit var mClassEnrollReference: DatabaseReference
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
         mCurrentUser = FirebaseAuth.getInstance().currentUser
 
@@ -41,6 +43,9 @@ class MainActivity : AppCompatActivity() {
         Log.d("chetan", "MainActivity : User : ${mCurrentUser!!.uid}")
         mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
         mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
+
+        mClassroomReference.keepSynced(true)
+        mClassEnrollReference.keepSynced(true)
 
 
         main_class_list.setHasFixedSize(true)
@@ -58,11 +63,8 @@ class MainActivity : AppCompatActivity() {
 
         main_create_class.setOnClickListener { sendToCreateClassActivity() }
 
-        if (mClassEnrollReference == null || mClassroomReference == null) {
-            return
-        }
         val options = FirebaseRecyclerOptions.Builder<ClassroomKotlin>()
-                .setQuery(mClassEnrollReference!!, ClassroomKotlin::class.java)
+                .setQuery(mClassEnrollReference, ClassroomKotlin::class.java)
                 .setLifecycleOwner(this)
                 .build()
 
@@ -148,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                mClassroomReference!!.child(id).addValueEventListener(classListener as ValueEventListener)
+                mClassroomReference.child(id).addValueEventListener(classListener as ValueEventListener)
 //                holder.bind(model)
             }
         }
