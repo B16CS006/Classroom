@@ -1,13 +1,11 @@
 package com.btp.me.classroom.slide
 
-
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -17,56 +15,39 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
-import com.btp.me.classroom.ClassHomeActivity
+import com.btp.me.classroom.MainActivity.Companion.classId
+import com.btp.me.classroom.IntentResult
+import com.btp.me.classroom.PublicChatActivity
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_slide.*
+import kotlinx.android.synthetic.main.activity_slide.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashMap
 
+class SlideActivity : AppCompatActivity() {
 
-open class SlideFragment : Fragment() {
+    private var databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/slide")
+    private var currentUser: FirebaseUser? = null
 
-    private var classId: String? = null
-    private lateinit var databaseReference: DatabaseReference
-    private var mCurrentUser :FirebaseUser? = null
-    private val mRootRef = FirebaseDatabase.getInstance().reference
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_slide)
 
-    private lateinit var floatingActionButton: FloatingActionButton
+        currentUser = FirebaseAuth.getInstance().currentUser
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-
-        return inflater.inflate(R.layout.fragment_slide, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        mCurrentUser = FirebaseAuth.getInstance().currentUser
-
-        floatingActionButton = activity?.findViewById(R.id.class_home_floating_button) as FloatingActionButton
-        floatingActionButton.setImageResource(R.drawable.ic_cloud_upload_white_24dp)
-        floatingActionButton.setOnClickListener {
-            val pdfFileIntent = Intent()
-            pdfFileIntent.type = "application/pdf"
-            pdfFileIntent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(pdfFileIntent, "Select Document"), 0)
-
+        slide_upload_button.setOnClickListener {
+            startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)
         }
 
         slide_list.setHasFixedSize(true)
-        slide_list.layoutManager = LinearLayoutManager(activity)
+        slide_list.layoutManager = LinearLayoutManager(this)
 
-        val context = activity as ClassHomeActivity
-        classId = context.classId
-        databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/${context.classId}").child("slide")
-
+        //main activity classId
+//        classId = intent.getStringExtra(PublicChatActivity.CLASSID)
 
         val slideList = ArrayList<HashMap<String, String>>()
 
@@ -79,6 +60,8 @@ open class SlideFragment : Fragment() {
             }
 
             override fun getItemCount() = slideList.size
+
+
 
             override fun onBindViewHolder(holder: MyViewHolder, p1: Int) {
                 Log.d("chetan", "Binding the holders")
@@ -93,14 +76,11 @@ open class SlideFragment : Fragment() {
                                 ?: return@setOnClickListener
                         val fileUrl = slideList[p1]["link"] ?: return@setOnClickListener
 
-                        val downloadIntent = Intent(activity, MyDownloadingService::class.java)
+                        val downloadIntent = Intent(this@SlideActivity, MyDownloadingService::class.java)
                         downloadIntent.putExtra(MyDownloadingService.EXTRA_FILE_PATH, fileName)
                         downloadIntent.putExtra(MyDownloadingService.EXTRA_DOWNLOAD_PATH, fileUrl)
                         downloadIntent.action = MyDownloadingService.ACTION_DOWNLOAD
-                        activity?.startService(downloadIntent)
-                                ?: throw error("Can't download as No activity is running")
-
-
+                        startService(downloadIntent)?: throw error("Can't download as No activity is running")
                     } catch (error: IOException) {
                         Log.d("chetan", "Error while making folder ${error.message}")
                         error.printStackTrace()
@@ -145,12 +125,6 @@ open class SlideFragment : Fragment() {
 
             }
         })
-
-    }
-
-    override fun onStart() {
-        super.onStart()
-
     }
 
     fun createFile(title: String): File? {
@@ -189,19 +163,19 @@ open class SlideFragment : Fragment() {
             val uri = data.data ?: return
             upload(uri)
         } else {
-            Toast.makeText(activity, "PDF can't be retrieve.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "PDF can't be retrieve.", Toast.LENGTH_LONG).show()
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun upload(uri: Uri) {
         Log.d("chetan", "uploading Uri : ${uri.toString()}")
-        val uploadingIntent = Intent(activity, MyUploadingService::class.java)
+        val uploadingIntent = Intent(this, MyUploadingService::class.java)
         uploadingIntent.putExtra("classId", classId)
-        uploadingIntent.putExtra("userId", mCurrentUser!!.uid)
+        uploadingIntent.putExtra("userId", currentUser!!.uid)
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
-        activity?.startService(uploadingIntent)
+        startService(uploadingIntent)
                 ?: Log.d("chetan", "At this this no activy is running")
     }
 
@@ -209,11 +183,8 @@ open class SlideFragment : Fragment() {
         val title: TextView = view.findViewById(R.id.file_single_title)
         val date: TextView = view.findViewById(R.id.file_single_date)
         val download: ImageButton = view.findViewById(R.id.file_single_download)
-//        val pdf : WebView = view.findViewById(R.id.file_web_view)
-
-
-
     }
 
 
 }
+

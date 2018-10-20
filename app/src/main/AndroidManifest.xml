@@ -40,7 +40,8 @@
 
         <activity android:name=".JoinClass" />
         <activity android:name=".people.Peoples" />
-        <activity android:name=".PublicChatActivity"></activity>
+        <activity android:name=".PublicChatActivity" />
+        <activity android:name=".slide.SlideActivity"></activity>
     </application>
 
 </manifest>

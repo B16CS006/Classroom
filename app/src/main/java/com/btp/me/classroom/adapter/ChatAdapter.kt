@@ -17,6 +17,8 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
+            MessageType.DATE -> DateMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.date_message_layout, parent, false))
+            MessageType.MY_COMMAND -> MyCommandViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_command_layout, parent, false))
             MessageType.MY_MESSAGE -> MyMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_message_layout, parent, false))
             MessageType.MY_FIRST_MESSAGE -> MyFirstMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.my_first_message_layout, parent, false))
             MessageType.OTHER_MESSAGE -> OtherMessageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.other_message_layout, parent, false))
@@ -36,11 +38,13 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
 //        Log.d(TAG,"view Type : ${p0.itemViewType}")
 
         when (p0.itemViewType) {
+            MessageType.DATE -> (p0 as DateMessageViewHolder).bind(list.get(p1))
+            MessageType.MY_COMMAND -> (p0 as MyCommandViewHolder).bind(list.get(p1))
             MessageType.MY_MESSAGE -> (p0 as MyMessageViewHolder).bind(list.get(p1))
             MessageType.MY_FIRST_MESSAGE -> (p0 as MyFirstMessageViewHolder).bind(list.get(p1))
             MessageType.OTHER_MESSAGE -> (p0 as OtherMessageViewHolder).bind(list.get(p1))
             MessageType.OTHER_FIRST_MESSAGE -> (p0 as OtherFirstMessageViewHolder).bind(list.get(p1))
-            else -> (p0 as MyCommandViewHolder).bind(list.get(p1))
+//            else -> (p0 as MyCommandViewHolder).bind(list.get(p1))
         }
 
     }
@@ -59,6 +63,19 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
 
         private fun setCommand(command: String) {
             commandView.text = command
+        }
+    }
+
+    class DateMessageViewHolder(val view:View) : RecyclerView.ViewHolder(view){
+        private val layout = view.findViewById<LinearLayout>(R.id.date_message_whole_view)
+        private val dateMessageView = view.findViewById<TextView>(R.id.date_message_view)
+
+        fun bind(chatMessage: ChatMessage) {
+            setDate(chatMessage.message)
+        }
+
+        private fun setDate(date: String) {
+            dateMessageView.text = date
         }
     }
 

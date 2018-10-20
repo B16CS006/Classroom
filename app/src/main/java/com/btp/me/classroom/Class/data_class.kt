@@ -18,6 +18,7 @@ abstract class MessageType {
         const val OTHER_MESSAGE = 3
         const val OTHER_FIRST_MESSAGE = 4
         const val MY_COMMAND = 5
+        const val DATE: Int = 6
     }
 }
 
@@ -57,4 +58,4 @@ abstract class MyColor{
 }
 
 data class Slide(var title:String = "", var link:String = "")
-data class ChatMessage(val senderId:String = "...",  val visibility:String = "...", val time:String = "...", val message:String = "...", val type:String = "...",  val senderName:String = "...", var viewType:Int)
+data class ChatMessage(val senderId:String = "...",  val visibility:String = "...", var time:String = "0", val message:String = "...", val type:String = "...",  val senderName:String = "...", var viewType:Int)

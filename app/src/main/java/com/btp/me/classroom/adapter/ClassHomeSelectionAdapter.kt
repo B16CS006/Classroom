@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import com.btp.me.classroom.fragment.AssignmentFragment
 import com.btp.me.classroom.people.PeopleFragment
-import com.btp.me.classroom.slide.SlideFragment
+import com.btp.me.classroom.slide.SlideActivity
 
 class ClassHomeSelectionAdapter(fm:FragmentManager) :FragmentPagerAdapter(fm) {
 
@@ -17,7 +17,7 @@ class ClassHomeSelectionAdapter(fm:FragmentManager) :FragmentPagerAdapter(fm) {
 
     override fun getItem(p0: Int): Fragment? {
         return when(p0){
-            0 -> SlideFragment()
+            0 -> SlideActivity() as Fragment
             1 -> AssignmentFragment()
             2 -> PeopleFragment()
             else -> null
