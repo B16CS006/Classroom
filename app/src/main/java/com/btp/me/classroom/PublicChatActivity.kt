@@ -19,9 +19,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_public_chat.*
 import org.json.JSONObject
 import java.sql.Date
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 class PublicChatActivity : AppCompatActivity() {
@@ -92,10 +90,23 @@ class PublicChatActivity : AppCompatActivity() {
         })
     }
 
+    private fun getTypeMessage() {                                                // The Message typed by the user in input box
+        if (public_chat_type_message.text.isNotBlank()) {
+            val message = public_chat_type_message.text.toString().trim()
+            if (isCommand(message)) {
+                Log.d(TAG, "Is a command : $message")
+            } else {
+                Log.d(TAG, "Not a command : $message")
+                public_chat_type_message.text.clear()
+                sendMessage(message, "message", "everyone")
+            }
+        }
+    }
+
     private fun isCommand(command: String): Boolean {
-        if (command[0] != '~')
+        if (!command.startsWith(COMMAND_TAG))
             return false
-        when (command.removePrefix("~").toLowerCase()) {
+        when (command.removePrefix(COMMAND_TAG).toLowerCase()) {
             commandList[0] -> {
                 sendMessage(commandList[0], "command", "me")
                 Toast.makeText(this, title, Toast.LENGTH_LONG).show()
@@ -120,22 +131,6 @@ class PublicChatActivity : AppCompatActivity() {
 
         public_chat_type_message.text.clear()
         return true
-    }
-
-
-
-
-    private fun getTypeMessage() {                                                // The Message typed by the user in input box
-        if (public_chat_type_message.text.isNotBlank()) {
-            val message = public_chat_type_message.text.toString().trim()
-            if (isCommand(message)) {
-                Log.d(TAG, "Is a command : $message")
-            } else {
-                Log.d(TAG, "Not a command : $message")
-                public_chat_type_message.text.clear()
-                sendMessage(message, "message", "everyone")
-            }
-        }
     }
 
     private fun sendMessage(message: String, type: String, visibility: String) {
@@ -231,60 +226,62 @@ class PublicChatActivity : AppCompatActivity() {
         })
     }
 
-//    private fun addMessageBox(message: String,type:BoxType){
-//        val textView = TextView(this)
-//        textView.text = message
-//        textView.setTextColor(Color.parseColor("#000000"))
-//        val textViewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-//        textViewParams.weight = 8f
-//
-//        when(type){
-//            BoxType.MY_COMMAND_BOX->{
-//                Log.d(TAG,"Message My command : $message")
-//                textView.setBackgroundResource(R.drawable.my_command_bubble)
-//                textView.setPadding(10,10,10,10)
-//
-//                textViewParams.gravity = Gravity.CENTER
-//                textViewParams.topMargin = 10
-//            }
-//            BoxType.MY_MESSAGE_BOX->{
-//                Log.d(TAG,"Message my Message : $message")
-//                textView.setPadding(10,10,30,10)
-//                textView.setBackgroundResource(R.drawable.my_message_bubble)
-//
-//                textViewParams.gravity = Gravity.END
-//                textViewParams.topMargin = 4
-//
-//            }
-//            BoxType.MY_FIRST_MESSAGE_BOX->{
-//                Log.d(TAG,"Message My first Message : $message")
-//                textView.setPadding(10,10,30,10)
-//                textView.setBackgroundResource(R.drawable.my_first_message_bubble)
-////
-//                textViewParams.gravity = Gravity.END
-//                textViewParams.topMargin = 10
-//            }
-//            BoxType.OTHER_MESSAGE_BOX->{
-//                Log.d(TAG,"Message other message : $message")
-//                textView.setPadding(30,10,10,10)
-//                textView.setBackgroundResource(R.drawable.other_message_bubble)
-//
-//                textViewParams.gravity = Gravity.START
-//                textViewParams.topMargin = 4
-//            }
-//            BoxType.OTHER_FIRST_MESSAGE_BOX->{
-//                Log.d(TAG,"Message other first message : $message")
-//                textView.setPadding(30,10,10,10)
-//                textView.setBackgroundResource(R.drawable.other_first_message_bubble)
-//
-//                textViewParams.gravity = Gravity.START
-//                textViewParams.topMargin = 10
-//            }
-//            else -> return
-//        }
-//        textView.layoutParams = textViewParams
-////        public_chat_list.addView(textView)
-//    }
+/*
+    private fun addMessageBox(message: String,type:BoxType){
+        val textView = TextView(this)
+        textView.text = message
+        textView.setTextColor(Color.parseColor("#000000"))
+        val textViewParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
+        textViewParams.weight = 8f
+
+        when(type){
+            BoxType.MY_COMMAND_BOX->{
+                Log.d(TAG,"Message My command : $message")
+                textView.setBackgroundResource(R.drawable.my_command_bubble)
+                textView.setPadding(10,10,10,10)
+
+                textViewParams.gravity = Gravity.CENTER
+                textViewParams.topMargin = 10
+            }
+            BoxType.MY_MESSAGE_BOX->{
+                Log.d(TAG,"Message my Message : $message")
+                textView.setPadding(10,10,30,10)
+                textView.setBackgroundResource(R.drawable.my_message_bubble)
+
+                textViewParams.gravity = Gravity.END
+                textViewParams.topMargin = 4
+
+            }
+            BoxType.MY_FIRST_MESSAGE_BOX->{
+                Log.d(TAG,"Message My first Message : $message")
+                textView.setPadding(10,10,30,10)
+                textView.setBackgroundResource(R.drawable.my_first_message_bubble)
+
+                textViewParams.gravity = Gravity.END
+                textViewParams.topMargin = 10
+            }
+            BoxType.OTHER_MESSAGE_BOX->{
+                Log.d(TAG,"Message other message : $message")
+                textView.setPadding(30,10,10,10)
+                textView.setBackgroundResource(R.drawable.other_message_bubble)
+
+                textViewParams.gravity = Gravity.START
+                textViewParams.topMargin = 4
+            }
+            BoxType.OTHER_FIRST_MESSAGE_BOX->{
+                Log.d(TAG,"Message other first message : $message")
+                textView.setPadding(30,10,10,10)
+                textView.setBackgroundResource(R.drawable.other_first_message_bubble)
+
+                textViewParams.gravity = Gravity.START
+                textViewParams.topMargin = 10
+            }
+            else -> return
+        }
+        textView.layoutParams = textViewParams
+        public_chat_list.addView(textView)
+    }
+*/
 
     private fun sendToMainActivity() {
         val intent = Intent(this,MainActivity::class.java)
@@ -306,7 +303,6 @@ class PublicChatActivity : AppCompatActivity() {
             return
         }
 
-
         val intent = Intent(this, SlideActivity::class.java)
         startActivity(intent)
     }
@@ -324,14 +320,15 @@ class PublicChatActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "chetan"
         private var userName = "null"
-//        private const val LEFT = 1
-//        private const val RIGHT = 2
-//        private const val CENTER = 3
-//        private enum class BoxType {MY_MESSAGE_BOX, MY_FIRST_MESSAGE_BOX, MY_COMMAND_BOX, OTHER_MESSAGE_BOX, OTHER_FIRST_MESSAGE_BOX, MY_COMMAND_RESULT_BOX}
 
-        const val CLASSID = "ClassId"
+        private const val COMMAND_TAG = "~"
 
-        val commandList = arrayListOf<String>("classname","goto slide","goto members","whoami")
+        private val commandList = arrayListOf<String>(
+                "classname",
+                "goto slide",
+                "goto members",
+                "whoami"
+        )
 
 
     }
