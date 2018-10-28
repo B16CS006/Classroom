@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
+import com.btp.me.classroom.Assignment.AssignmentActivity
 import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -123,6 +124,12 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[3],"command","me")
                 Toast.makeText(this, userName,Toast.LENGTH_LONG).show()
             }
+
+            commandList[4] ->{
+                sendMessage(commandList[3],"command","me")
+                sendToAssignmentActivity()
+            }
+
             else ->{
                 Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
                 return true
@@ -165,9 +172,9 @@ class PublicChatActivity : AppCompatActivity() {
 
     private fun getSendMessageFromDatabase() {
         mRootRef.child("Message/$classId").orderByKey().limitToLast(10).addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
+            override fun onCancelled(error: DatabaseError) {
                 Log.d(TAG, "No Internet Connection")
-                Toast.makeText(this@PublicChatActivity, R.string.no_internet, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@PublicChatActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -317,17 +324,27 @@ class PublicChatActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun sendToAssignmentActivity() {
+        if (classId == "null") {
+            sendToMainActivity()
+            return
+        }
+
+        startActivity(Intent(this,AssignmentActivity::class.java))
+    }
+
     companion object {
         private const val TAG = "chetan"
         private var userName = "null"
 
-        private const val COMMAND_TAG = "~"
+        private const val COMMAND_TAG = "."
 
         private val commandList = arrayListOf<String>(
                 "classname",
                 "goto slide",
                 "goto members",
-                "whoami"
+                "whoami",
+                "goto assignment"
         )
 
 

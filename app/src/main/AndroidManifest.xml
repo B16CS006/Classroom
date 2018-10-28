@@ -15,7 +15,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +42,8 @@
         <activity android:name=".JoinClass" />
         <activity android:name=".people.ClassMembersActivity" />
         <activity android:name=".PublicChatActivity" />
-        <activity android:name=".slide.SlideActivity"/>
+        <activity android:name=".slide.SlideActivity" />
+        <activity android:name=".Assignment.AssignmentActivity"></activity>
     </application>
 
 </manifest>
