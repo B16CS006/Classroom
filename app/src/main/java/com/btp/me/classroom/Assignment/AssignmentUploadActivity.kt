@@ -18,7 +18,7 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_assignment_upload.*
 import java.util.*
 
-class AssignmentUpload : AppCompatActivity() {
+class AssignmentUploadActivity : AppCompatActivity() {
 
     private val root = FirebaseDatabase.getInstance().reference
     private var currentUser = FirebaseAuth.getInstance().currentUser
@@ -70,7 +70,7 @@ class AssignmentUpload : AppCompatActivity() {
             val assignment = Assignment(title, description, submissionDate, maxMarks)
 
             if(fileUri == null){
-                val currentTime = Date()
+                val currentTime = System.currentTimeMillis()
                 root.child("Classroom/$classId/Assignment/$currentTime").setValue(assignment).addOnSuccessListener {
                     Toast.makeText(this, "Assignment is successfully uploaded", Toast.LENGTH_LONG).show()
                     assignment_upload_title.text.clear()
@@ -111,7 +111,7 @@ class AssignmentUpload : AppCompatActivity() {
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath","Assignment/$classId/$userId/$currentTime")
-        uploadingIntent.putExtra("databasePath","Classroom/$classId/assignment/$currentTime") ///todo backend : genereage all student slist showing status as not complete
+        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$currentTime") ///todo backend : genereage all student slist showing status as not complete
         uploadingIntent.putExtra("data",data)
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD

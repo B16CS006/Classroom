@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 .setLifecycleOwner(this)
                 .build()
 
-        Log.d("chetan", "Options: ${options.snapshots}")
+//        Log.d("chetan", "Options: ${options.snapshots}")
 
 //        val list = ArrayList<Classes>()
 //        val x = Classes("Name", "Status", "https://firebasestorage.googleapis.com/v0/b/classroom-a9b2e.appspot.com/o/profile_images%2F2bo3A3wADsbxJlep6MZqvI7LN283.jpg?alt=media&token=113d6f39-7d2f-49e5-8c3a-0d66cafd3d9c")

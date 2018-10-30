@@ -15,7 +15,7 @@ class SlideAdapter(val list: ArrayList<HashMap<String, String>>) : RecyclerView.
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
         Log.d("chetan", "Slide adapter on create viewHolder")
-        return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.file_single_layout, parent, false))
+        return MyViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.single_slide_layout, parent, false))
 
     }
 

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/single_assignment_title"
+        android:layout_width="@+id/single_assignment_download_button"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:maxLines="2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/single_assignment_download_button"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"/>
+
+    <TextView
+        android:maxLines="1"
+        android:id="@+id/single_assignment_submission_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="00/00/0000"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="@id/single_assignment_title"
+        app:layout_constraintTop_toBottomOf="@id/single_assignment_title"/>
+
+    <TextView
+        android:id="@+id/single_assignment_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageButton
+        android:id="@+id/single_assignment_download_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/round_button"
+        android:src="@drawable/ic_cloud_download_blue_24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="download"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:elevation="4dp"
+        android:background="@color/grey_100"
+        app:layout_constraintTop_toBottomOf="@id/single_assignment_submission_date"/>
+
+</android.support.constraint.ConstraintLayout>

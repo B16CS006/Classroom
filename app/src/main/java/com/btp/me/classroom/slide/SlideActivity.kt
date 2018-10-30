@@ -17,7 +17,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.IntentResult
-import com.btp.me.classroom.PublicChatActivity
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -55,7 +54,7 @@ class SlideActivity : AppCompatActivity() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
                 Log.d("chetan", "Slide adapter on create viewHolder")
                 return MyViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.file_single_layout, parent, false))
+                        .inflate(R.layout.single_slide_layout, parent, false))
 
             }
 

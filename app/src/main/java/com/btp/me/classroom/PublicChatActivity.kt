@@ -6,7 +6,8 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
-import com.btp.me.classroom.Assignment.AssignmentUpload
+import com.btp.me.classroom.Assignment.AssignmentActivity
+import com.btp.me.classroom.Assignment.AssignmentUploadActivity
 import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -126,6 +127,10 @@ class PublicChatActivity : AppCompatActivity() {
             }
             commandList[4] ->{
                 sendMessage(commandList[4],"command","me")
+                sendToAssignmentUploadActivity()
+            }
+            commandList[5] ->{
+                sendMessage(commandList[4],"command", "me")
                 sendToAssignmentActivity()
             }
 
@@ -323,13 +328,22 @@ class PublicChatActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun sendToAssignmentActivity() {
+    private fun sendToAssignmentUploadActivity() {
         if (classId == "null") {
             sendToMainActivity()
             return
         }
 
-        startActivity(Intent(this,AssignmentUpload::class.java))
+        startActivity(Intent(this,AssignmentUploadActivity::class.java))
+    }
+
+    private fun sendToAssignmentActivity(){
+        if (classId == "null") {
+            sendToMainActivity()
+            return
+        }
+
+        startActivity(Intent(this,AssignmentActivity::class.java))
     }
 
     companion object {
@@ -343,7 +357,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "classname",
                 "members",
                 "slide",
-                "upload assignment"
+                "new assignment",
+                "assignment"
         )
 
 

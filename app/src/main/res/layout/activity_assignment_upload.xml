@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    tools:context="com.btp.me.classroom.Assignment.AssignmentUpload">
+    tools:context="com.btp.me.classroom.Assignment.AssignmentUploadActivity">
 
     <EditText
         android:id="@+id/assignment_upload_title"

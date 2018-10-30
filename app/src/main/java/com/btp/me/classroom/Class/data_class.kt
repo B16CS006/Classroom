@@ -10,6 +10,13 @@ class ClassroomKotlin {
     var profileImage:String = "default"
 }
 
+//class Assignment{
+//    var title:String = "default"
+//    var description:String = ""
+//    var submissionDate:Long = 0
+//    var maxMarks:Int = 100
+//}
+
 abstract class MessageType {
     companion object {
 //        const val NONE = 0
@@ -61,4 +68,10 @@ data class Slide(var title:String, var link:String)
 
 data class ChatMessage(var senderId:String = "...",var visibility:String = "...", var time:String = "0", var message:String = "...", var type:String = "...",  var senderName:String = "...", var viewType:Int)
 
-data class Assignment(var title: String, var description: String, var submissionDate: String, var maxMarks: String, var link: String? = null)
+class Assignment{
+    var title: String = ""
+    var description: String = ""
+    var submissionDate: String = ""
+    var maxMarks: Long = 100
+    var link: String? = null
+}

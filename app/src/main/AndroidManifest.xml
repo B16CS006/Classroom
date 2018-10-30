@@ -43,7 +43,7 @@
         <activity android:name=".people.ClassMembersActivity" />
         <activity android:name=".PublicChatActivity" />
         <activity android:name=".slide.SlideActivity" />
-        <activity android:name=".Assignment.AssignmentUpload" />
+        <activity android:name=".Assignment.AssignmentUploadActivity" />
         <activity android:name=".Assignment.AssignmentActivity"></activity>
     </application>
 
