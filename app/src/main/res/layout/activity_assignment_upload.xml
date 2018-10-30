@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    tools:context="com.btp.me.classroom.Assignment.AssignmentUpload">
+
+    <EditText
+        android:id="@+id/assignment_upload_title"
+        android:hint="Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/assignment_upload_discription"
+        android:hint="Discription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/assignment_upload_submission_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:hint="Submission Date"/>
+
+    <EditText
+        android:id="@+id/assignment_upload_max_marks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Maximum Marks"
+        android:inputType="number"/>
+
+    <Button
+        android:id="@+id/assignment_upload_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="File"/>
+
+    <Button
+        android:id="@+id/assignment_upload_submit"
+        android:text="Submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

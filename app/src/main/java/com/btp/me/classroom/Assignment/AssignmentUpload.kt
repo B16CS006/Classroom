@@ -15,10 +15,8 @@ import com.btp.me.classroom.slide.MyUploadingService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import kotlinx.android.synthetic.main.activity_assignment.*
+import kotlinx.android.synthetic.main.activity_assignment_upload.*
 import java.util.*
-import kotlin.collections.HashMap
 
 class AssignmentUpload : AppCompatActivity() {
 
@@ -29,15 +27,15 @@ class AssignmentUpload : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_assignment)
+        setContentView(R.layout.activity_assignment_upload)
 
         title = "Assignment/Examination"
 
-        assignment_file.setOnClickListener {
+        assignment_upload_file.setOnClickListener {
             startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)
         }
 
-        assignment_submit.setOnClickListener {
+        assignment_upload_submit.setOnClickListener {
 
 //            if (assignment_title.text.isBlank() || assignment_submission_date.text.isBlank() || assignment_max_marks.text.isBlank()) {
 //                Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_LONG).show()
@@ -45,26 +43,26 @@ class AssignmentUpload : AppCompatActivity() {
 //            }
 
             val title = when {
-                assignment_title.text.isNotBlank() -> assignment_title.text.toString()
+                assignment_upload_title.text.isNotBlank() -> assignment_upload_title.text.toString()
                 else -> {
-                    assignment_title.error = "Field can't be empty"
+                    assignment_upload_title.error = "Field can't be empty"
                     return@setOnClickListener
                 }
             }
 
             val description = when {
-                assignment_discription.text.isNotBlank() -> assignment_discription.text.toString()
+                assignment_upload_discription.text.isNotBlank() -> assignment_upload_discription.text.toString()
                 else -> ""
             }
 
 
             val maxMarks = when {
-                assignment_max_marks.text.isNotBlank() -> assignment_max_marks.text.toString()
+                assignment_upload_max_marks.text.isNotBlank() -> assignment_upload_max_marks.text.toString()
                 else -> "100" //TODO set hint to 100 also
             }
 
             val submissionDate = when {
-                assignment_submission_date.text.isNotBlank() -> assignment_submission_date.text.toString()
+                assignment_upload_submission_date.text.isNotBlank() -> assignment_upload_submission_date.text.toString()
                 else -> ""
                 //todo date is always future date
             }
@@ -75,10 +73,10 @@ class AssignmentUpload : AppCompatActivity() {
                 val currentTime = Date()
                 root.child("Classroom/$classId/Assignment/$currentTime").setValue(assignment).addOnSuccessListener {
                     Toast.makeText(this, "Assignment is successfully uploaded", Toast.LENGTH_LONG).show()
-                    assignment_title.text.clear()
-                    assignment_discription.text.clear()
-                    assignment_submission_date.text.clear()
-                    assignment_max_marks.text.clear()
+                    assignment_upload_title.text.clear()
+                    assignment_upload_discription.text.clear()
+                    assignment_upload_submission_date.text.clear()
+                    assignment_upload_max_marks.text.clear()
                 }.addOnFailureListener { exception ->
                     Toast.makeText(this, "Failed to upload Assignment\nError : ${exception.message}", Toast.LENGTH_LONG).show()
                 }
