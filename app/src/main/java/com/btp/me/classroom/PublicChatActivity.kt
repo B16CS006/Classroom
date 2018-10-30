@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
-import com.btp.me.classroom.Assignment.AssignmentActivity
+import com.btp.me.classroom.Assignment.AssignmentUpload
 import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -108,25 +108,24 @@ class PublicChatActivity : AppCompatActivity() {
         if (!command.startsWith(COMMAND_TAG))
             return false
         when (command.removePrefix(COMMAND_TAG).toLowerCase()) {
-            commandList[0] -> {
-                sendMessage(commandList[0], "command", "me")
-                Toast.makeText(this, title, Toast.LENGTH_LONG).show()
+            commandList[0] ->{
+                sendMessage(commandList[0],"command","me")
+                Toast.makeText(this, userName,Toast.LENGTH_LONG).show()
             }
             commandList[1] -> {
                 sendMessage(commandList[1], "command", "me")
-                sendToSlideActivity()
+                Toast.makeText(this, title, Toast.LENGTH_LONG).show()
             }
             commandList[2] ->{
                 sendMessage(commandList[2],"command","me")
                 sendToMembersActivity()
             }
-            commandList[3] ->{
-                sendMessage(commandList[3],"command","me")
-                Toast.makeText(this, userName,Toast.LENGTH_LONG).show()
+            commandList[3] -> {
+                sendMessage(commandList[3], "command", "me")
+                sendToSlideActivity()
             }
-
             commandList[4] ->{
-                sendMessage(commandList[3],"command","me")
+                sendMessage(commandList[4],"command","me")
                 sendToAssignmentActivity()
             }
 
@@ -330,7 +329,7 @@ class PublicChatActivity : AppCompatActivity() {
             return
         }
 
-        startActivity(Intent(this,AssignmentActivity::class.java))
+        startActivity(Intent(this,AssignmentUpload::class.java))
     }
 
     companion object {
@@ -340,11 +339,11 @@ class PublicChatActivity : AppCompatActivity() {
         private const val COMMAND_TAG = "."
 
         private val commandList = arrayListOf<String>(
-                "classname",
-                "goto slide",
-                "goto members",
                 "whoami",
-                "goto assignment"
+                "classname",
+                "members",
+                "slide",
+                "upload assignment"
         )
 
 

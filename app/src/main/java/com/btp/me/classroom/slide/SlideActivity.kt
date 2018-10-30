@@ -169,11 +169,21 @@ class SlideActivity : AppCompatActivity() {
     }
 
     private fun upload(uri: Uri) {
+        val data:String = """{"title": "${uri.lastPathSegment}","link": ""}"""
         Log.d("chetan", "uploading Uri : ${uri.toString()}")
         val uploadingIntent = Intent(this, MyUploadingService::class.java)
-        uploadingIntent.putExtra("classId", classId)
-        uploadingIntent.putExtra("userId", currentUser!!.uid)
+
+//        uploadingIntent.putExtra("classId", classId)
+//        uploadingIntent.putExtra("userId", currentUser!!.uid)
+
+        val userId = currentUser?.uid?:return
+        val currentTime = System.currentTimeMillis().toString()
+
         uploadingIntent.putExtra("fileUri", uri)
+        uploadingIntent.putExtra("storagePath","Slide/$classId/$userId/$currentTime")
+        uploadingIntent.putExtra("databasePath","Classroom/$classId/slide/$userId/$currentTime")
+        uploadingIntent.putExtra("data",data)
+
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
         startService(uploadingIntent)
                 ?: Log.d("chetan", "At this this no activy is running")

@@ -4,11 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 //import android.os.Build
 import android.os.IBinder
 //import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.widget.Toast
+import com.btp.me.classroom.Class.Assignment
+import com.btp.me.classroom.Class.Slide
 import com.btp.me.classroom.ClassHomeActivity
 //import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MyBaseTaskService
@@ -17,57 +20,63 @@ import com.google.firebase.database.FirebaseDatabase
 //import com.google.firebase.quickstart.firebasestorage.R
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 
 class MyUploadingService : MyBaseTaskService() {
-
-    private lateinit var storageRef: StorageReference
-
-    override fun onCreate() {
-        super.onCreate()
-        storageRef = FirebaseStorage.getInstance().getReference("Slide")
-    }
 
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
+    /*
+    0 -> slide
+    1 -> assignment
+     */
+
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, "onStartCommand:$intent:$startId")
         if (ACTION_UPLOAD == intent.action) {
             val fileUri = intent.getParcelableExtra<Uri>("fileUri")
-            val classId = intent.getStringExtra("classId")
-            val userId = intent.getStringExtra(("userId"))
+//            val classId = intent.getStringExtra("classId")
+//            val userId = intent.getStringExtra(("userId"))
+            val json = intent.getStringExtra("data")
+            val storagePath = intent.getStringExtra("storagePath")
+            val databasePath = intent.getStringExtra("databasePath")
 
-            // Make sure we have permission to read the data
-  //          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-    //        contentResolver.takePersistableUriPermission(
-      //              fileUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION//)
-        //    }
+            val gson = GsonBuilder().setPrettyPrinting().create()
+            val data: HashMap<String, Any> = gson.fromJson(json, object : TypeToken<HashMap<String, Any>>() {}.type)
 
-            uploadFromUri(fileUri,classId,userId)
+//             Make sure we have permission to read the data
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//                contentResolver.takePersistableUriPermission(
+//                        fileUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION//)
+//            }
+
+            uploadFromUri(fileUri, storagePath, databasePath, data)
+
         }
 
         return Service.START_REDELIVER_INTENT
     }
 
-    private fun uploadFromUri(fileUri: Uri,classId:String,userId:String) {
+    private fun uploadFromUri(fileUri: Uri, storagePath: String, databasePath: String, data:HashMap<String,Any>) {
         Log.d(TAG, "uploadFromUri:src:" + fileUri.toString())
-        Log.d(TAG,"Uploadclass : $classId")
-        Log.d(TAG,"UploadUser : $userId")
+        Log.d(TAG, "Storage Path : $storagePath")
+        Log.d(TAG, "Database Path : $databasePath")
 
         taskStarted()
-        showProgressNotification(getString(R.string.progress_uploading), 0, 0,R.drawable.ic_cloud_upload_white_24dp)
-
-        val currentTime =System.currentTimeMillis().toString()
+        showProgressNotification(getString(R.string.progress_uploading), 0, 0, R.drawable.ic_cloud_upload_white_24dp)
         val fileName = fileUri.lastPathSegment
 
-        val fileRef = storageRef.child("$classId/$userId/$currentTime")
+        val fileRef = FirebaseStorage.getInstance().getReference(storagePath)
 
         fileRef.putFile(fileUri).addOnProgressListener { taskSnapshot ->
             showProgressNotification(getString(R.string.progress_uploading),
                     taskSnapshot.bytesTransferred,
-                    taskSnapshot.totalByteCount,R.drawable.ic_cloud_upload_white_24dp)
+                    taskSnapshot.totalByteCount, R.drawable.ic_cloud_upload_white_24dp)
         }.continueWithTask { task ->
             if (!task.isSuccessful) {
                 throw task.exception!!
@@ -79,7 +88,8 @@ class MyUploadingService : MyBaseTaskService() {
             fileRef.downloadUrl
         }.addOnSuccessListener { downloadUri ->
             Log.d(TAG, "uploadFromUri: getDownloadUri success")
-            updateDatabase(currentTime,fileName!!,downloadUri,classId,userId)
+            data["link"] = downloadUri.toString()
+            updateDatabase(fileName!!, databasePath,data)
 //            broadcastUploadFinished(downloadUri, fileUri)
             showUploadFinishedNotification(downloadUri, fileUri)
             taskCompleted()
@@ -91,18 +101,20 @@ class MyUploadingService : MyBaseTaskService() {
         }
     }
 
-    private fun updateDatabase(currentTime: String, fileName: String, downloadUri: Uri,classId:String,userId: String) {
-        val map = HashMap<String,String>()
-        map["title"] = fileName
-        map["link"] = downloadUri.toString()
-        val mRootRef = FirebaseDatabase.getInstance().reference
-        mRootRef.child("Classroom/$classId/slide/$userId/$currentTime").updateChildren(map.toMap()).addOnCompleteListener { task ->
+    private fun updateDatabase(fileName: String, databasePath: String,data:HashMap<String,Any>) {
+
+//        val map = HashMap<String, String>()
+//        map["title"] = fileName
+//        map["link"] = downloadUri.toString()
+
+        val databaseReference = FirebaseDatabase.getInstance().getReference(databasePath)
+        databaseReference.updateChildren(data).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("chetan", "Successfully uploaded")
-                Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_LONG).show()
+                //              Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_LONG).show()
             } else {
                 Log.d("chetan", "failure listener mRootRef")
-                Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
+                //            Toast.makeText(this, "Error", Toast.LENGTH_LONG).show()
             }
         }
     }

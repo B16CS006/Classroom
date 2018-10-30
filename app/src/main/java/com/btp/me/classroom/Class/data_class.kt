@@ -57,5 +57,8 @@ abstract class MyColor{
     }
 }
 
-data class Slide(var title:String = "", var link:String = "")
+data class Slide(var title:String, var link:String)
+
 data class ChatMessage(var senderId:String = "...",var visibility:String = "...", var time:String = "0", var message:String = "...", var type:String = "...",  var senderName:String = "...", var viewType:Int)
+
+data class Assignment(var title: String, var description: String, var submissionDate: String, var maxMarks: String, var link: String? = null)
