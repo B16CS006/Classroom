@@ -10,12 +10,6 @@ const fs = require('fs');
 
 admin.initializeApp();
 
-// Max height and width of the thumbnail in pixels.
-const THUMB_MAX_HEIGHT = 200;
-const THUMB_MAX_WIDTH = 200;
-// Thumbnail prefix added to file names.
-const THUMB_PREFIX = 'thumb_';
-
 exports.join_class_request = functions.database.ref('/Join-Class-Request/{userId}/{classId}').onCreate((snapshot,context) =>{
 	var type = snapshot.val();
 
@@ -47,7 +41,24 @@ exports.join_class_request = functions.database.ref('/Join-Class-Request/{userId
 	
 });
 
+exports.initializeStudentsMarks = functions.database.ref('/Classroom/${classId}/Assignment/{assignment}').onCreate( (snapshot,context) => {
+	console.log('initializeStudentMarks');
+	const classId = context.params.classId;
+	const assignment = context.params.assignment;
+	const title = snapshot.child('title').val();
+	console.log('ClassId : ', classId, ', Assignment : ', assignment, ', Title : ', title);
+
+	//Notify all Students
+});
+
 exports.generateThumbnail = functions.storage.object().onFinalize((object) => {
+
+	// Max height and width of the thumbnail in pixels.
+	const THUMB_MAX_HEIGHT = 200;
+	const THUMB_MAX_WIDTH = 200;
+	// Thumbnail prefix added to file names.
+	const THUMB_PREFIX = 'thumb_';
+
   const filePath = object.name;
   const contentType = object.contentType; // This is the image MIME type
   const fileDir = path.dirname(filePath);

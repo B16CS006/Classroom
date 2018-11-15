@@ -1,4 +1,4 @@
-package com.btp.me.classroom.Assignment
+package com.btp.me.classroom.assignment
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import kotlinx.android.synthetic.main.activity_assignment.*
 import kotlinx.android.synthetic.main.single_assignment_layout.view.*
@@ -75,12 +74,25 @@ class AssignmentActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int, model: Assignment) {
                 holder.bind(model)
                 holder.view.setOnClickListener {
-                    Log.d(TAG, "Your have clicked $position")
+//                    Log.d(TAG, "Your have clicked $position")
+//                    Log.d(TAG,"Ref : ${getRef(position).key.toString()}")
+                    sendToAssignmentDetails(getRef(position).key.toString())
                 }
             }
         }
 
         assignment_list.adapter = adapter
+    }
+
+    private fun sendToAssignmentDetails(assignment: String) {
+        if (classId == "null") {
+            sendToMainActivity()
+            return
+        }
+
+        val intent = Intent(this,AssignmentDetailsActivity::class.java)
+        intent.putExtra("assignment",assignment)
+        startActivity(intent)
     }
 
 

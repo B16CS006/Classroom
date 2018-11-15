@@ -1,4 +1,4 @@
-package com.btp.me.classroom.Assignment
+package com.btp.me.classroom.assignment
 
 import android.app.Activity
 import android.content.Intent
@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_assignment_upload.*
-import java.util.*
 
 class AssignmentUploadActivity : AppCompatActivity() {
 
@@ -29,7 +28,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_upload)
 
-        title = "Assignment/Examination"
+        title = "Assignments"
 
         assignment_upload_file.setOnClickListener {
             startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)

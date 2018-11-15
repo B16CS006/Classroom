@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.widget.Toast
-import com.btp.me.classroom.Assignment.AssignmentActivity
-import com.btp.me.classroom.Assignment.AssignmentUploadActivity
+import com.btp.me.classroom.assignment.AssignmentActivity
+import com.btp.me.classroom.assignment.AssignmentUploadActivity
 import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId

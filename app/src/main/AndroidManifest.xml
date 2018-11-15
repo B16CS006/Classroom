@@ -43,9 +43,11 @@
         <activity android:name=".people.ClassMembersActivity" />
         <activity android:name=".PublicChatActivity" />
         <activity android:name=".slide.SlideActivity" />
-        <activity android:name=".Assignment.AssignmentUploadActivity" />
-        <activity android:name=".Assignment.AssignmentActivity" />
-        <activity android:name=".Assignment.AssignmentDetailsActivity"></activity>
+        <activity android:name=".assignment.AssignmentUploadActivity" />
+        <activity android:name=".assignment.AssignmentActivity" />
+        <activity
+            android:name=".assignment.AssignmentDetailsActivity"
+            android:theme="@style/NoTitleBar" />
     </application>
 
 </manifest>

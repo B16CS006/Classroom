@@ -1,3 +1,21 @@
 deploy firebase : 	firebase deploy
 		:	firebase deploy --only functions
 		:	firebase deploy --only functions:some_functions
+
+We can test if an object is an array using the Array.isArray function:
+	var arr2 = [];
+	var arr3 = ['rat', 'dog'];
+
+	Array.isArray(arr2);
+	Array.isArray({});
+
+	arr2.push(1);	at end		// 1
+	arr2.unshift(2); at front	// 2,1
+	arr2[5] = 4; 	at 6 position // 2,1,,,,6
+	arr2.length;
+
+	arr2.splice(index, number_of_item_to_delete);
+
+	for(var i = 0; i < arr3.lenght; i++){
+		arr2[i];
+	}

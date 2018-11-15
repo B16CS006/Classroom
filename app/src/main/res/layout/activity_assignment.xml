@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btp.me.classroom.Assignment.AssignmentActivity">
+    tools:context="com.btp.me.classroom.assignment.AssignmentActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/assignment_list"

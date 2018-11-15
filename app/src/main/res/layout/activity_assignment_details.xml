@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btp.me.classroom.Assignment.AssignmentDetailsActivity">
+    tools:context="com.btp.me.classroom.assignment.AssignmentDetailsActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -14,5 +14,78 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="Assignment Details"/>
+
+    <TextView
+        android:id="@+id/assignment_details_title"
+        android:text="Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/assignment_details_linear_layout_due_date"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Due Date : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/assignment_details_submission_date"
+            android:text="12/12/2018"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/assignment_details_linear_layout_marks"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_due_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="Maximum Marks : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/assignment_details_max_marks"
+            android:text="100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/assignment_details_description"
+        android:text="Description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_marks"/>
+
+    <TextView
+        android:id="@+id/assignment_details_marks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
+
+    <Button
+        android:id="@+id/assignment_details_view_result"
+        android:text="Result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
+
+    <Button
+        android:id="@+id/assignment_details_assignment_download_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Download"
+        android:enabled="false"
+        app:layout_constraintTop_toTopOf="@id/assignment_details_view_result"
+        app:layout_constraintStart_toEndOf="@id/assignment_details_view_result"/>
 
 </android.support.constraint.ConstraintLayout>
