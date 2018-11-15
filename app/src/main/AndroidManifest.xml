@@ -44,7 +44,8 @@
         <activity android:name=".PublicChatActivity" />
         <activity android:name=".slide.SlideActivity" />
         <activity android:name=".Assignment.AssignmentUploadActivity" />
-        <activity android:name=".Assignment.AssignmentActivity"></activity>
+        <activity android:name=".Assignment.AssignmentActivity" />
+        <activity android:name=".Assignment.AssignmentDetailsActivity"></activity>
     </application>
 
 </manifest>

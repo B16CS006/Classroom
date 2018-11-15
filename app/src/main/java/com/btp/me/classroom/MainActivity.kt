@@ -42,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
         mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
 
-        mClassroomReference.keepSynced(true)
-        mClassEnrollReference.keepSynced(true)
+//        mClassroomReference.keepSynced(true)
+//        mClassEnrollReference.keepSynced(true)
 
 
         main_class_list.setHasFixedSize(true)
@@ -108,15 +108,6 @@ class MainActivity : AppCompatActivity() {
 
 
             override fun onBindViewHolder(holder: ClassViewHolder, position: Int, model: ClassroomKotlin) {
-
-                if(itemCount == 0){
-                    main_empty.visibility = View.VISIBLE
-                    main_class_list.visibility = View.GONE
-                }else{
-                    main_empty.visibility = View.GONE
-                    main_class_list.visibility = View.VISIBLE
-                }
-
                 val id = getRef(position).key.toString()
                 Log.d("chetan", "The Id is : $id")
 
@@ -150,6 +141,17 @@ class MainActivity : AppCompatActivity() {
 
                 mClassroomReference.child(id).addValueEventListener(classListener as ValueEventListener)
 //                holder.bind(model)
+            }
+
+            override fun getItemCount(): Int {
+//                if(super.getItemCount() == 0){
+//                    main_empty.visibility = View.VISIBLE
+//                    main_class_list.visibility = View.GONE
+//                }else{
+//                    main_empty.visibility = View.GONE
+//                    main_class_list.visibility = View.VISIBLE
+//                }//todo get itemcount() main Activity
+                return super.getItemCount()
             }
         }
 

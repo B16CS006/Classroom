@@ -48,7 +48,7 @@ class PublicChatActivity : AppCompatActivity() {
 
 
         val classNameReference = mRootRef.child("Users/${mCurrentUser?.uid}/name")
-        classNameReference.keepSynced(true)
+//        classNameReference.keepSynced(true)
 
         classNameReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -75,7 +75,7 @@ class PublicChatActivity : AppCompatActivity() {
 
     private fun setTitle() {
         val database = mRootRef.child("Classroom/$classId/name")
-        database.keepSynced(true)
+//        database.keepSynced(true)
 
         database.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
@@ -130,7 +130,7 @@ class PublicChatActivity : AppCompatActivity() {
                 sendToAssignmentUploadActivity()
             }
             commandList[5] ->{
-                sendMessage(commandList[4],"command", "me")
+                sendMessage(commandList[5],"command", "me")
                 sendToAssignmentActivity()
             }
 

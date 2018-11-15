@@ -9,16 +9,14 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/assignment_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:paddingBottom="150dp" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/assignment_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="top|center_horizontal"
-        android:text="No slides are uploaded."
+        android:text="No Assignment are uploaded."
         android:textColor="#938f8f"
         android:textSize="16sp"
         android:visibility="gone" />

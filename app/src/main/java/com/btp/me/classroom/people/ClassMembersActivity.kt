@@ -33,7 +33,7 @@ class ClassMembersActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_members)
 
-        databaseReference.keepSynced(true)
+//        databaseReference.keepSynced(true)
 
         if(mCurrentUser == null){
             sendToHomepage()

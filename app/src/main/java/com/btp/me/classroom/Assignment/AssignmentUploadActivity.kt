@@ -69,19 +69,24 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
             val assignment = Assignment(title, description, submissionDate, maxMarks)
 
+            //todo also check this is working or not , no need of this as we finished this activity whether a assignment is uploaded successfully or not
+            assignment_upload_title.text.clear()
+            assignment_upload_discription.text.clear()
+            assignment_upload_submission_date.text.clear()
+            assignment_upload_max_marks.text.clear()
+
             if(fileUri == null){
                 val currentTime = System.currentTimeMillis()
                 root.child("Classroom/$classId/Assignment/$currentTime").setValue(assignment).addOnSuccessListener {
                     Toast.makeText(this, "Assignment is successfully uploaded", Toast.LENGTH_LONG).show()
-                    assignment_upload_title.text.clear()
-                    assignment_upload_discription.text.clear()
-                    assignment_upload_submission_date.text.clear()
-                    assignment_upload_max_marks.text.clear()
+                    finish()
                 }.addOnFailureListener { exception ->
                     Toast.makeText(this, "Failed to upload Assignment\nError : ${exception.message}", Toast.LENGTH_LONG).show()
+                    finish()
                 }
             }else{
                 upload(fileUri!!,assignment)
+                finish()//Todo check this is working or not , this is checked
             }
         }
 
@@ -111,7 +116,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath","Assignment/$classId/$userId/$currentTime")
-        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$currentTime") ///todo backend : genereage all student slist showing status as not complete
+        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$currentTime") ///todo backend : generate all student slist showing status as not complete
         uploadingIntent.putExtra("data",data)
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD

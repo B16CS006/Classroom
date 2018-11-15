@@ -24,7 +24,7 @@ class CreateClassActivity : AppCompatActivity() {
 
     private val mStorageRef by lazy { FirebaseStorage.getInstance().reference }
     private val mCurrentUser by lazy { FirebaseAuth.getInstance().currentUser }
-    private val mRootRef by lazy{ FirebaseDatabase.getInstance().reference }
+    private val mRootRef by lazy { FirebaseDatabase.getInstance().reference }
 
     private var userMap = HashMap<String, Any>()
     private val classId by lazy { mRootRef.child("Classroom").push().key }
@@ -35,7 +35,7 @@ class CreateClassActivity : AppCompatActivity() {
 
         title = "Create New Class"
 
-        mCurrentUser?:sendToHomePage()
+        mCurrentUser ?: sendToHomePage()
 
         userMap["Classroom/$classId/name"] = "default"
         userMap["Classroom/$classId/status"] = "default"
@@ -56,7 +56,7 @@ class CreateClassActivity : AppCompatActivity() {
 //            }
 //        })
 
-        create_class_image.setOnClickListener{
+        create_class_image.setOnClickListener {
             val galleryIntent = Intent()
             galleryIntent.type = "image/*"
             galleryIntent.action = Intent.ACTION_GET_CONTENT
@@ -77,18 +77,16 @@ class CreateClassActivity : AppCompatActivity() {
     }
 
     private fun createClass() {
-        mCurrentUser?:sendToHomePage()
+        mCurrentUser ?: sendToHomePage()
         userMap["Class-Enroll/${mCurrentUser!!.uid}/$classId/as"] = "teacher"
-        userMap["Classroom/$classId/members/${mCurrentUser!!.uid}"] = "teacher"
-        mRootRef.updateChildren(userMap.toMap()).addOnCompleteListener { task ->
-            if(task.isSuccessful){
-                Toast.makeText(this,"Class is successfully created.",Toast.LENGTH_LONG).show()
-                Log.d("chetan","Class is successfully created")
-                finish()
-            }else{
-                Log.d("chetan","Error while uploading the final data on firebase")
-                Toast.makeText(this,"Data is now uploaded to firebase",Toast.LENGTH_LONG).show()
-            }
+        userMap["Classroom/$classId/members/${mCurrentUser!!.uid}/as"] = "teacher"
+        mRootRef.updateChildren(userMap.toMap()).addOnSuccessListener {
+            Toast.makeText(this, "Class is successfully created.", Toast.LENGTH_LONG).show()
+            Log.d("chetan", "Class is successfully created")
+            finish()
+        }.addOnFailureListener { exception ->
+            Log.d("chetan", "Error ${exception.message}")
+            Toast.makeText(this, exception.message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -98,7 +96,7 @@ class CreateClassActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mCurrentUser?:sendToHomePage()
+        mCurrentUser ?: sendToHomePage()
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == 1 && resultCode == Activity.RESULT_OK
@@ -120,33 +118,40 @@ class CreateClassActivity : AppCompatActivity() {
                 filePath.putFile(imageUri!!).addOnSuccessListener {
                     filePath.downloadUrl.addOnSuccessListener { image_uri ->
                         val uploadTask = thumb_filePath.putBytes(thumbData)
-                        uploadTask.addOnCompleteListener { thumb_task ->
-                            if (thumb_task.isSuccessful) {
-                                thumb_filePath.downloadUrl.addOnSuccessListener { thumbs_uri ->
-                                    val glide_image:Any = when(thumbs_uri.toString()){"default","null" -> R.drawable.default_avatar else -> thumbs_uri}
-                                    Glide.with(create_class_image).load(glide_image).into(create_class_image)
-                                    userMap["Classroom/$classId/profileImage"] = image_uri.toString()
-                                    userMap["Classroom/$classId/thumbsProfileImage"] = thumbs_uri.toString()
-                                    mRootRef.updateChildren(userMap.toMap()).addOnCompleteListener {task ->
-                                        if(task.isSuccessful){
-                                            Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_LONG).show()
-                                        }else{
-                                            Toast.makeText(this, "Failed to upload Image Try Again", Toast.LENGTH_SHORT).show()
-                                        }
-                                    }
+                        uploadTask.addOnSuccessListener { thumb_task ->
+                            thumb_filePath.downloadUrl.addOnSuccessListener { thumbs_uri ->
+                                val glide_image: Any = when (thumbs_uri.toString()) {"default", "null" -> R.drawable.default_avatar
+                                    else -> thumbs_uri
                                 }
-                            } else {
-                                Toast.makeText(this, "Failed to upload Image Try Again", Toast.LENGTH_SHORT).show()
+                                Glide.with(create_class_image).load(glide_image).into(create_class_image)
+                                userMap["Classroom/$classId/profileImage"] = image_uri.toString()
+                                userMap["Classroom/$classId/thumbsProfileImage"] = thumbs_uri.toString()
+                                mRootRef.updateChildren(userMap.toMap()).addOnSuccessListener {
+                                    Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_LONG).show()
+                                    create_class_progress_bar.visibility = View.INVISIBLE
+                                }.addOnFailureListener { exception ->
+                                    Log.d("chetan", "Error : ${exception.message}")
+                                    Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
+                                    create_class_progress_bar.visibility = View.INVISIBLE
+                                }
                             }
+                        }.addOnFailureListener { exception ->
+                            Log.d("chetan", "Error : ${exception.message}")
+                            Toast.makeText(this, exception.message, Toast.LENGTH_SHORT).show()
                             create_class_progress_bar.visibility = View.INVISIBLE
                         }
+                    }.addOnFailureListener{exception ->
+                        Log.d("chetan","Error : ${exception.message}")
+                        Toast.makeText(this,exception.message, Toast.LENGTH_LONG).show()
+                        create_class_progress_bar.visibility = View.INVISIBLE
                     }
-                }.addOnFailureListener { e ->
-                    create_class_progress_bar.visibility = View.INVISIBLE
-                    Toast.makeText(this, "Failed " + e.message, Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener{exception ->
+                    Log.d("chetan", "Error : ${exception.message}")
+                    Toast.makeText(this,exception.message,Toast.LENGTH_SHORT).show()
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
+                create_class_progress_bar.visibility = View.INVISIBLE
             }
 
         } else {
