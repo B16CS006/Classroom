@@ -68,7 +68,7 @@ class ClassMembersActivity: AppCompatActivity() {
                 for (people in dataSnapshot.children){
                     Log.d(TAG,"People : $people")
                     val userId = people?.key ?: continue
-                    val type = people.value.toString()
+                    val type = people.child("as").value.toString()
 
 //                    Log.d(TAG,"userId : $userId")
 //                    Log.d(TAG,"type : $type")

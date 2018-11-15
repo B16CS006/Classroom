@@ -27,7 +27,7 @@ exports.join_class_request = functions.database.ref('/Join-Class-Request/{userId
 	console.log('Original Value : ',type);
 
 	return admin.database().ref(`Class-Enroll/${userId}/${classId}/as`).set(type).then((snapshot2) =>{
-		return admin.database().ref(`Classroom/${classId}/members/${userId}`).set(type).then((snapshot3) => {
+		return admin.database().ref(`Classroom/${classId}/members/${userId}/as`).set(type).then((snapshot3) => {
 			return snapshot.ref.set(null);				
 		});
 	});
