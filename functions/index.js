@@ -18,17 +18,30 @@ const THUMB_PREFIX = 'thumb_';
 
 exports.join_class_request = functions.database.ref('/Join-Class-Request/{userId}/{classId}').onCreate((snapshot,context) =>{
 	var type = snapshot.val();
-	if(type == "leave"){
-		type = null;
+
+	if(!(type == 'leave' || type == 'student' || type == 'teacher')){
+		console.log('Argument is not valid : Type -> ', type);
+		return snapshot.ref.set(null);
 	}
+
 	const userId = context.params.userId;
 	const classId = context.params.classId;
-	console.log('UserId : ',userId + ', ClassId : ' + classId);
-	console.log('Original Value : ',type);
+	console.log('UserId : ',userId, ', ClassId : ', classId, ', Type : ',type);
 
-	return admin.database().ref(`Class-Enroll/${userId}/${classId}/as`).set(type).then((snapshot2) =>{
-		return admin.database().ref(`Classroom/${classId}/members/${userId}/as`).set(type).then((snapshot3) => {
-			return snapshot.ref.set(null);				
+	var classEnrollPath = `Class-Enroll/${userId}/${classId}/as`;
+	var classroomPath = `Classroom/${classId}/members/${userId}/as`;
+
+	if(type == "leave"){
+		type = null;
+		classEnrollPath = `Class-Enroll/${userId}/${classId}`;
+		classroomPath = `Classroom/${classId}/members/${userId}`;
+	}
+
+	return admin.database().ref(classEnrollPath).set(type).then((snapshot2) =>{
+		console.log('Class-Enroll value is changed');
+		return admin.database().ref(classroomPath).set(type).then((snapshot3) => {
+			console.log('Classroom/classId/members/userId value is changed');
+			return snapshot.ref.set(null);
 		});
 	});
 	

@@ -70,8 +70,8 @@ class ClassMembersActivity: AppCompatActivity() {
                     val userId = people?.key ?: continue
                     val type = people.child("as").value.toString()
 
-//                    Log.d(TAG,"userId : $userId")
-//                    Log.d(TAG,"type : $type")
+                    Log.d(TAG,"userId : $userId")
+                    Log.d(TAG,"type : $type")
 
                     mRootRef.child("Users/$userId/name").addListenerForSingleValueEvent(object : ValueEventListener{
                         override fun onCancelled(p0: DatabaseError) {
