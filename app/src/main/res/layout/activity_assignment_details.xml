@@ -4,16 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/assignment_details"
+    android:orientation="vertical"
     tools:context="com.btp.me.classroom.assignment.AssignmentDetailsActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:text="Assignment Details"/>
+
 
     <TextView
         android:id="@+id/assignment_details_title"
@@ -64,28 +59,32 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_marks"/>
 
-    <TextView
-        android:id="@+id/assignment_details_marks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
-
-    <Button
-        android:id="@+id/assignment_details_view_result"
-        android:text="Result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
-
     <Button
         android:id="@+id/assignment_details_assignment_download_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Download"
         android:enabled="false"
-        app:layout_constraintTop_toTopOf="@id/assignment_details_view_result"
-        app:layout_constraintStart_toEndOf="@id/assignment_details_view_result"/>
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
+
+    <TextView
+        android:id="@+id/assignment_details_marks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
+
+    <TableLayout
+        android:id="@+id/assignment_details_table_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button">
+        <TableRow>
+            <TextView android:text="Name" android:textStyle="bold" android:textColor="#000"/>
+            <TextView android:text="Marks" android:textStyle="bold" android:textColor="#000"/>
+        </TableRow>
+    </TableLayout>
 
 </android.support.constraint.ConstraintLayout>

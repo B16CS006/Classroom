@@ -18,18 +18,21 @@ import com.google.firebase.database.FirebaseDatabase
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import kotlinx.android.synthetic.main.activity_assignment.*
 import kotlinx.android.synthetic.main.single_assignment_layout.view.*
 
 class AssignmentActivity : AppCompatActivity() {
 
-    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private lateinit var currentUser:FirebaseUser
     private lateinit var databaseReference:DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment)
+
+        currentUser = FirebaseAuth.getInstance()?.currentUser?:return
 
         if(classId == "null"){
             sendToMainActivity()
@@ -37,8 +40,6 @@ class AssignmentActivity : AppCompatActivity() {
         }
 
         title = "Assignment"
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/Assignment")
 
         assignment_upload_button.setOnClickListener {
             sendToAssignmentUploadActivity()
@@ -56,7 +57,10 @@ class AssignmentActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        Toast.makeText(this,"hey",Toast.LENGTH_SHORT).show()
+        databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/Assignment")
+
+        Toast.makeText(this,"hey $classId",Toast.LENGTH_SHORT).show()
+
 
         val options = FirebaseRecyclerOptions.Builder<Assignment>()
                 .setQuery(databaseReference, Assignment::class.java)
@@ -72,12 +76,25 @@ class AssignmentActivity : AppCompatActivity() {
             }
 
             override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int, model: Assignment) {
-                holder.bind(model)
+
+//                holder.bind(model)
+
+                holder.setTitle(model.title)
+                holder.setDescription(model.description)
+                holder.setSubmissionDate(model.submissionDate)
+
                 holder.view.setOnClickListener {
 //                    Log.d(TAG, "Your have clicked $position")
 //                    Log.d(TAG,"Ref : ${getRef(position).key.toString()}")
                     sendToAssignmentDetails(getRef(position).key.toString())
                 }
+            }
+
+            override fun onDataChanged() {
+                if(itemCount == 0)
+                    assignment_empty.visibility = View.VISIBLE
+                else
+                    assignment_empty.visibility = View.GONE
             }
         }
 
@@ -111,7 +128,7 @@ class AssignmentActivity : AppCompatActivity() {
         finish()
     }
 
-    class AssignmentViewHolder(val view:View):RecyclerView.ViewHolder(view){
+    public class AssignmentViewHolder(val view:View):RecyclerView.ViewHolder(view){
         fun bind(assignment: Assignment) {
 
 //            Log.d(TAG,"ClassViewHolder")
@@ -126,6 +143,18 @@ class AssignmentActivity : AppCompatActivity() {
                 view.single_assignment_description.text = this.description
                 view.single_assignment_submission_date.text = this.submissionDate
             }
+        }
+
+        fun setTitle(string:String){
+            view.single_assignment_title.text = string
+        }
+
+        fun setDescription(string:String){
+            view.single_assignment_description.text = string
+        }
+
+        fun setSubmissionDate(string:String){
+            view.single_assignment_submission_date.text = string
         }
     }
 

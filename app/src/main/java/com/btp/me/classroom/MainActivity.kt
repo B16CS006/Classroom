@@ -143,15 +143,11 @@ class MainActivity : AppCompatActivity() {
 //                holder.bind(model)
             }
 
-            override fun getItemCount(): Int {
-//                if(super.getItemCount() == 0){
-//                    main_empty.visibility = View.VISIBLE
-//                    main_class_list.visibility = View.GONE
-//                }else{
-//                    main_empty.visibility = View.GONE
-//                    main_class_list.visibility = View.VISIBLE
-//                }//todo get itemcount() main Activity
-                return super.getItemCount()
+            override fun onDataChanged() {
+                if(itemCount == 0)
+                    main_empty.visibility = View.VISIBLE
+                else
+                    main_empty.visibility = View.GONE
             }
         }
 
