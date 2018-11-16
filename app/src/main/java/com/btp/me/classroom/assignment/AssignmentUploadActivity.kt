@@ -22,7 +22,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
     private val root = FirebaseDatabase.getInstance().reference
     private var currentUser = FirebaseAuth.getInstance().currentUser
 
-    var fileUri:Uri? = null
+    private var fileUri:Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

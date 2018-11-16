@@ -15,6 +15,7 @@ import android.widget.*
 import com.bumptech.glide.Glide
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -119,6 +120,8 @@ class RegisterActivity : AppCompatActivity() {
         mUserReference.updateChildren(userMap.toMap()).addOnCompleteListener { task ->
             if (task.isSuccessful) {
 
+                setDisplayName(userMap["name"])
+
                 val mainIntent = Intent(this, MainActivity::class.java)
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(mainIntent)
@@ -128,6 +131,21 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, task.exception!!.toString(), Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun setDisplayName(s: String?) {
+        val profileUpdates = UserProfileChangeRequest.Builder()
+                .setDisplayName(s)
+                .build()
+
+        currentUser?.updateProfile(profileUpdates)
+                ?.addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("chetan", "User profile updated.")
+                    }else
+                        setDisplayName(s)
+                }
+
     }
 
 

@@ -67,25 +67,53 @@
         android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
 
-    <TextView
-        android:id="@+id/assignment_details_marks"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/assignment_details_constraint_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button">
 
-    <TableLayout
-        android:id="@+id/assignment_details_table_layout"
+        <TextView
+            android:id="@+id/assignment_details_marks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:visibility="gone"/>
+
+        <TableLayout
+            android:id="@+id/assignment_details_table_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="*"
+            android:visibility="gone">
+            <TableRow tools:ignore="UselessParent">
+                <TextView android:text="Name" android:textStyle="bold" android:textColor="#000"/>
+                <TextView android:text="Marks" android:textStyle="bold" android:textColor="#000"/>
+            </TableRow>
+        </TableLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/assignment_details_linear_layout_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:stretchColumns="*"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button">
-        <TableRow>
-            <TextView android:text="Name" android:textStyle="bold" android:textColor="#000"/>
-            <TextView android:text="Marks" android:textStyle="bold" android:textColor="#000"/>
-        </TableRow>
-    </TableLayout>
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_constraint_layout"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/assignment_details_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add"/>
+
+        <Button
+            android:id="@+id/assignment_details_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mark as Done"/>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
