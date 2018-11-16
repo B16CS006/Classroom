@@ -24,7 +24,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_details)
 
-        val assignment = "1542081216211"
+        val assignment = intent.getStringExtra("assignment")
         mCurrentUser = FirebaseAuth.getInstance()?.currentUser?: return
 
 //        assignment_details_view_result.setOnClickListener{
@@ -40,8 +40,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     private fun setAssignmentDetails(assignment:String){
         mRootRef.child("Classroom/$classId/Assignment/$assignment").addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+                Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+                Log.d(TAG,"Error : ${p0.message}")            }
 
             override fun onDataChange(database: DataSnapshot) {
                 assignment_details_title.text = database.child("title").value.toString()
@@ -49,72 +49,54 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 assignment_details_max_marks.text = database.child("maxMarks").value.toString()
                 assignment_details_description.text = database.child("description").value.toString()
 
-                val myMarks = database.child("marks/${mCurrentUser?.uid}/marks").value.toString()
 
-                Log.d(TAG,"My Marks ${mCurrentUser?.uid}: $myMarks")
+                mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object :ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {
+                        Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+                        Log.d(TAG,"Error : ${p0.message}")
+                    }
 
-                if(myMarks == "null") {
-                    assignment_details_table_layout.visibility = View.VISIBLE
-                    assignment_details_marks.visibility = View.GONE
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val type = dataSnapshot.child("${mCurrentUser?.uid}/as").value.toString()
 
-                    val marksList = ArrayList<ArrayList<String>>()
+                        if(type == "teacher"){
+                            assignment_details_table_layout.visibility = View.VISIBLE
+                            assignment_details_marks.visibility = View.GONE
 
-                    for(member in database.child("marks").children){
-                        val list = ArrayList<String>()
-                        list.add(member.child("name").value.toString())
-                        list.add(member.child("marks").value.toString())
-                        list.add(member.key.toString())
+                            val marksList = ArrayList<ArrayList<String>>()
+
+                            for(member in database.child("marks").children){
+                                if(dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student" ){
+                                    continue
+                                }
+                                val list = ArrayList<String>()
+                                list.add(member.child("name").value.toString())
+                                list.add(member.child("marks").value.toString())
+                                list.add(member.key.toString())
 
 //                        Log.d(TAG,"name : ${member.child("name").value.toString()}")
 //                        Log.d(TAG, "marks : ${member.child("marks").value.toString()}")
 
-                        marksList.add(list)
+                                marksList.add(list)
+                            }
+                            createTable(marksList)
+                        }else if(type == "student"){
+                            val myMarks = database.child("marks/${mCurrentUser?.uid}/marks").value.toString()
+//                            Log.d(TAG,"My Marks ${mCurrentUser?.uid}: $myMarks")
+
+                            assignment_details_table_layout.visibility = View.GONE
+                            assignment_details_marks.visibility = View.VISIBLE
+                            assignment_details_marks.text = "Marks Obtained : $myMarks"
+                        }
                     }
-                    createTable(marksList)
-                }else{
-                    assignment_details_table_layout.visibility = View.GONE
-                    assignment_details_marks.visibility = View.VISIBLE
-                    assignment_details_marks.text = "Marks Obtained : $myMarks"
-                }
+
+                })
             }
 
         })
     }
 
 
-    private fun createTable(){
-
-        val tableLayout = TableLayout(this)
-
-        val lp = TableLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        val textView1= TextView(this)
-        textView1.apply {
-            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT)
-            text = "chetan"
-//            Log.d(TAG,"Marks : ${marksList[i][j]}")
-        }
-        val textView = TextView(this)
-        textView.apply {
-            layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT)
-            text = "gaurav"
-//            Log.d(TAG,"Marks : ${marksList[i][j]}")
-        }
-
-        val row = TableRow(this)
-        row.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT)
-
-        row.addView(textView)
-        row.addView(textView1)
-
-        tableLayout.addView(row)
-
-
-
-        assignment_details.addView(tableLayout)
-
-
-    }
 
     private fun createTable(marksList: ArrayList<ArrayList<String>>) {
         val rows = marksList.size

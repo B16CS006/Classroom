@@ -59,7 +59,7 @@ class AssignmentActivity : AppCompatActivity() {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/Assignment")
 
-        Toast.makeText(this,"hey $classId",Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this,"hey $classId",Toast.LENGTH_SHORT).show()
 
 
         val options = FirebaseRecyclerOptions.Builder<Assignment>()
