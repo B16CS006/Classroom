@@ -11,26 +11,57 @@ const fs = require('fs');
 admin.initializeApp();
 
 
-exports.join_class_request_waiting = functions.database.ref('Join-Class-Request/{classId}/{userId}').onWrite((snapshot,context) =>{
+exports.join_class_request = functions.database.ref('Join-Class-Request/{classId}/{userId}').onWrite((snapshot,context) =>{
 
 	const userId = context.params.userId;
 	const classId = context.params.classId;
 	
+	const as = snapshot.after.val().as;
+	const rollNumber = snapshot.after.val().rollNumber;
+	const request = snapshot.after.val().request;
 
-	const as = snapshot.val();
-	const rollNumber = snapshot.val();
-	const request = snapshot.val();
-
-	if(request == 'pending'){
-		//inform Teacher of the class
-	}else if(request == 'reject'){
-		//Delete the request
-	}else if(request == 'accept'){
-		//Join member and delete the request
+	if(request == null || as == null){
+		conslole.log('requst or as is null');
+		return false;
 	}
 
-});
+	if(request == 'pending'){
+		console.log('Pending Request ');
+		return false;
+		//inform Teacher of the class
+	}else if(request == 'reject'){
+		console.log('Request is Rejected')
+		return snapshot.after.ref.set(null);
+	}else if(request == 'accept'){
 
+		if(!(as == 'leave' || as == 'student' || as == 'teacher')){
+			console.log('Argument is not valid : Type -> ', as);
+			return snapshot.after.ref.set(null);
+		}
+
+		const classEnrollPath = `Class-Enroll/${userId}/${classId}`;
+		const classroomPath = `Classroom/${classId}/members/${userId}`;
+
+		var classroomValue = {'as':as,'rollNumber':rollNumber}
+		var classEnrollValue = {'as':as}
+
+		if(as == "leave"){
+			classroomValue = null;
+			classEnrollValue = null;
+		}
+
+		return admin.database().ref(classroomPath).set(classroomValue).then((snapshot2) =>{
+			console.log('Classroom/classId/members/userId value is changed');
+			return admin.database().ref(classEnrollPath).set(classEnrollValue).then((snapshot3) => {
+				console.log('Class-Enroll value is changed');
+				return snapshot.after.ref.set(null);
+			});
+		});
+	}
+	return false;
+
+});
+/*
 exports.join_class_request_conform = functions.database.ref('/Join-Class-Request/conform/{userId}/{classId}').onCreate((snapshot,context) =>{
 	var type = snapshot.val();
 
@@ -61,12 +92,13 @@ exports.join_class_request_conform = functions.database.ref('/Join-Class-Request
 	});
 	
 });
+*/
 
 exports.initializeStudentsMarks = functions.database.ref('/Classroom/${classId}/Assignment/{assignment}').onCreate( (snapshot,context) => {
 	console.log('initializeStudentMarks');
 	const classId = context.params.classId;
 	const assignment = context.params.assignment;
-	const title = snapshot.child('title').val();
+	const title = snapshot.val().title;
 	console.log('ClassId : ', classId, ', Assignment : ', assignment, ', Title : ', title);
 
 	//Notify all Students

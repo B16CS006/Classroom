@@ -40,6 +40,7 @@
             android:id="@+id/join_class_roll_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:inputType="textCapCharacters"
             android:hint="Roll Number"/>
 
         <!--<LinearLayout-->

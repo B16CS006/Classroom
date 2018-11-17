@@ -23,6 +23,7 @@ import org.json.JSONObject
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 class PublicChatActivity : AppCompatActivity() {
 
@@ -126,6 +127,10 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[5],"command", "me")
                 sendToAssignmentActivity()
             }
+            commandList[6] ->{
+                sendMessage(commandList[6],"command","me")
+                leaveClassroom()
+            }
 
             else ->{
                 Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
@@ -135,6 +140,20 @@ class PublicChatActivity : AppCompatActivity() {
 
         public_chat_type_message.text.clear()
         return true
+    }
+
+    private fun leaveClassroom() {
+        val map = HashMap<String, String>()
+        map["request"] = "accept"
+        map["as"] = "leave"
+        mRootRef.child("Join-Class-Request/$classId/${mCurrentUser?.uid}").setValue(map).addOnSuccessListener {
+            Log.d(TAG, "Request send")
+            Toast.makeText(this, "Request to Leave", Toast.LENGTH_SHORT).show()
+            finish()
+        }.addOnFailureListener { exception ->
+            Log.d(TAG, "Error : ${exception.message}")
+            Toast.makeText(this, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun sendMessage(message: String, type: String, visibility: String) {
@@ -351,7 +370,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "members",
                 "slide",
                 "new assignment",
-                "assignment"
+                "assignment",
+                "leave"
         )
 
 

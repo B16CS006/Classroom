@@ -45,19 +45,19 @@ class JoinClass : AppCompatActivity() {
             mRootRef.child("Classroom/${detail.classId}/members").addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
                     Log.d(TAG,"Join Class : ${p0.message}")
-                    Toast.makeText(this@JoinClass,"Check you Internet Connection",Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@JoinClass,"Check you Internet Connection",Toast.LENGTH_SHORT).show()
                 }
 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     when {
                         dataSnapshot.value == null -> {
                             Log.d(TAG,"Invalid class code")
-                            Toast.makeText(this@JoinClass,"Invalid Class Code",Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@JoinClass,"Invalid Class Code",Toast.LENGTH_SHORT).show()
                             return
                         }
                         dataSnapshot.hasChild(mCurrentUser!!.uid) -> {
                             Log.d(TAG,"You are already a member of this class")
-                            Toast.makeText(this@JoinClass,"You are already a member of this class",Toast.LENGTH_LONG).show()
+                            Toast.makeText(this@JoinClass,"You are already a member of this class",Toast.LENGTH_SHORT).show()
                         }
                         else -> {
                             val map = HashMap<String, String>()
@@ -70,7 +70,7 @@ class JoinClass : AppCompatActivity() {
                                 finish()
                             }.addOnFailureListener { exception ->
                                 Log.d(TAG, "Error : ${exception.message}")
-                                Toast.makeText(this@JoinClass, "Error : ${exception.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(this@JoinClass, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -85,12 +85,12 @@ class JoinClass : AppCompatActivity() {
         val detail = Detail()
         if(join_class_code.text.isBlank() || join_class_roll_number.text.isBlank()) {
             detail.invalid = true
-            Toast.makeText(this,"Field can't be empty",Toast.LENGTH_LONG).show()
+            Toast.makeText(this,"Field can't be empty",Toast.LENGTH_SHORT).show()
             return detail
         }
 
         detail.classId = join_class_code.text.toString()
-        detail.rollNumber = join_class_roll_number.text.toString()
+        detail.rollNumber = join_class_roll_number.text.toString().toUpperCase()
         detail.invalid = false
         return detail
     }
