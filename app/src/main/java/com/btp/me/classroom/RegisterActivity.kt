@@ -142,12 +142,10 @@ class RegisterActivity : AppCompatActivity() {
                 ?.addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("chetan", "User profile updated.")
-                    }else
-                        setDisplayName(s)
+                    }
                 }
 
     }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         currentUser?: sendToHomePage()

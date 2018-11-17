@@ -48,7 +48,8 @@
         <activity
             android:name=".assignment.AssignmentDetailsActivity"
             android:theme="@style/NoTitleBar" />
-        <activity android:name=".teacher.PendingRequestActivity"></activity>
+        <activity android:name=".teacher.PendingRequestActivity" />
+        <activity android:name=".PhoneAuthenticationActivity"></activity>
     </application>
 
 </manifest>
