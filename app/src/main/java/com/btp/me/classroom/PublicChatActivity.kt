@@ -14,6 +14,7 @@ import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.adapter.ChatAdapter
 import com.btp.me.classroom.people.ClassMembersActivity
 import com.btp.me.classroom.slide.SlideActivity
+import com.btp.me.classroom.teacher.PendingRequestActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -130,6 +131,10 @@ class PublicChatActivity : AppCompatActivity() {
             commandList[6] ->{
                 sendMessage(commandList[6],"command","me")
                 leaveClassroom()
+            }
+            commandList[7] ->{
+                sendMessage(commandList[7],"command","me")
+                startActivity(Intent(this,PendingRequestActivity::class.java))
             }
 
             else ->{
@@ -371,7 +376,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "slide",
                 "new assignment",
                 "assignment",
-                "leave"
+                "leave",
+                "pending request"
         )
 
 

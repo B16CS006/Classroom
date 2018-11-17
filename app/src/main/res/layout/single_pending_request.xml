@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/single_pending_request_name"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="2dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/single_pending_request_roll_number"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_below="@+id/single_pending_request_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="44dp"
+        android:text="TextView" />
+
+    <Button
+        android:id="@+id/single_pending_request_accept_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:textColor="@color/grey_300"
+        android:background="@drawable/my_button"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="94dp"
+        android:text="Accept" />
+
+    <Button
+        android:id="@+id/single_pending_request_reject_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_300"
+        android:layout_alignTop="@+id/single_pending_request_accept_button"
+        android:background="@drawable/my_button"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-2dp"
+        android:layout_marginEnd="1dp"
+        android:text="Reject" />
+</RelativeLayout>

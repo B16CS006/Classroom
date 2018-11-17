@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btp.me.classroom.teacher.PendingRequestActivity">
+    tools:context="com.btp.me.classroom.assignment.AssignmentActivity">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pending_request_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        android:paddingBottom="150dp"  />
+
+    <TextView
+        android:id="@+id/pending_request_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="top|center_horizontal"
+        android:text="No Pending Request."
+        android:textColor="#938f8f"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
 </android.support.constraint.ConstraintLayout>
