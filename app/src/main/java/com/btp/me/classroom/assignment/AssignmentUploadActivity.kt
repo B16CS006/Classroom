@@ -101,7 +101,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
     }
 
     private fun upload(uri: Uri, assignment: Assignment) {
-        Log.d("chetan", "uploading Uri : ${uri.toString()}")
+        Log.d("chetan", "uploading Uri : $uri")
 
         val data = Gson().toJson(assignment).toString()
 

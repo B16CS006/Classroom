@@ -25,10 +25,7 @@ private val mRootRef = FirebaseDatabase.getInstance().reference
 private const val REQUEST_CODE_ADD = 0
 
 private var fileUri: Uri? = null
-
 private var assignment:String = ""
-
-//private lateinit var pathReference:String
 
 class AssignmentDetailsActivity : AppCompatActivity() {
 
@@ -36,13 +33,72 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_details)
 
+        mCurrentUser = FirebaseAuth.getInstance()?.currentUser?: return
         assignment = intent.getStringExtra("assignment")
 
-        mCurrentUser = FirebaseAuth.getInstance()?.currentUser?: return
-
         setAssignmentDetails()
+    }
 
-//        createTable()
+    private fun setAssignmentDetails(){
+        mRootRef.child("Classroom/$classId/Assignment/$assignment").addListenerForSingleValueEvent(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+                Log.d(TAG,"Error : ${p0.message}")
+            }
+
+            override fun onDataChange(database: DataSnapshot) {
+                assignment_details_title.text = database.child("title").value.toString()
+                assignment_details_submission_date.text = database.child("submissionDate").value.toString()
+                assignment_details_max_marks.text = database.child("maxMarks").value.toString()
+                assignment_details_description.text = database.child("description").value.toString()
+
+
+                mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object :ValueEventListener{
+                    override fun onCancelled(p0: DatabaseError) {
+                        Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+                        Log.d(TAG,"Error : ${p0.message}")
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val type = dataSnapshot.child("${mCurrentUser.uid}/as").value.toString()
+
+                        if(type == "teacher"){
+                            assignment_details_table_layout.visibility = View.VISIBLE
+                            assignment_details_marks.visibility = View.GONE
+
+                            val marksList = ArrayList<ArrayList<String>>()
+
+                            for(member in database.child("marks").children){
+                                if(dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student" ){
+                                    continue
+                                }
+                                val list = ArrayList<String>()
+                                list.add(member.child("name").value.toString())
+                                list.add(member.child("marks").value.toString())
+                                list.add(member.key.toString())
+
+//                              Log.d(TAG,"name : ${member.child("name").value.toString()}")
+//                              Log.d(TAG, "marks : ${member.child("marks").value.toString()}")
+
+                                marksList.add(list)
+                            }
+                            createTable(marksList)
+                        }else if(type == "student"){
+                            var myMarks = database.child("marks/${mCurrentUser.uid}/marks").value.toString()
+                            if(myMarks == "null")
+                                myMarks = "0"
+
+                            assignment_details_marks.text = "Marks Obtained : $myMarks"
+
+                            assignment_details_table_layout.visibility = View.GONE
+                            assignment_details_marks.visibility = View.VISIBLE
+                            setSubmitButton()
+                        }
+                    }
+                })
+            }
+        })
     }
 
     private fun setSubmitButton() {
@@ -53,6 +109,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 Log.d(TAG,"Error : ${p0.message}")
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val state = dataSnapshot.value.toString()
 
@@ -63,9 +120,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                     assignment_details_submit_button.text = "mark as done"
                     assignment_details_add_button.visibility = View.VISIBLE
                 }
-
+                assignment_details_linear_layout_submit.visibility = View.VISIBLE
             }
-
         })
 
         assignment_details_add_button.setOnClickListener{
@@ -130,80 +186,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_ADD && data != null && data.data != null){
-            fileUri = data.data
-            assignment_details_submit_button.text = "Turn In"
-        }else{
-            Toast.makeText(this,"Can't Retrieve",Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setAssignmentDetails(){
-        mRootRef.child("Classroom/$classId/Assignment/$assignment").addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
-                Log.d(TAG,"Error : ${p0.message}")
-            }
-
-            override fun onDataChange(database: DataSnapshot) {
-                assignment_details_title.text = database.child("title").value.toString()
-                assignment_details_submission_date.text = database.child("submissionDate").value.toString()
-                assignment_details_max_marks.text = database.child("maxMarks").value.toString()
-                assignment_details_description.text = database.child("description").value.toString()
-
-
-                mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object :ValueEventListener{
-                    override fun onCancelled(p0: DatabaseError) {
-                        Toast.makeText(this@AssignmentDetailsActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
-                        Log.d(TAG,"Error : ${p0.message}")
-                    }
-
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val type = dataSnapshot.child("${mCurrentUser?.uid}/as").value.toString()
-
-                        if(type == "teacher"){
-                            assignment_details_table_layout.visibility = View.VISIBLE
-                            assignment_details_marks.visibility = View.GONE
-
-                            val marksList = ArrayList<ArrayList<String>>()
-
-                            for(member in database.child("marks").children){
-                                if(dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student" ){
-                                    continue
-                                }
-                                val list = ArrayList<String>()
-                                list.add(member.child("name").value.toString())
-                                list.add(member.child("marks").value.toString())
-                                list.add(member.key.toString())
-
-//                        Log.d(TAG,"name : ${member.child("name").value.toString()}")
-//                        Log.d(TAG, "marks : ${member.child("marks").value.toString()}")
-
-                                marksList.add(list)
-                            }
-                            createTable(marksList)
-                        }else if(type == "student"){
-                            val myMarks = database.child("marks/${mCurrentUser?.uid}/marks").value.toString()
-//                            Log.d(TAG,"My Marks ${mCurrentUser?.uid}: $myMarks")
-
-                            assignment_details_table_layout.visibility = View.GONE
-                            assignment_details_marks.visibility = View.VISIBLE
-                            assignment_details_linear_layout_submit.visibility = View.VISIBLE
-
-                            setSubmitButton()
-
-                            assignment_details_marks.text = "Marks Obtained : $myMarks"
-                        }
-                    }
-
-                })
-            }
-
-        })
-    }
-
     private fun createTable(marksList: ArrayList<ArrayList<String>>) {
         val rows = marksList.size
         val cols = marksList[0].size -1
@@ -228,7 +210,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     private fun upload(uri: Uri, map: HashMap<String,String?>) {
-        Log.d("chetan", "uploading Uri : ${uri.toString()}")
+        Log.d("chetan", "uploading Uri : $uri")
 
         val data = Gson().toJson(map).toString()
 
@@ -243,7 +225,18 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
         startService(uploadingIntent)
-                ?: Log.d("chetan", "At this this no activy is running")
+                ?: Log.d("chetan", "At this this no activity is running")
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_ADD && data != null && data.data != null){
+            fileUri = data.data
+            assignment_details_submit_button.text = "Turn In"
+        }else{
+            Toast.makeText(this,"Can't Retrieve",Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {

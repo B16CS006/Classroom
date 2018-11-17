@@ -9,17 +9,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.btp.me.classroom.Class.Assignment
 import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.btp.me.classroom.MainActivity.Companion.classId
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_assignment.*
 import kotlinx.android.synthetic.main.single_assignment_layout.view.*
 
@@ -38,7 +34,6 @@ class AssignmentActivity : AppCompatActivity() {
             sendToMainActivity()
             return
         }
-
         title = "Assignment"
 
         assignment_upload_button.setOnClickListener {
@@ -47,11 +42,6 @@ class AssignmentActivity : AppCompatActivity() {
 
         assignment_list.setHasFixedSize(true)
         assignment_list.layoutManager = LinearLayoutManager(this)
-
-
-
-
-
     }
 
     override fun onStart() {
@@ -61,7 +51,60 @@ class AssignmentActivity : AppCompatActivity() {
 
 //        Toast.makeText(this,"hey $classId",Toast.LENGTH_SHORT).show()
 
+        val assignmentList = ArrayList<Assignment>()
 
+        val assignmentAdapter = object :RecyclerView.Adapter<AssignmentViewHolder>(){
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssignmentViewHolder {
+                //                Log.d(TAG,"View Type: ${viewType.toString()}")
+
+                return AssignmentViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.single_assignment_layout, parent, false))
+            }
+
+            override fun getItemCount() = assignmentList.size
+
+            override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int) {
+                holder.bind(assignmentList[position])
+                holder.view.setOnClickListener {
+                    sendToAssignmentDetails(assignmentList[position].maxMarks)
+                }
+            }
+
+        }
+
+        databaseReference.addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d("chetan", "Database Reference for Assignment is on cancelled, ${p0.message}")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                assignmentList.clear()
+
+                for(assignmentDataSnapshot in dataSnapshot.children){
+                    if(assignmentDataSnapshot == null)continue
+
+                    val assignment = Assignment(
+                            title = assignmentDataSnapshot.child("title").value.toString(),
+                            description = assignmentDataSnapshot.child("description").value.toString(),
+                            submissionDate = assignmentDataSnapshot.child("submissionDate").value.toString(),
+                            maxMarks = assignmentDataSnapshot.key.toString()        //this is because I want this value to open next activity, see bind holder.view.setOnClickListener for more details
+                    )
+                    assignmentList.add(assignment)
+                }
+
+                if(assignment_list != null && assignmentList.size == 0) {
+                    assignment_empty.visibility = View.VISIBLE
+                    assignment_empty.visibility = View.GONE
+                }
+                else {
+                    assignment_empty.visibility = View.GONE
+                    assignment_list.visibility = View.VISIBLE
+                    assignment_list.adapter = assignmentAdapter
+                }
+            }
+        })
+
+        /*
         val options = FirebaseRecyclerOptions.Builder<Assignment>()
                 .setQuery(databaseReference, Assignment::class.java)
                 .setLifecycleOwner(this)
@@ -77,12 +120,7 @@ class AssignmentActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int, model: Assignment) {
 
-//                holder.bind(model)
-
-                holder.setTitle(model.title)
-                holder.setDescription(model.description)
-                holder.setSubmissionDate(model.submissionDate)
-
+                holder.bind(model)
                 holder.view.setOnClickListener {
 //                    Log.d(TAG, "Your have clicked $position")
 //                    Log.d(TAG,"Ref : ${getRef(position).key.toString()}")
@@ -97,8 +135,8 @@ class AssignmentActivity : AppCompatActivity() {
                     assignment_empty.visibility = View.GONE
             }
         }
-
         assignment_list.adapter = adapter
+        */
     }
 
     private fun sendToAssignmentDetails(assignment: String) {
@@ -128,7 +166,7 @@ class AssignmentActivity : AppCompatActivity() {
         finish()
     }
 
-    public class AssignmentViewHolder(val view:View):RecyclerView.ViewHolder(view){
+    private class AssignmentViewHolder(val view:View):RecyclerView.ViewHolder(view){
         fun bind(assignment: Assignment) {
 
 //            Log.d(TAG,"ClassViewHolder")
@@ -139,21 +177,21 @@ class AssignmentActivity : AppCompatActivity() {
 //            Log.d(TAG,"maxMarks : ${assignment.maxMarks}")
 
             with(assignment) {
-                view.single_assignment_title.text = this.title
-                view.single_assignment_description.text = this.description
-                view.single_assignment_submission_date.text = this.submissionDate
+                setTitle(this.title)
+                setDescription(this.description)
+                setSubmissionDate(this.submissionDate)
             }
         }
 
-        fun setTitle(string:String){
+        private fun setTitle(string:String){
             view.single_assignment_title.text = string
         }
 
-        fun setDescription(string:String){
+        private fun setDescription(string:String){
             view.single_assignment_description.text = string
         }
 
-        fun setSubmissionDate(string:String){
+        private fun setSubmissionDate(string:String){
             view.single_assignment_submission_date.text = string
         }
     }

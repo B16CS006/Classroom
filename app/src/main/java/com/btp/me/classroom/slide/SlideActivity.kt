@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.IntentResult
@@ -22,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_slide.*
+import kotlinx.android.synthetic.main.single_slide_layout.view.*
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -45,35 +45,29 @@ class SlideActivity : AppCompatActivity() {
         slide_list.setHasFixedSize(true)
         slide_list.layoutManager = LinearLayoutManager(this)
 
-        //main activity classId
-//        classId = intent.getStringExtra(PublicChatActivity.CLASSID)
-
         val slideList = ArrayList<HashMap<String, String>>()
 
-        val slideAdapter = object : RecyclerView.Adapter<MyViewHolder>() {
-            override fun onCreateViewHolder(parent: ViewGroup, p1: Int): MyViewHolder {
+        val slideAdapter = object : RecyclerView.Adapter<SlideViewHolder>() {
+            override fun onCreateViewHolder(parent: ViewGroup, p1: Int): SlideViewHolder {
                 Log.d("chetan", "Slide adapter on create viewHolder")
-                return MyViewHolder(LayoutInflater.from(parent.context)
+                return SlideViewHolder(LayoutInflater.from(parent.context)
                         .inflate(R.layout.single_slide_layout, parent, false))
 
             }
 
             override fun getItemCount() = slideList.size
 
+            override fun onBindViewHolder(holder: SlideViewHolder, position: Int) {
+//                Log.d("chetan", "Binding the holders")
 
-
-            override fun onBindViewHolder(holder: MyViewHolder, p1: Int) {
-                Log.d("chetan", "Binding the holders")
-
-                holder.title.text = slideList[p1]["title"]
-                holder.date.text = slideList[p1]["date"]
+                holder.bind(slideList[position]["title"]!!, slideList[position]["date"]!!)
 
                 holder.download.setOnClickListener {
-                    Log.d("chetan", "You have clicked ${slideList[p1]["title"]}")
+                    Log.d("chetan", "You have clicked ${slideList[position]["title"]}")
                     try {
-                        val fileName: File = createFile(slideList[p1]["title"]!!)
+                        val fileName: File = createFile(slideList[position]["title"]!!)
                                 ?: return@setOnClickListener
-                        val fileUrl = slideList[p1]["link"] ?: return@setOnClickListener
+                        val fileUrl = slideList[position]["link"] ?: return@setOnClickListener
 
                         val downloadIntent = Intent(this@SlideActivity, MyDownloadingService::class.java)
                         downloadIntent.putExtra(MyDownloadingService.EXTRA_FILE_PATH, fileName)
@@ -117,18 +111,15 @@ class SlideActivity : AppCompatActivity() {
                 else {
                     slide_empty.visibility = View.GONE
                     slide_list.visibility = View.VISIBLE
+                    slide_list.adapter = slideAdapter
                 }
-
-                slide_list.adapter = slideAdapter
-
-
             }
         })
     }
 
     fun createFile(title: String): File? {
         try {
-            var fileName: File = File(Environment.getExternalStorageDirectory().toString(), "Classroom")
+            var fileName = File(Environment.getExternalStorageDirectory().toString(), "Classroom")
 
             if (!fileName.exists()) {
                 Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
@@ -168,8 +159,12 @@ class SlideActivity : AppCompatActivity() {
     }
 
     private fun upload(uri: Uri) {
-        val data:String = """{"title": "${uri.lastPathSegment}","link": ""}"""
-        Log.d("chetan", "uploading Uri : ${uri.toString()}")
+        var file = uri.lastPathSegment
+        if(!file.endsWith(".pdf")){
+            file += ".pdf"
+        }
+        val data = """{"title": "$file","link": ""}"""
+        Log.d("chetan", "uploading Uri : $uri")
         val uploadingIntent = Intent(this, MyUploadingService::class.java)
 
 //        uploadingIntent.putExtra("classId", classId)
@@ -185,13 +180,22 @@ class SlideActivity : AppCompatActivity() {
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
         startService(uploadingIntent)
-                ?: Log.d("chetan", "At this this no activy is running")
+                ?: Log.d("chetan", "At this this no activity is running")
     }
 
-    class MyViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView = view.findViewById(R.id.file_single_title)
-        val date: TextView = view.findViewById(R.id.file_single_date)
-        val download: ImageButton = view.findViewById(R.id.file_single_download)
+    private class SlideViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val download: ImageButton = view.file_single_download
+
+        fun bind(title:String,date:String){
+            setTitle(title)
+            setDate(date)
+        }
+        private fun setTitle(s:String){
+            view.file_single_title.text = s
+        }
+        private fun setDate(s:String){
+            view.file_single_date.text = s
+        }
     }
 
 
