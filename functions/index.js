@@ -10,7 +10,28 @@ const fs = require('fs');
 
 admin.initializeApp();
 
-exports.join_class_request = functions.database.ref('/Join-Class-Request/{userId}/{classId}').onCreate((snapshot,context) =>{
+
+exports.join_class_request_waiting = functions.database.ref('Join-Class-Request/{classId}/{userId}').onWrite((snapshot,context) =>{
+
+	const userId = context.params.userId;
+	const classId = context.params.classId;
+	
+
+	const as = snapshot.val();
+	const rollNumber = snapshot.val();
+	const request = snapshot.val();
+
+	if(request == 'pending'){
+		//inform Teacher of the class
+	}else if(request == 'reject'){
+		//Delete the request
+	}else if(request == 'accept'){
+		//Join member and delete the request
+	}
+
+});
+
+exports.join_class_request_conform = functions.database.ref('/Join-Class-Request/conform/{userId}/{classId}').onCreate((snapshot,context) =>{
 	var type = snapshot.val();
 
 	if(!(type == 'leave' || type == 'student' || type == 'teacher')){

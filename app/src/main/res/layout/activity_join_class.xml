@@ -36,6 +36,12 @@
             android:textColor="#049c25"
             android:hint="Enter class code here"/>
 
+        <EditText
+            android:id="@+id/join_class_roll_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Roll Number"/>
+
         <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
