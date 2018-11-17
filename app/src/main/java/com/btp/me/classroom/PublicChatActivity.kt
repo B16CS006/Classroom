@@ -52,7 +52,7 @@ class PublicChatActivity : AppCompatActivity() {
 
         classNameReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                userName = "Anonymous"
             }
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -63,13 +63,6 @@ class PublicChatActivity : AppCompatActivity() {
         setTitle()
         public_chat_send_button.setOnClickListener { getTypeMessage() }
         getSendMessageFromDatabase()
-
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
 
     }
 

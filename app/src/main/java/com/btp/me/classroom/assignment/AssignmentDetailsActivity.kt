@@ -6,19 +6,27 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.btp.me.classroom.Class.FileBuilder.Companion.createFile
 import com.btp.me.classroom.IntentResult
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
+import com.btp.me.classroom.slide.MyDownloadingService
 import com.btp.me.classroom.slide.MyUploadingService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_assignment_details.*
+import kotlinx.android.synthetic.main.single_students_marks_assignment_details.view.*
+import java.io.File
+import java.io.IOException
 
 private lateinit var mCurrentUser:FirebaseUser
 private val mRootRef = FirebaseDatabase.getInstance().reference
@@ -64,7 +72,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                         val type = dataSnapshot.child("${mCurrentUser.uid}/as").value.toString()
 
                         if(type == "teacher"){
-                            assignment_details_table_layout.visibility = View.VISIBLE
                             assignment_details_marks.visibility = View.GONE
 
                             val marksList = ArrayList<ArrayList<String>>()
@@ -76,6 +83,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                                 val list = ArrayList<String>()
                                 list.add(member.child("name").value.toString())
                                 list.add(member.child("marks").value.toString())
+                                list.add(member.child("link").value.toString())
+                                list.add(member.child("state").value.toString())
                                 list.add(member.key.toString())
 
 //                              Log.d(TAG,"name : ${member.child("name").value.toString()}")
@@ -83,7 +92,14 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
                                 marksList.add(list)
                             }
-                            createTable(marksList)
+                            if(marksList.size == 0){
+                                assignment_details_marks_linear_layout.visibility = View.GONE
+                                assignment_details_marks_empty.visibility = View.VISIBLE
+                            }else{
+                                assignment_details_marks_linear_layout.visibility = View.VISIBLE
+                                assignment_details_marks_empty.visibility = View.GONE
+                                showStudentMarks(marksList)
+                            }
                         }else if(type == "student"){
                             var myMarks = database.child("marks/${mCurrentUser.uid}/marks").value.toString()
                             if(myMarks == "null")
@@ -91,7 +107,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
                             assignment_details_marks.text = "Marks Obtained : $myMarks"
 
-                            assignment_details_table_layout.visibility = View.GONE
+                            assignment_details_marks_linear_layout.visibility = View.GONE
                             assignment_details_marks.visibility = View.VISIBLE
                             setSubmitButton()
                         }
@@ -99,6 +115,61 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 })
             }
         })
+    }
+
+    private fun showStudentMarks(marksList: ArrayList<ArrayList<String>>) {
+
+        assignment_details_marks_recycler_view.setHasFixedSize(true)
+        assignment_details_marks_recycler_view.layoutManager = LinearLayoutManager(this)
+
+        val studentMarksAdapter = object: RecyclerView.Adapter<StudentMarksViewHolder>(){
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentMarksViewHolder {
+                Log.d(TAG,"chetan : 1")
+                return StudentMarksViewHolder(LayoutInflater.from(parent.context)
+                        .inflate(R.layout.single_students_marks_assignment_details, parent, false))
+            }
+
+            override fun getItemCount() = marksList.size
+
+            override fun onBindViewHolder(holder: StudentMarksViewHolder, position: Int) {
+                holder.bind(marksList[position][0],marksList[position][1])
+
+                with(holder.download){
+                    if(marksList[position][2] != "null"){
+                        if(marksList[position][3] == "submit"){
+                            visibility = View.VISIBLE
+                            isClickable = true
+
+                            setOnClickListener {
+                                Log.d(TAG, "You have clicked ${marksList[position][0]}")
+                                try {
+                                    val fileName: File = createFile(marksList[position][0]) ?: return@setOnClickListener
+                                    val fileUrl = marksList[position][2]
+
+                                    val downloadIntent = Intent(this@AssignmentDetailsActivity, MyDownloadingService::class.java)
+                                    downloadIntent.putExtra(MyDownloadingService.EXTRA_FILE_PATH, fileName)
+                                    downloadIntent.putExtra(MyDownloadingService.EXTRA_DOWNLOAD_PATH, fileUrl)
+                                    downloadIntent.action = MyDownloadingService.ACTION_DOWNLOAD
+                                    startService(downloadIntent)?: throw error("Can't download as No activity is running")
+                                } catch (error: IOException) {
+                                    Log.d(TAG, "Error while making folder ${error.message}")
+                                    error.printStackTrace()
+                                }
+                            }
+
+                        } else{
+                            setImageResource(R.drawable.ic_cross_red_24dp)
+                            visibility = View.VISIBLE
+                            isClickable = false
+                        }
+                    } else{
+                        visibility = View.INVISIBLE
+                        isClickable = false
+                    }
+                }
+            }
+        }
+        assignment_details_marks_recycler_view.adapter = studentMarksAdapter
     }
 
     private fun setSubmitButton() {
@@ -142,50 +213,42 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 map["name"] = mCurrentUser.displayName
                 map["state"] = "submit"
                 map["link"] = null
-                map["marks"] = "0"
-
-                mRootRef.child("Classroom/$classId/Assignment/$assignment/marks/${mCurrentUser.uid}").updateChildren(map.toMap()).addOnSuccessListener {
-                    Toast.makeText(this,"Assignment Uploaded Successfully", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"Assignment is successfully uploaded")
-                }.addOnFailureListener{exception ->
-                    Toast.makeText(this,"Error : ${exception.message}", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"Error : ${exception.message}")
-                }
+                map["marks"] = null
             }
-
             "turn in"-> {
                 map["name"] = mCurrentUser.displayName
                 map["state"] = "submit"
                 map["link"] = fileUri.toString()
-                map["marks"] = "0"
+                map["marks"] = null
                 if(fileUri != null) {
                     upload(fileUri!!, map)
                     Toast.makeText(this, "Check Notification for Result", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(this, "No File Found", Toast.LENGTH_SHORT).show()
                 }
+                return
             }
-
             "unsubmit" -> {
                 map["state"] = "unsubmit"
-                map["marks"] = "0"
+                map["marks"] = null
                 map["link"] = null
-
-                mRootRef.child("Classroom/$classId/Assignment/$assignment/marks/${mCurrentUser.uid}").updateChildren(map.toMap()).addOnSuccessListener {
-                    Toast.makeText(this,"Assignment Uploaded Successfully", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"Assignment is successfully uploaded")
-                }.addOnFailureListener{exception ->
-                    Toast.makeText(this,"Error : ${exception.message}", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG,"Error : ${exception.message}")
-                }
             }
-
             else -> {
                 Log.d(TAG,"Invalid Text on Submit Button")
+                return
             }
         }
+        mRootRef.child("Classroom/$classId/Assignment/$assignment/marks/${mCurrentUser.uid}").updateChildren(map.toMap()).addOnSuccessListener {
+            Toast.makeText(this,"Assignment Uploaded Successfully", Toast.LENGTH_SHORT).show()
+            Log.d(TAG,"Assignment is successfully uploaded")
+        }.addOnFailureListener{exception ->
+            Toast.makeText(this,"Error : ${exception.message}", Toast.LENGTH_SHORT).show()
+            Log.d(TAG,"Error : ${exception.message}")
+        }
+
     }
 
+    /*
     private fun createTable(marksList: ArrayList<ArrayList<String>>) {
         val rows = marksList.size
         val cols = marksList[0].size -1
@@ -204,13 +267,13 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 }
                 row.addView(textView)
             }
-            assignment_details_table_layout.addView(row)
+            assignment_details_marks_table_layout.addView(row)
         }
 
-    }
+    }*/
 
     private fun upload(uri: Uri, map: HashMap<String,String?>) {
-        Log.d("chetan", "uploading Uri : $uri")
+        Log.d(TAG, "uploading Uri : $uri")
 
         val data = Gson().toJson(map).toString()
 
@@ -220,12 +283,12 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath","Assignment/$classId/$assignment/$userId")
-        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$assignment/marks/$userId") ///todo backend : generate all student slist showing status as not complete
+        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$assignment/marks/$userId")
         uploadingIntent.putExtra("data",data)
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
         startService(uploadingIntent)
-                ?: Log.d("chetan", "At this this no activity is running")
+                ?: Log.d(TAG, "At this this no activity is running")
     }
 
 
@@ -239,7 +302,26 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         }
     }
 
+    private class StudentMarksViewHolder(val view:View):RecyclerView.ViewHolder(view){
+
+        val download:ImageButton = view.single_student_marks_assignment_details_download_button
+
+        fun bind(name: String,marks: String){
+            Log.d(TAG,"chetan : $name")
+            setName(name)
+            setMarks(marks)
+        }
+
+        private fun setName(name:String){
+            view.single_student_marks_assignment_details_name.text = name
+        }
+
+        private fun setMarks(marks:String){
+            view.single_student_marks_assignment_details_marks.text = marks
+        }
+    }
+
     companion object {
-        const val TAG = "AssignmentDetails"
+        const val TAG = "Assignment Details"
     }
 }

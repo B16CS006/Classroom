@@ -67,38 +67,79 @@
         android:enabled="false"
         app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/assignment_details_constraint_layout"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/assignment_details_marks_linear_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button">
 
-        <TextView
-            android:id="@+id/assignment_details_marks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0"
-            android:visibility="gone"/>
-
-        <TableLayout
-            android:id="@+id/assignment_details_table_layout"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stretchColumns="*"
-            android:visibility="gone">
-            <TableRow tools:ignore="UselessParent">
-                <TextView android:text="Name" android:textStyle="bold" android:textColor="#000"/>
-                <TextView android:text="Marks" android:textStyle="bold" android:textColor="#000"/>
-            </TableRow>
-        </TableLayout>
+            android:layout_marginEnd="70dp"
+            android:weightSum="4">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:text="Name"
+                android:layout_weight="3"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:text="Marks"
+                android:layout_weight="1"/>
+        </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/assignment_details_marks_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/assignment_details_marks_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Student has Submitted Assignment"
+        android:textColor="#000"
+        android:textStyle="bold|italic"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
+
+
+    <!--<TableLayout-->
+    <!--android:id="@+id/assignment_details_marks_table_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:stretchColumns="*"-->
+    <!--android:visibility="gone">-->
+    <!--<TableRow tools:ignore="UselessParent">-->
+    <!--<TextView android:text="Name" android:textStyle="bold" android:textColor="#000"/>-->
+    <!--<TextView android:text="Marks" android:textStyle="bold" android:textColor="#000"/>-->
+    <!--</TableRow>-->
+    <!--</TableLayout>-->
+
+    <TextView
+        android:id="@+id/assignment_details_marks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
 
     <LinearLayout
         android:id="@+id/assignment_details_linear_layout_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_constraint_layout"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_marks"
         android:orientation="horizontal"
         android:visibility="gone">
 

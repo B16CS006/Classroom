@@ -1,5 +1,10 @@
 package com.btp.me.classroom.Class
 
+import android.os.Environment
+import android.util.Log
+import java.io.File
+import java.io.IOException
+
 
 //class ClassroomKotlin(var name:String, var status:String, var profileImage:String)
 
@@ -60,6 +65,41 @@ abstract class MyColor{
                 result = temp
             }
             return result
+        }
+    }
+}
+
+abstract class FileBuilder{
+    companion object {
+        fun createFile(title: String): File? {
+            try {
+                var fileName = File(Environment.getExternalStorageDirectory().toString(), "Classroom")
+
+                if (!fileName.exists()) {
+                    Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
+                    fileName.mkdir()
+                }
+                fileName = File(fileName.toString(), "media")
+                if (!fileName.exists()) {
+                    Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
+                    fileName.mkdir()
+                }
+                fileName = File(fileName.toString(), "slide")
+                if (!fileName.exists()) {
+                    Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
+                    fileName.mkdir()
+                }
+                fileName = File(fileName, title)
+
+                fileName.createNewFile()
+
+                return fileName
+            } catch (error: IOException) {
+                Log.d("chetan", "Error while making folder ${error.message}")
+                error.printStackTrace()
+            }
+
+            return null
         }
     }
 }

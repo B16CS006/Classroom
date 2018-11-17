@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import com.btp.me.classroom.Class.FileBuilder.Companion.createFile
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.IntentResult
 import com.btp.me.classroom.R
@@ -115,37 +116,6 @@ class SlideActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    fun createFile(title: String): File? {
-        try {
-            var fileName = File(Environment.getExternalStorageDirectory().toString(), "Classroom")
-
-            if (!fileName.exists()) {
-                Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
-                fileName.mkdir()
-            }
-            fileName = File(fileName.toString(), "media")
-            if (!fileName.exists()) {
-                Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
-                fileName.mkdir()
-            }
-            fileName = File(fileName.toString(), "slide")
-            if (!fileName.exists()) {
-                Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
-                fileName.mkdir()
-            }
-            fileName = File(fileName, title)
-
-            fileName.createNewFile()
-
-            return fileName
-        } catch (error: IOException) {
-            Log.d("chetan", "Error while making folder ${error.message}")
-            error.printStackTrace()
-        }
-
-        return null
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
