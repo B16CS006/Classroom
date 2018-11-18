@@ -27,12 +27,10 @@
             android:text="Start"
             android:textSize="24sp"/>
         <Button
-            android:id="@+id/reg_sign_in_btn"
+            android:id="@+id/home_stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign IN"
-            android:enabled="false"
-            android:visibility="gone"
+            android:text="Stop"
             android:textSize="24sp"/>
 
     </LinearLayout>

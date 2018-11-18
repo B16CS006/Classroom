@@ -12,6 +12,11 @@ class HomepageActivity : AppCompatActivity() {
         setContentView(R.layout.activity_homepage_activity)
 
         home_start.setOnClickListener {
+            val regIndent = Intent(this, PhoneAuthActivity::class.java)
+            startActivity(regIndent)
+        }
+
+        home_stop.setOnClickListener {
             val regIndent = Intent(this, PhoneAuthenticationActivity::class.java)
             startActivity(regIndent)
         }

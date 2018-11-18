@@ -183,6 +183,8 @@ public class PhoneAuthActivity extends AppCompatActivity implements
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
 
+        Log.d(TAG, "onstart : " + mVerificationInProgress);
+
         // [START_EXCLUDE]
         if (mVerificationInProgress && validatePhoneNumber()) {
             startPhoneNumberVerification(mCountryCode.getText().toString()+mPhoneNumberField.getText().toString());
@@ -195,16 +197,19 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_VERIFY_IN_PROGRESS, mVerificationInProgress);
+        Log.d(TAG, "onSave : " + mVerificationInProgress);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mVerificationInProgress = savedInstanceState.getBoolean(KEY_VERIFY_IN_PROGRESS);
+        Log.d(TAG, "onRestore : " + mVerificationInProgress);
     }
 
 
     private void startPhoneNumberVerification(String phoneNumber) {
+        Log.d(TAG,"startPhoneNumberVerification " + phoneNumber);
         // [START start_phone_auth]
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
@@ -218,6 +223,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     }
 
     private void verifyPhoneNumberWithCode(String verificationId, String code) {
+        Log.d(TAG,"startPhoneNumberVerification " + verificationId +" " + code);
         // [START verify_with_code]
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
         // [END verify_with_code]
@@ -227,6 +233,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     // [START resend_verification]
     private void resendVerificationCode(String phoneNumber,
                                         PhoneAuthProvider.ForceResendingToken token) {
+        Log.d(TAG, "resendVerificationCode: "+ token + " " + phoneNumber);
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 phoneNumber,        // Phone number to verify
                 60,                 // Timeout duration
@@ -239,6 +246,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
 
     // [START sign_in_with_phone]
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+        Log.d(TAG, "signInWithPhoneAuthCredential: "+ credential);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -276,10 +284,12 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     }
 
     private void updateUI(int uiState) {
+        Log.d(TAG, "updateUI: 1");
         updateUI(uiState, mAuth.getCurrentUser(), null);
     }
 
     private void updateUI(FirebaseUser user) {
+        Log.d(TAG, "updateUI: 2");
         if (user != null) {
             updateUI(STATE_SIGNIN_SUCCESS, user);
         } else {
@@ -288,14 +298,17 @@ public class PhoneAuthActivity extends AppCompatActivity implements
     }
 
     private void updateUI(int uiState, FirebaseUser user) {
+        Log.d(TAG, "updateUI: 3");
         updateUI(uiState, user, null);
     }
 
     private void updateUI(int uiState, PhoneAuthCredential cred) {
+        Log.d(TAG, "updateUI: 4");
         updateUI(uiState, null, cred);
     }
 
     private void updateUI(int uiState, FirebaseUser user, PhoneAuthCredential cred) {
+        Log.d(TAG, "updateUI: 5 : "+ uiState);
         switch (uiState) {
             case STATE_INITIALIZED:
                 // Initialized state, show only the phone number field and start button
@@ -395,7 +408,6 @@ public class PhoneAuthActivity extends AppCompatActivity implements
                 if (!validatePhoneNumber()) {
                     return;
                 }
-
                 startPhoneNumberVerification(mCountryCode.getText().toString()+mPhoneNumberField.getText().toString());
                 break;
             case R.id.button_verify_phone:
