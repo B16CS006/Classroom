@@ -169,7 +169,7 @@ class PhoneAuthenticationActivity : AppCompatActivity(), View.OnClickListener {
                 phone_authentication_phone_constraint_layout.visibility = View.VISIBLE
                 phone_authentication_phone_constraint_layout.isEnabled = true
                 phone_authentication_help.text = null
-                phone_authentication_otp.text = null
+//                phone_authentication_otp.text = null
             }
 
             STATE_CODE_SENT -> {
