@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/home_main"
+    android:background="@drawable/animated_homepage_background"
     tools:context=".HomepageActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Welcome to Classroom"
-        android:layout_centerInParent="true"
-        android:textSize="24sp"/>
-    <LinearLayout
-        android:layout_width="match_parent"
+        android:textColor="@color/grey_300"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/home_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/home_start"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="56dp">
+        android:layout_marginBottom="50dp"
+        android:text="Start"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/home_stop"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/home_start"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            android:textSize="24sp"/>
-        <Button
-            android:id="@+id/home_stop"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Stop"
-            android:textSize="24sp"/>
+    <Button
+        android:id="@+id/home_stop"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="@id/home_start"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/home_start" />
 
-    </LinearLayout>
-
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

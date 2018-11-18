@@ -48,14 +48,14 @@
         app:layout_constraintStart_toStartOf="@id/class_single_name"
         app:layout_constraintTop_toBottomOf="@id/class_single_name" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginEnd="10sp"
-        android:layout_marginStart="80sp"
-        android:background="#ddd"
-        android:elevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/class_single_image" />
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_marginEnd="10sp"-->
+        <!--android:layout_marginStart="80sp"-->
+        <!--android:background="#ddd"-->
+        <!--android:elevation="4dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/class_single_image" />-->
 
 
 </android.support.constraint.ConstraintLayout>

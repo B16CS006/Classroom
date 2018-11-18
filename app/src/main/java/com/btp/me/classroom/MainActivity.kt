@@ -1,16 +1,16 @@
 package com.btp.me.classroom
 
 import android.content.Intent
+import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import com.btp.me.classroom.Class.ClassroomKotlin
+import android.widget.Toast
+import com.btp.me.classroom.Class.ClassAttribute
 import com.bumptech.glide.Glide
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
@@ -20,8 +20,8 @@ import kotlinx.android.synthetic.main.classroom_single_layout.view.*
 class MainActivity : AppCompatActivity() {
 
     private var mCurrentUser: FirebaseUser? = null
-    private lateinit var mClassroomReference: DatabaseReference
-    private lateinit var mClassEnrollReference: DatabaseReference
+
+    private val mRootRef = FirebaseDatabase.getInstance().reference
 
 
 
@@ -36,18 +36,57 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-//        Toast.makeText(this,"Welcome ${mCurrentUser!!.displayName}!",Toast.LENGTH_LONG).show()
+        main_class_list.setHasFixedSize(true)
+        main_class_list.layoutManager = LinearLayoutManager(this)
 
-        Log.d("chetan", "MainActivity : User : ${mCurrentUser!!.uid}")
-        mClassroomReference = FirebaseDatabase.getInstance().getReference("Classroom")
-        mClassEnrollReference = FirebaseDatabase.getInstance().getReference("Class-Enroll").child(mCurrentUser!!.uid)
+        val classList = ArrayList<ArrayList<String>>()
+
+        val classListAdapter = object : RecyclerView.Adapter<ClassViewHolder>(){
+            override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ClassViewHolder {
+                return ClassViewHolder(LayoutInflater.from(p0.context)
+                        .inflate(R.layout.classroom_single_layout, p0, false))
+            }
+
+            override fun getItemCount() = classList.size
+
+            override fun onBindViewHolder(holder: ClassViewHolder, p: Int) {
+                Log.d(TAG,"Class Adapter onBind : $classList[")
+                holder.bind(classList[p])
+                holder.view.setOnClickListener{
+                    sendToClassHomeActivity(classList[p][0])
+                }
+            }
+        }
+
+        mRootRef.child("Class-Enroll/${mCurrentUser?.uid}").addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Toast.makeText(this@MainActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+                Log.d(TAG,"class-enroll on cancleled ${p0.message}")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value == null)
+                    return
+
+                for(group in dataSnapshot.children){
+                    if (group.value == null)
+                        continue
+
+                    val list = ArrayList<String>()
+                    list.add(group.key.toString())
+                    list.add(group.child("as").value.toString())
+
+                    classList.add(list)
+                }
+                main_class_list.adapter = classListAdapter
+            }
+
+        })
+
+        main_create_class.setOnClickListener { sendToCreateClassActivity() }
 
 //        mClassroomReference.keepSynced(true)
 //        mClassEnrollReference.keepSynced(true)
-
-
-        main_class_list.setHasFixedSize(true)
-        main_class_list.layoutManager = LinearLayoutManager(this)
     }
 
     override fun onStart() {
@@ -56,108 +95,9 @@ class MainActivity : AppCompatActivity() {
             sendToHomePage()
             return
         }
-
-//        Log.d("chetan", "MainActivity or of 4 and 5 : " + (12 or 3) + " and " + 4)
-
-        main_create_class.setOnClickListener { sendToCreateClassActivity() }
-
-        val options = FirebaseRecyclerOptions.Builder<ClassroomKotlin>()
-                .setQuery(mClassEnrollReference, ClassroomKotlin::class.java)
-                .setLifecycleOwner(this)
-                .build()
-
-//        Log.d("chetan", "Options: ${options.snapshots}")
-
-//        val list = ArrayList<Classes>()
-//        val x = Classes("Name", "Status", "https://firebasestorage.googleapis.com/v0/b/classroom-a9b2e.appspot.com/o/profile_images%2F2bo3A3wADsbxJlep6MZqvI7LN283.jpg?alt=media&token=113d6f39-7d2f-49e5-8c3a-0d66cafd3d9c")
-//        list.add(x)
-//        list.add(x)
-//        list.add(x)
-//        list.add(x)
-//
-//        val adapter2 = object : RecyclerView.Adapter<ClassViewHolder>() {
-//            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassViewHolder {
-//                return ClassViewHolder(LayoutInflater.from(parent.context)
-//                        .inflate(R.layout.classroom_single_layout, parent, false))
-//            }
-//
-//            override fun getItemCount(): Int {
-//                return list.size
-//            }
-//
-//            override fun onBindViewHolder(holder: ClassViewHolder, position: Int) {
-//                holder.name.text = list[position].name
-//                holder.status.text = list[position].status
-//                Picasso.get().load(list[position].profileImage).placeholder(R.drawable.default_avatar).into(holder.cover)
-//
-//                holder.parent.setOnClickListener {
-//                    Log.d("chetan", "Position: $position")
-//                }
-//            }
-//
-//        }
-
-
-        val adapter = object : FirebaseRecyclerAdapter<ClassroomKotlin, ClassViewHolder>(options) {
-
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassViewHolder {
-                Log.d("chetan", "View ttpe: ${viewType.toString()}")
-                return ClassViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.classroom_single_layout, parent, false))
-            }
-
-
-            override fun onBindViewHolder(holder: ClassViewHolder, position: Int, model: ClassroomKotlin) {
-                val id = getRef(position).key.toString()
-                Log.d("chetan", "The Id is : $id")
-
-                if (id == "null")
-                    return
-
-                val classListener = object : ValueEventListener {
-                    override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-//                        if(dataSnapshot)
-                        val imageUri = dataSnapshot.child("profileImage").value.toString()
-                        val className = dataSnapshot.child("name").value.toString()
-                        val classStatus = dataSnapshot.child("status").value.toString()
-                        holder.setName(className)
-                        holder.setStatus(classStatus)
-                        holder.setProfileImage(imageUri)
-
-                        Log.d("chetan", "You have $dataSnapshot")
-
-                        holder.view.setOnClickListener {
-                            Log.d("chetan", "You have click $className class")
-
-                            sendToClassHomeActvity(id)
-                        }
-                    }
-
-                    override fun onCancelled(p0: DatabaseError) {
-                        Log.d("chetan", "Firebase Error : ${p0.message}")
-                    }
-                }
-
-                mClassroomReference.child(id).addValueEventListener(classListener as ValueEventListener)
-//                holder.bind(model)
-            }
-
-            override fun onDataChanged() {
-                if(itemCount == 0)
-                    main_empty.visibility = View.VISIBLE
-                else
-                    main_empty.visibility = View.GONE
-            }
-        }
-
-        Log.d("chetan", "Adapter")
-
-        main_class_list.adapter = adapter
-
     }
 
-    private fun sendToClassHomeActvity(id: String) {
+    private fun sendToClassHomeActivity(id: String) {
 //        val startIntent = Intent(this, ClassHomeActivity::class.java)
 //        startIntent.putExtra("classId", id)
 //        startActivity(startIntent)
@@ -206,41 +146,75 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    public class ClassViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    private class ClassViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-//        val cover: ImageView = view.findViewById(R.id.class_single_image)
-//        val name: TextView = view.findViewById(R.id.class_single_name)
-//        val status: TextView = view.findViewById(R.id.class_single_status)
-//        val parent: ConstraintLayout = view.findViewById(R.id.class_parent)
+        fun bind(list:ArrayList<String>){
 
-        fun bind(_class: ClassroomKotlin) {
+            setVisibility(false)
+
+            FirebaseDatabase.getInstance().getReference("Classroom/${list[0]}").addValueEventListener(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                    Log.d(TAG,"Error : ${p0.message}")
+                }
+
+                override fun onDataChange(data: DataSnapshot) {
+                    val classAttribute = ClassAttribute()
+                    classAttribute.id = list[0]
+                    classAttribute.registeredAs = list[1]
+                    classAttribute.status = data.child("status").value.toString()
+                    classAttribute.profileImage = data.child("profileImage").value.toString()
+                    classAttribute.name = data.child("name").value.toString()
+
+                    setVisibility(true)
+                    bind(classAttribute)
+
+                }
+
+            })
+        }
+
+        fun bind(_class: ClassAttribute) {
             Log.d("chetan", "ClassViewHolder")
             with(_class) {
-                view.class_single_name.text = _class.name
-                view.class_single_status.text = _class.status
-                val glide_image:Any = when(_class.profileImage){"default","null" -> R.drawable.default_avatar else -> _class.profileImage}
-                Glide.with(view.class_single_image).load(glide_image).into(view.class_single_image)
+                setColor(this.registeredAs)
+                setName(this.name)
+                setStatus(this.status)
+                setProfileImage(this.profileImage)
+
             }
         }
 
-        fun setName(string: String) {
+        private fun setVisibility(enable:Boolean){
+            view.visibility = when(enable){true->View.VISIBLE; else->View.GONE}
+        }
+
+        private fun setColor(registeredAs:String){
+            view.setBackgroundColor(Color.parseColor(
+                    when(registeredAs){
+                        "student" -> "#00FFFF"
+                        "teacher" -> "#FFA631"
+                        else -> "#000"
+                    }
+            ))
+        }
+
+        private fun setName(string: String) {
             view.class_single_name.text = string
         }
 
-        fun setStatus(string: String) {
+        private fun setStatus(string: String) {
             view.class_single_status.text = string
         }
 
-        fun setProfileImage(string: String) {
+        private fun setProfileImage(string: String) {
             val glide_image:Any = when(string){"default","null" -> R.drawable.default_avatar else -> string}
             Glide.with(view.class_single_image).load(glide_image).into(view.class_single_image)
-
         }
     }
 
     companion object {
-        const val CLASSID = "classId"
-        public var  classId : String = "null"
+        private const val TAG = "chetan"
+        var  classId : String = "null"
     }
 
 

@@ -114,3 +114,69 @@ public class Chat extends AppCompatActivity {
         scrollView.fullScroll(View.FOCUS_DOWN);
     }*/
 }
+
+
+
+
+
+
+
+
+
+
+//        val adapter = object : FirebaseRecyclerAdapter<ClassAttribute, ClassViewHolder>(options) {
+//
+//            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassViewHolder {
+//                Log.d("chetan", "View ttpe: ${viewType.toString()}")
+//                return ClassViewHolder(LayoutInflater.from(parent.context)
+//                        .inflate(R.layout.classroom_single_layout, parent, false))
+//            }
+//
+//
+//            override fun onBindViewHolder(holder: ClassViewHolder, position: Int, model: ClassAttribute) {
+//                val id = getRef(position).key.toString()
+//                Log.d("chetan", "The Id is : $id")
+//
+//                if (id == "null")
+//                    return
+//
+//                val classListener = object : ValueEventListener {
+//                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+//
+////                        if(dataSnapshot)
+//                        val imageUri = dataSnapshot.child("profileImage").value.toString()
+//                        val className = dataSnapshot.child("name").value.toString()
+//                        val classStatus = dataSnapshot.child("status").value.toString()
+//                        holder.setName(className)
+//                        holder.setStatus(classStatus)
+//                        holder.setProfileImage(imageUri)
+//
+//                        Log.d("chetan", "You have $dataSnapshot")
+//
+//                        holder.view.setOnClickListener {
+//                            Log.d("chetan", "You have click $className class")
+//
+//                            sendToClassHomeActvity(id)
+//                        }
+//                    }
+//
+//                    override fun onCancelled(p0: DatabaseError) {
+//                        Log.d("chetan", "Firebase Error : ${p0.message}")
+//                    }
+//                }
+//
+//                mClassroomReference.child(id).addValueEventListener(classListener as ValueEventListener)
+////                holder.bind(model)
+//            }
+//
+//            override fun onDataChanged() {
+//                if(itemCount == 0)
+//                    main_empty.visibility = View.VISIBLE
+//                else
+//                    main_empty.visibility = View.GONE
+//            }
+//        }
+//
+//        Log.d("chetan", "Adapter")
+//
+//        main_class_list.adapter = adapter

@@ -5,14 +5,12 @@ import android.util.Log
 import java.io.File
 import java.io.IOException
 
-
-//class ClassroomKotlin(var name:String, var status:String, var profileImage:String)
-
-class ClassroomKotlin {
-
-    var name:String = "default"
-    var status:String = "default"
-    var profileImage:String = "default"
+class ClassAttribute {
+    var id:String = ""
+    var name:String = ""
+    var status:String = ""
+    var profileImage:String = ""
+    var registeredAs = ""
 }
 
 //class Assignment{
