@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.classroom_single_layout.view.*
+import kotlinx.android.synthetic.main.single_classroom_layout.view.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         val classListAdapter = object : RecyclerView.Adapter<ClassViewHolder>(){
             override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ClassViewHolder {
                 return ClassViewHolder(LayoutInflater.from(p0.context)
-                        .inflate(R.layout.classroom_single_layout, p0, false))
+                        .inflate(R.layout.single_classroom_layout, p0, false))
             }
 
             override fun getItemCount() = classList.size
@@ -137,11 +137,7 @@ class MainActivity : AppCompatActivity() {
                 FirebaseAuth.getInstance().signOut()
                 sendToHomePage()
             }
-            item.itemId == R.id.main_join_class_btn ->{
-                startActivity(Intent(this,JoinClass::class.java))
-            }
-
-
+            item.itemId == R.id.main_join_class_btn -> startActivity(Intent(this,JoinClass::class.java))
         }
         return true
     }

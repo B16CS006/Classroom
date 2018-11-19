@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/chat_background"
     android:orientation="vertical"
     tools:context="com.btp.me.classroom.PublicChatActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/public_chat_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/grey_300"
+        android:minHeight="?attr/actionBarSize"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/public_chat_recycler_list"

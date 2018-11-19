@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.btp.me.classroom.assignment.AssignmentActivity
 import com.btp.me.classroom.assignment.AssignmentUploadActivity
@@ -52,6 +54,7 @@ class PublicChatActivity : AppCompatActivity() {
 
     private fun initialize(){
         setTitle()
+        setToolbar()
         setPendingRequestAccessed()
         setUserName()
     }
@@ -69,11 +72,8 @@ class PublicChatActivity : AppCompatActivity() {
         })
     }
 
-    private fun setTitle() {
-        val database = mRootRef.child("Classroom/$classId/name")
-//        database.keepSynced(true)
-
-        database.addValueEventListener(object : ValueEventListener {
+    private fun setTitle(){
+        mRootRef.child("Classroom/$classId/name").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "No Internet connections")
                 Toast.makeText(this@PublicChatActivity, R.string.no_internet, Toast.LENGTH_LONG).show()
@@ -82,10 +82,18 @@ class PublicChatActivity : AppCompatActivity() {
             override fun onDataChange(p0: DataSnapshot) {
                 if (p0.value == null || p0.value.toString() == "null")
                     finish()
-                title = p0.value.toString()
+                supportActionBar?.title = p0.value.toString()
             }
 
         })
+
+    }
+
+    private fun setToolbar() {
+        setSupportActionBar(public_chat_toolbar)
+        with(public_chat_toolbar){
+            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+        }
     }
 
     private fun getTypeMessage() {                                                // The Message typed by the user in input box
@@ -172,6 +180,21 @@ class PublicChatActivity : AppCompatActivity() {
 
             override fun onDataChange(data: DataSnapshot) {
                 isPendingRequestAccessed = data.value == "teacher"
+            }
+
+        })
+    }
+
+    private fun checkPendingRequest(){
+        mRootRef.child("Join-Class-Request/$classId").addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG,"Error : ${p0.message}")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (isPendingRequestAccessed && p0.exists()){
+                    invalidateOptionsMenu()
+                }
             }
 
         })
@@ -391,6 +414,31 @@ class PublicChatActivity : AppCompatActivity() {
         }
 
         startActivity(Intent(this,AssignmentActivity::class.java))
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.public_chat_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        if(menu == null)
+            return false
+
+        menu.findItem(R.id.pending_request).isVisible = isPendingRequestAccessed
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item == null) return false
+
+        when(item.itemId){
+            R.id.pending_request -> {
+                sendToPendingRequestActivity()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

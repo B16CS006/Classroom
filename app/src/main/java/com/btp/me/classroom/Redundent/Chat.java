@@ -129,7 +129,7 @@ public class Chat extends AppCompatActivity {
 //            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassViewHolder {
 //                Log.d("chetan", "View ttpe: ${viewType.toString()}")
 //                return ClassViewHolder(LayoutInflater.from(parent.context)
-//                        .inflate(R.layout.classroom_single_layout, parent, false))
+//                        .inflate(R.layout.single_classroom_layout, parent, false))
 //            }
 //
 //
