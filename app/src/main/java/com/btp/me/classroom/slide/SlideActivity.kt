@@ -30,21 +30,16 @@ import java.util.*
 
 class SlideActivity : AppCompatActivity() {
 
-    private var databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/slide")
-    private var currentUser: FirebaseUser? = null
+    private lateinit var currentUser: FirebaseUser
+    private var mRootRef = FirebaseDatabase.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_slide)
 
-        currentUser = FirebaseAuth.getInstance().currentUser
+        currentUser = FirebaseAuth.getInstance()?.currentUser ?: return
 
-        slide_upload_button.setOnClickListener {
-            startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)
-        }
-
-        slide_list.setHasFixedSize(true)
-        slide_list.layoutManager = LinearLayoutManager(this)
+        initialize()
 
         val slideList = ArrayList<HashMap<String, String>>()
 
@@ -66,15 +61,21 @@ class SlideActivity : AppCompatActivity() {
                 holder.download.setOnClickListener {
                     Log.d("chetan", "You have clicked ${slideList[position]["title"]}")
                     try {
-                        val fileName: File = createFile(slideList[position]["title"]!!)
+                        val fileName: File = createFile("Slide " + "_" + System.currentTimeMillis() +"_"+ slideList[position]["title"]!! )
                                 ?: return@setOnClickListener
+
+                        Log.d(TAG,"FileName : $fileName")
+
                         val fileUrl = slideList[position]["link"] ?: return@setOnClickListener
+
+                        Log.d(TAG,"file url $fileUrl")
 
                         val downloadIntent = Intent(this@SlideActivity, MyDownloadingService::class.java)
                         downloadIntent.putExtra(MyDownloadingService.EXTRA_FILE_PATH, fileName)
                         downloadIntent.putExtra(MyDownloadingService.EXTRA_DOWNLOAD_PATH, fileUrl)
                         downloadIntent.action = MyDownloadingService.ACTION_DOWNLOAD
-                        startService(downloadIntent)?: throw error("Can't download as No activity is running")
+                        startService(downloadIntent)
+                                ?: throw error("Can't download as No activity is running")
                     } catch (error: IOException) {
                         Log.d("chetan", "Error while making folder ${error.message}")
                         error.printStackTrace()
@@ -83,7 +84,7 @@ class SlideActivity : AppCompatActivity() {
             }
         }
 
-        databaseReference.addValueEventListener(object : ValueEventListener {
+        mRootRef.child("Slide/$classId").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d("chetan", "Database Reference for slide is on cancelled, ${p0.message}")
             }
@@ -91,30 +92,53 @@ class SlideActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 Log.d("chetan", "Database Reference for Slide on Data Changed : ${dataSnapshot.key}")
                 slideList.clear()
-                for (userList in dataSnapshot.children) {
-                    for (slide in userList.children) {
-                        if (slide == null) continue
-                        var date = slide.key ?: continue
-                        date = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.ENGLISH).format(date.toLong())
+                for (slide in dataSnapshot.children) {
+                    if (slide == null) continue
+                    var date = slide.key ?: continue
+                    date = SimpleDateFormat("MMM dd, yyyy HH:mm", Locale.ENGLISH).format(date.toLong())
 
-                        val map = HashMap<String, String>()
-                        map["date"] = date
-                        map["title"] = slide.child("title").value.toString()
-                        map["link"] = slide.child("link").value.toString()
-                        slideList.add(map)
-                    }
+                    val map = HashMap<String, String>()
+                    map["date"] = date
+                    map["title"] = slide.child("title").value.toString()
+                    map["link"] = slide.child("link").value.toString()
+                    slideList.add(map)
                 }
 
-                if(slide_list != null && slideList.size == 0) {
+                if (slide_list != null && slideList.size == 0) {
                     slide_empty.visibility = View.VISIBLE
                     slide_list.visibility = View.GONE
-                }
-                else {
+                } else {
                     slide_empty.visibility = View.GONE
                     slide_list.visibility = View.VISIBLE
                     slide_list.adapter = slideAdapter
                 }
             }
+        })
+    }
+
+    private fun initialize() {
+
+        title = "Slides"
+
+        slide_list.setHasFixedSize(true)
+        slide_list.layoutManager = LinearLayoutManager(this)
+
+        mRootRef.child("Class-Enroll/${currentUser.uid}/$classId/as").addValueEventListener(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Error : ${p0.message}")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.value == "teacher") {
+                    slide_upload_button.show()
+                    slide_upload_button.setOnClickListener {
+                        startActivityForResult(Intent.createChooser(IntentResult.forPDF(), "Select Document"), 0)
+                    }
+                } else {
+                    slide_upload_button.hide()
+                }
+            }
+
         })
     }
 
@@ -130,7 +154,7 @@ class SlideActivity : AppCompatActivity() {
 
     private fun upload(uri: Uri) {
         var file = uri.lastPathSegment
-        if(!file.endsWith(".pdf")){
+        if (!file.endsWith(".pdf")) {
             file += ".pdf"
         }
         val data = """{"title": "$file","link": ""}"""
@@ -140,13 +164,13 @@ class SlideActivity : AppCompatActivity() {
 //        uploadingIntent.putExtra("classId", classId)
 //        uploadingIntent.putExtra("userId", currentUser!!.uid)
 
-        val userId = currentUser?.uid?:return
+        val userId = currentUser.uid ?: return
         val currentTime = System.currentTimeMillis().toString()
 
         uploadingIntent.putExtra("fileUri", uri)
-        uploadingIntent.putExtra("storagePath","Slide/$classId/$userId/$currentTime")
-        uploadingIntent.putExtra("databasePath","Classroom/$classId/slide/$userId/$currentTime")
-        uploadingIntent.putExtra("data",data)
+        uploadingIntent.putExtra("storagePath", "Slide/$classId/$currentTime")
+        uploadingIntent.putExtra("databasePath", "Slide/$classId/$currentTime")
+        uploadingIntent.putExtra("data", data)
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
         startService(uploadingIntent)
@@ -156,18 +180,23 @@ class SlideActivity : AppCompatActivity() {
     private class SlideViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val download: ImageButton = view.file_single_download
 
-        fun bind(title:String,date:String){
+        fun bind(title: String, date: String) {
             setTitle(title)
             setDate(date)
         }
-        private fun setTitle(s:String){
+
+        private fun setTitle(s: String) {
             view.file_single_title.text = s
         }
-        private fun setDate(s:String){
+
+        private fun setDate(s: String) {
             view.file_single_date.text = s
         }
     }
 
+    companion object {
+        private const val TAG = "Slide Activity"
+    }
 
 }
 

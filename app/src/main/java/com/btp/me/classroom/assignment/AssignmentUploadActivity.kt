@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_assignment_upload.*
 
 class AssignmentUploadActivity : AppCompatActivity() {
 
-    private val root = FirebaseDatabase.getInstance().reference
+    private val mRootRef = FirebaseDatabase.getInstance().reference
     private var currentUser = FirebaseAuth.getInstance().currentUser
 
     private var fileUri:Uri? = null
@@ -51,18 +51,24 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
             val description = when {
                 assignment_upload_discription.text.isNotBlank() -> assignment_upload_discription.text.toString()
-                else -> ""
+                else -> {
+                    assignment_upload_discription.error = "Field can't be empty"
+                    return@setOnClickListener
+                }
             }
 
 
             val maxMarks = when {
                 assignment_upload_max_marks.text.isNotBlank() -> assignment_upload_max_marks.text.toString()
-                else -> "100" //TODO set hint to 100 also
+                else -> "0" //TODO set hint to 100 also
             }
 
             val submissionDate = when {
                 assignment_upload_submission_date.text.isNotBlank() -> assignment_upload_submission_date.text.toString()
-                else -> ""
+                else -> {
+                    assignment_upload_submission_date.error = "Field can't be empty"
+                    return@setOnClickListener
+                }
                 //todo date is always future date
             }
 
@@ -76,7 +82,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
             if(fileUri == null){
                 val currentTime = System.currentTimeMillis()
-                root.child("Classroom/$classId/Assignment/$currentTime").setValue(assignment).addOnSuccessListener {
+                mRootRef.child("Assignment/$classId/$currentTime").setValue(assignment).addOnSuccessListener {
                     Toast.makeText(this, "Assignment is successfully uploaded", Toast.LENGTH_LONG).show()
                     finish()
                 }.addOnFailureListener { exception ->
@@ -115,7 +121,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath","Assignment/$classId/$userId/$currentTime")
-        uploadingIntent.putExtra("databasePath","Classroom/$classId/Assignment/$currentTime") ///todo backend : generate all student slist showing status as not complete
+        uploadingIntent.putExtra("databasePath","Assignment/$classId/$currentTime") ///todo backend : generate all student slist showing status as not complete
         uploadingIntent.putExtra("data",data)
 
         uploadingIntent.action = MyUploadingService.ACTION_UPLOAD

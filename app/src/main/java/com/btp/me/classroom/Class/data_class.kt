@@ -71,6 +71,8 @@ abstract class FileBuilder{
     companion object {
         fun createFile(title: String): File? {
             try {
+                Log.d("chetan",title)
+
                 var fileName = File(Environment.getExternalStorageDirectory().toString(), "Classroom")
 
                 if (!fileName.exists()) {
@@ -82,7 +84,7 @@ abstract class FileBuilder{
                     Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
                     fileName.mkdir()
                 }
-                fileName = File(fileName.toString(), "slide")
+                fileName = File(fileName.toString(), "pdf")
                 if (!fileName.exists()) {
                     Log.d("chetan", "Directory ${File.separator} not exist : $fileName")
                     fileName.mkdir()
@@ -106,11 +108,21 @@ data class Slide(var title:String, var link:String)
 
 data class ChatMessage(var senderId:String = "...",var visibility:String = "...", var time:String = "0", var message:String = "...", var type:String = "...",  var senderName:String = "...", var viewType:Int)
 
-class Assignment(
+data class Assignment(
     var title: String = "",
     var description: String = "",
     var submissionDate: String = "",
     var uploadingDate: String = "",
     var maxMarks: String = "",
     var link: String? = null
+)
+
+data class StudentAssignmentDetails(
+        var link: String? = null,
+        var marks: String? = null,
+        var name: String? = null,
+        var rollNumber: String? = null,
+        var state: String? = null,
+        var userId: String? = null,
+        var registeredAs: String? = null
 )

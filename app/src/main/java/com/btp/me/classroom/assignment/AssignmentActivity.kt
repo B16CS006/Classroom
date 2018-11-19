@@ -30,22 +30,47 @@ class AssignmentActivity : AppCompatActivity() {
 
         currentUser = FirebaseAuth.getInstance()?.currentUser?:return
 
-        if(classId == "null"){
-            sendToMainActivity()
-            return
-        }
-        title = "Assignment"
+        initialize()
 
-        assignment_upload_button.setOnClickListener {
-            sendToAssignmentUploadActivity()
-        }
+    }
+
+    private fun initialize() {
+        title = "Assignment"
 
         assignment_list.setHasFixedSize(true)
         assignment_list.layoutManager = LinearLayoutManager(this)
+
+        initializeFloatingButton()
+    }
+
+    private fun initializeFloatingButton() {
+        assignment_upload_button.hide()
+        mRootRef.child("Class-Enroll/${currentUser.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Error : ${p0.message}")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if(dataSnapshot.value == "teacher"){
+                    assignment_upload_button.show()
+                    assignment_upload_button.setOnClickListener {
+                        sendToAssignmentUploadActivity()
+                    }
+                }else{
+                    assignment_upload_button.hide()
+                }
+            }
+
+        })
     }
 
     override fun onStart() {
         super.onStart()
+
+        if(classId == "null"){
+            sendToMainActivity()
+            return
+        }
 
         val assignmentList = ArrayList<Assignment>()
 
@@ -68,7 +93,7 @@ class AssignmentActivity : AppCompatActivity() {
 
         }
 
-        mRootRef.child("Classroom/$classId/Assignment").addValueEventListener(object :ValueEventListener{
+        mRootRef.child("Assignment/$classId").addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d("chetan", "Database Reference for Assignment is on cancelled, ${p0.message}")
             }
