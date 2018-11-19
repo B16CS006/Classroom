@@ -35,6 +35,7 @@ class PublicChatActivity : AppCompatActivity() {
 //    private lateinit var classId:String
 
     private var isPendingRequestAccessed : Boolean= false
+    private var isPendingRequest: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +56,8 @@ class PublicChatActivity : AppCompatActivity() {
     private fun initialize(){
         setTitle()
         setToolbar()
-        setPendingRequestAccessed()
+        getPendingRequestAccessed()
+        getPendingRequest()
         setUserName()
     }
 
@@ -164,15 +166,8 @@ class PublicChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun isPendingRequest(){
-        if(isPendingRequestAccessed){
-            //todo show pending icon
-        }else{
-            //todo hide pending icon
-        }
-    }
 
-    private fun setPendingRequestAccessed(){
+    private fun getPendingRequestAccessed(){
         mRootRef.child("Class-Enroll/${currentUser?.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG,"Error : ${p0.message}")
@@ -180,21 +175,22 @@ class PublicChatActivity : AppCompatActivity() {
 
             override fun onDataChange(data: DataSnapshot) {
                 isPendingRequestAccessed = data.value == "teacher"
+                invalidateOptionsMenu()
             }
 
         })
     }
 
-    private fun checkPendingRequest(){
+    private fun getPendingRequest(){
         mRootRef.child("Join-Class-Request/$classId").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG,"Error : ${p0.message}")
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                if (isPendingRequestAccessed && p0.exists()){
-                    invalidateOptionsMenu()
-                }
+                Log.d(TAG,"Data exist or not : ${p0.exists()}")
+                isPendingRequest = p0.exists()
+                invalidateOptionsMenu()
             }
 
         })
@@ -425,7 +421,7 @@ class PublicChatActivity : AppCompatActivity() {
         if(menu == null)
             return false
 
-        menu.findItem(R.id.pending_request).isVisible = isPendingRequestAccessed
+        menu.findItem(R.id.pending_request).isVisible = isPendingRequestAccessed && isPendingRequest
 
         return super.onPrepareOptionsMenu(menu)
     }

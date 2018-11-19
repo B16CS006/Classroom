@@ -2,8 +2,11 @@ package com.btp.me.classroom
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -172,7 +175,7 @@ class MainActivity : AppCompatActivity() {
         fun bind(_class: ClassAttribute) {
             Log.d("chetan", "ClassViewHolder")
             with(_class) {
-                setColor(this.registeredAs)
+                setBackground(this.registeredAs)
                 setName(this.name)
                 setStatus(this.status)
                 setProfileImage(this.profileImage)
@@ -184,14 +187,15 @@ class MainActivity : AppCompatActivity() {
             view.visibility = when(enable){true->View.VISIBLE; else->View.GONE}
         }
 
-        private fun setColor(registeredAs:String){
-            view.setBackgroundColor(Color.parseColor(
-                    when(registeredAs){
-                        "student" -> "#00FFFF"
-                        "teacher" -> "#FFA631"
-                        else -> "#000"
-                    }
+        private fun setBackground(registeredAs:String){
+
+            val gd = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(Color.parseColor("#ffffff")
+                    ,Color.parseColor("#ffffff")
+                    ,Color.parseColor("#ffffff")
+                    ,when(registeredAs){"teacher" -> Color.parseColor("#FFA631"); else -> Color.parseColor("#00FFFF") }
             ))
+            gd.cornerRadius = 0f
+            view.background = gd
         }
 
         private fun setName(string: String) {
@@ -203,8 +207,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun setProfileImage(string: String) {
-            val glide_image:Any = when(string){"default","null" -> R.drawable.default_avatar else -> string}
-            Glide.with(view.class_single_image).load(glide_image).into(view.class_single_image)
+            val glideImage:Any = when(string){"default","null" -> R.drawable.default_avatar else -> string}
+            Glide.with(view.class_single_image).load(glideImage).into(view.class_single_image)
         }
     }
 
