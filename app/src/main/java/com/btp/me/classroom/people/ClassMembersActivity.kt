@@ -2,7 +2,6 @@ package com.btp.me.classroom.people
 
 import android.content.Intent
 import android.os.Bundle
-import android.renderscript.Sampler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -22,6 +21,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_class_members.*
+import kotlinx.android.synthetic.main.single_people_layout.view.*
 
 class ClassMembersActivity: AppCompatActivity() {
 //    private var classId:String? = null
@@ -42,6 +42,7 @@ class ClassMembersActivity: AppCompatActivity() {
             sendToMainActivity()
             return
         }
+
 
         peoples_teacher_list.layoutManager = LinearLayoutManager(this)
         peoples_students_list.layoutManager = LinearLayoutManager(this)
@@ -64,46 +65,26 @@ class ClassMembersActivity: AppCompatActivity() {
 
 //                Log.d("chetan","Total Number of count : ${dataSnapshot.childrenCount.toString()}")
 
-                var i=1L;
                 for (people in dataSnapshot.children){
-                    Log.d(TAG,"People : $people")
-                    val userId = people?.key ?: continue
-                    val type = people.child("as").value.toString()
+                    if (people.value == null)
+                        continue
 
-                    Log.d(TAG,"userId : $userId")
-                    Log.d(TAG,"type : $type")
+                    val map = HashMap<String,String>()
+                    map["userId"] = people.key.toString()
+                    map["as"] = people.child("as").value.toString()
+                    map["name"] = people.child("name").value.toString()
+                    map["rollNumber"] = people.child("rollNumber").value.toString()
 
-                    mRootRef.child("Users/$userId/name").addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onCancelled(p0: DatabaseError) {
-                            Log.d(TAG,"single event Listener failed, Failed error : ${p0.message}")
-                        }
+                    if(mCurrentUser.uid == map["userId"])
+                        map["who"] = "me"
 
-                        override fun onDataChange(dataSnapshot2: DataSnapshot) {
-                            Log.d(TAG,"The People data is : $dataSnapshot2")
-                            val userName = dataSnapshot2.value?.toString() ?: return
-
-//                            Log.d(TAG,"UserName : $userName")
-
-                            val map = HashMap<String,String>()
-                            map["userName"] = userName
-                            map["userId"] = userId
-
-                            if(type == "teacher"){
-                                teachersList.add(map)
-                            }else if(type == "student"){
-                                studentsList.add(map)
-                            }
-
-                            if (dataSnapshot.childrenCount == i){
-//                                Log.d("chetan","list size ${teachersList.size} and student size : ${studentsList.size}")
-                                showList(teachersList, studentsList)
-                            }else{
-                                i++
-                            }
-                        }
-
-                    })
+                    when(map["as"]){
+                        "teacher" -> teachersList.add(map)
+                        "student" -> studentsList.add(map)
+                    }
                 }
+
+                showList(teachersList, studentsList)
             }
         })
     }
@@ -112,14 +93,14 @@ class ClassMembersActivity: AppCompatActivity() {
         Log.d(TAG,"Total number of teacher : ${teachersList.size}")
         Log.d(TAG,"Total number of students : ${studentsList.size}")
 
-        if(peoples_teacher_list != null && teachersList.size !=0){
+        if(peoples_teacher_list != null && teachersList.isNotEmpty()){
             peoples_teacher_list.visibility = View.VISIBLE
             peoples_teacher_empty.visibility = View.GONE
         }else{
             peoples_teacher_list.visibility = View.GONE
             peoples_teacher_empty.visibility = View.VISIBLE
         }
-        if(peoples_students_list != null && studentsList.size !=0){
+        if(peoples_students_list != null && studentsList.isNotEmpty()){
             peoples_students_list.visibility = View.VISIBLE
             peoples_students_empty.visibility = View.GONE
         }else{
@@ -127,7 +108,7 @@ class ClassMembersActivity: AppCompatActivity() {
             peoples_students_empty.visibility = View.VISIBLE
         }
 
-        val teacherAdater = object: RecyclerView.Adapter<PeopleViewHolder>(){
+        val teacherAdapter = object: RecyclerView.Adapter<PeopleViewHolder>(){
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Teacher adapter on create viewHolder")
                 return PeopleViewHolder(LayoutInflater.from(parent.context)
@@ -137,12 +118,7 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun getItemCount() = teachersList.size
 
             override fun onBindViewHolder(holder: PeopleViewHolder, position: Int) {
-//                Log.d(TAG,"Teacher Adapter on Bind View Holder")
-//                Log.d("chetan" ,"Teacher name  is : ${teachersList[position]["name"]}")
-
-                if(mCurrentUser?.uid == teachersList[position]["userId"])
-                    holder.current_user_dot.visibility = View.VISIBLE
-                holder.name.text = teachersList[position]["userName"]
+                holder.bind(teachersList[position])
             }
 
         }
@@ -157,20 +133,34 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun getItemCount() = studentsList.size
 
             override fun onBindViewHolder(holder: PeopleViewHolder, position: Int) {
-//                Log.d(TAG,"Students Adapter on Bind View Holder")
-                if(mCurrentUser?.uid == studentsList[position]["userId"])
-                    holder.current_user_dot.visibility = View.VISIBLE
-                holder.name.text = studentsList[position]["userName"]
+                holder.bind(studentsList[position])
             }
         }
 
-        peoples_teacher_list.adapter = teacherAdater
+        peoples_teacher_list.adapter = teacherAdapter
         peoples_students_list.adapter = studentAdapter
     }
 
-    class PeopleViewHolder(view:View): RecyclerView.ViewHolder(view){
-        val name: TextView = view.findViewById(R.id.single_people_name)
-        val current_user_dot: ImageView = view.findViewById(R.id.single_current_user_dot)
+    class PeopleViewHolder(val view:View): RecyclerView.ViewHolder(view){
+
+        fun bind(map: HashMap<String,String>){
+            setName(map["name"]!!)
+            setRollNumber(map["rollNumber"]!!)
+            setCurrentUserDot(map["who"])
+        }
+
+        private fun setName(name:String){
+            view.single_people_name.text = name
+        }
+
+        private fun setRollNumber(rollNumber:String){
+            view.single_people_roll_number.text = rollNumber
+        }
+
+        private fun setCurrentUserDot(me:String?){
+            if(me == "me")
+                view.single_current_user_dot.visibility = View.VISIBLE
+        }
     }
 
     private fun sendToMainActivity() {
