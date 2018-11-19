@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.single_assignment_layout.view.*
 class AssignmentActivity : AppCompatActivity() {
 
     private lateinit var currentUser:FirebaseUser
-    private lateinit var databaseReference:DatabaseReference
+    private val mRootRef = FirebaseDatabase.getInstance().reference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +47,6 @@ class AssignmentActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("Classroom/$classId/Assignment")
-
-//        Toast.makeText(this,"hey $classId",Toast.LENGTH_SHORT).show()
-
         val assignmentList = ArrayList<Assignment>()
 
         val assignmentAdapter = object :RecyclerView.Adapter<AssignmentViewHolder>(){
@@ -66,13 +62,13 @@ class AssignmentActivity : AppCompatActivity() {
             override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int) {
                 holder.bind(assignmentList[position])
                 holder.view.setOnClickListener {
-                    sendToAssignmentDetails(assignmentList[position].maxMarks)
+                    sendToAssignmentDetails(assignmentList[position].uploadingDate)
                 }
             }
 
         }
 
-        databaseReference.addValueEventListener(object :ValueEventListener{
+        mRootRef.child("Classroom/$classId/Assignment").addValueEventListener(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d("chetan", "Database Reference for Assignment is on cancelled, ${p0.message}")
             }
@@ -87,12 +83,12 @@ class AssignmentActivity : AppCompatActivity() {
                             title = assignmentDataSnapshot.child("title").value.toString(),
                             description = assignmentDataSnapshot.child("description").value.toString(),
                             submissionDate = assignmentDataSnapshot.child("submissionDate").value.toString(),
-                            maxMarks = assignmentDataSnapshot.key.toString()        //this is because I want this value to open next activity, see bind holder.view.setOnClickListener for more details
+                            uploadingDate = assignmentDataSnapshot.key.toString()
                     )
                     assignmentList.add(assignment)
                 }
 
-                if(assignment_list != null && assignmentList.size == 0) {
+                if(assignmentList.size == 0) {
                     assignment_empty.visibility = View.VISIBLE
                     assignment_empty.visibility = View.GONE
                 }
@@ -103,40 +99,6 @@ class AssignmentActivity : AppCompatActivity() {
                 }
             }
         })
-
-        /*
-        val options = FirebaseRecyclerOptions.Builder<Assignment>()
-                .setQuery(databaseReference, Assignment::class.java)
-                .setLifecycleOwner(this)
-                .build()
-
-        val adapter = object :FirebaseRecyclerAdapter<Assignment,AssignmentViewHolder>(options) {
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AssignmentViewHolder {
-//                Log.d(TAG,"View Type: ${viewType.toString()}")
-
-                return AssignmentViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.single_assignment_layout, parent, false))
-            }
-
-            override fun onBindViewHolder(holder: AssignmentViewHolder, position: Int, model: Assignment) {
-
-                holder.bind(model)
-                holder.view.setOnClickListener {
-//                    Log.d(TAG, "Your have clicked $position")
-//                    Log.d(TAG,"Ref : ${getRef(position).key.toString()}")
-                    sendToAssignmentDetails(getRef(position).key.toString())
-                }
-            }
-
-            override fun onDataChanged() {
-                if(itemCount == 0)
-                    assignment_empty.visibility = View.VISIBLE
-                else
-                    assignment_empty.visibility = View.GONE
-            }
-        }
-        assignment_list.adapter = adapter
-        */
     }
 
     private fun sendToAssignmentDetails(assignment: String) {
@@ -149,7 +111,6 @@ class AssignmentActivity : AppCompatActivity() {
         intent.putExtra("assignment",assignment)
         startActivity(intent)
     }
-
 
     private fun sendToAssignmentUploadActivity() {
         if (classId == "null") {

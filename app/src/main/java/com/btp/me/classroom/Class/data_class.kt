@@ -110,6 +110,7 @@ class Assignment(
     var title: String = "",
     var description: String = "",
     var submissionDate: String = "",
+    var uploadingDate: String = "",
     var maxMarks: String = "",
     var link: String? = null
 )
