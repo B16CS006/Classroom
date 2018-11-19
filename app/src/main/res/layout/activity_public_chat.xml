@@ -15,22 +15,6 @@
         android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="4dp"/>
-    <!--<ScrollView-->
-    <!--android:id="@+id/public_chat_scrollView"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="1">-->
-    <!--<LinearLayout-->
-    <!--android:id="@+id/public_chat_list"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:orientation="vertical"-->
-    <!--android:layout_marginStart="10dp"-->
-    <!--android:layout_marginEnd="10dp"-->
-    <!--android:layout_marginBottom="4dp"-->
-    <!--android:weightSum="10"/>-->
-
-    <!--</ScrollView>-->
 
     <LinearLayout
         android:id="@+id/layout_messageArea"

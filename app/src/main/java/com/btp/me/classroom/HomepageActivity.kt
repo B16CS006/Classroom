@@ -16,6 +16,10 @@ class HomepageActivity : AppCompatActivity() {
 
         animationDrawable = home_main.background as AnimationDrawable
 
+//        window.decorView.setBackgroundColor(R.drawable.animated_homepage_background)
+
+//        animationDrawable = window.decorView.background as AnimationDrawable
+
         animationDrawable.setEnterFadeDuration(5000)
         animationDrawable.setExitFadeDuration(2000)
 

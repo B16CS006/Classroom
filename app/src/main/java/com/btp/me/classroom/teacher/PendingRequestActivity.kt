@@ -1,5 +1,7 @@
 package com.btp.me.classroom.teacher
 
+import android.content.ComponentCallbacks2
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
@@ -37,37 +40,14 @@ class PendingRequestActivity : AppCompatActivity() {
         val pendingRequestAdapter = object :RecyclerView.Adapter<PendingRequestViewHolder>(){
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PendingRequestViewHolder {
                 Log.d(TAG , "OnCreate")
-                return PendingRequestViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.single_pending_request,parent, false))
+                return PendingRequestViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.single_pending_request,parent, false),this@PendingRequestActivity)
             }
 
             override fun getItemCount() = pendingRequestList.size
 
             override fun onBindViewHolder(holder: PendingRequestViewHolder, position: Int) {
                 Log.d(TAG , "On Bind")
-                holder.bind(pendingRequestList[position][2], pendingRequestList[position][1])
-
-                holder.acceptButton.setOnClickListener {
-                    holder.acceptButton.isEnabled = false
-                    holder.rejectButton.isEnabled = false
-                    mRootRef.child("Join-Class-Request/$classId/${pendingRequestList[position][2]}/request").setValue("accept").addOnSuccessListener {
-                        Log.d(TAG,"Member is added")
-                        Toast.makeText(this@PendingRequestActivity,"Member is added",Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener{exception ->
-                        Log.d(TAG, "Error : ${exception.message}")
-                        Toast.makeText(this@PendingRequestActivity,"Error : ${exception.message}",Toast.LENGTH_SHORT).show()
-                    }
-                }
-                holder.rejectButton.setOnClickListener {
-                    holder.acceptButton.isEnabled = false
-                    holder.rejectButton.isEnabled = false
-                    mRootRef.child("Join-Class-Request/$classId/${pendingRequestList[position][2]}/request").setValue("reject").addOnSuccessListener {
-                        Log.d(TAG,"Member is added")
-                        Toast.makeText(this@PendingRequestActivity,"Member is added",Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener{exception ->
-                        Log.d(TAG, "Error : ${exception.message}")
-                        Toast.makeText(this@PendingRequestActivity,"Error : ${exception.message}",Toast.LENGTH_SHORT).show()
-                    }
-                }
+                holder.bind(pendingRequestList[position])
             }
 
         }
@@ -115,31 +95,65 @@ class PendingRequestActivity : AppCompatActivity() {
 
     }
 
-    /*
-    private fun acceptRejectOnClick(request: String) {
-        holder.acceptButton.isEnabled = false
-        holder.rejectButton.isEnabled = false
-        mRootRef.child("Join-Class-Request/$classId/${pendingRequestList[position][2]}/request").setValue("accept").addOnSuccessListener {
-            Toast.makeText(this@PendingRequestActivity,"Member is added",Toast.LENGTH_SHORT).show()
-        }.addOnFailureListener{exception ->
-            Toast.makeText(this@PendingRequestActivity,"Error : ${exception.message}",Toast.LENGTH_SHORT).show()
+    private class PendingRequestViewHolder(val view: View, val context:Context) :RecyclerView.ViewHolder(view){
+
+        val acceptButton:Button = view.single_pending_request_accept_button
+        val rejectButton: Button = view.single_pending_request_reject_button
+        val nameView: TextView = view.single_pending_request_name
+        val rollNumberView: TextView = view.single_pending_request_roll_number
+
+
+        fun bind(list:ArrayList<String>){
+            bind(list[2],list[1])
+            onClick(list[2])
         }
-    }*/
 
-    private class PendingRequestViewHolder(val view: View) :RecyclerView.ViewHolder(view){
-
-        val acceptButton :Button = view.single_pending_request_accept_button
-        val rejectButton :Button = view.single_pending_request_reject_button
-
-        fun bind(name: String, rollNumber: String){
-            setName(name)
+        fun bind(userId: String, rollNumber: String){
+            setName(userId)
             setRollNumber(rollNumber)
         }
-        private fun setName(name:String){
-            view.single_pending_request_name.text = name
+
+        private fun setName(userId: String){
+            view.visibility = View.GONE
+
+            FirebaseDatabase.getInstance().getReference("Users/$userId/name").addValueEventListener(object : ValueEventListener{
+                override fun onCancelled(p0: DatabaseError) {
+                    Log.d(TAG,"Error : ${p0.message}")
+                    nameView.text = "$userId -Be aware"
+                    view.visibility = View.VISIBLE
+                }
+
+                override fun onDataChange(data: DataSnapshot) {
+                    view.visibility = View.VISIBLE
+                    nameView.text = when(data.value){ null -> userId; else -> data.value.toString() }
+                }
+
+            })
         }
+
         private fun setRollNumber(rollNumber:String){
-            view.single_pending_request_roll_number.text = rollNumber
+            if (rollNumber == "null"){
+                rollNumberView.visibility = View.GONE
+                view.single_pending_request_as.text = "Teacher"
+            }else {
+                rollNumberView.text = rollNumber
+            }
+        }
+
+        private fun onClick(userId: String){
+            view.single_pending_request_accept_button.setOnClickListener{ acceptRejectOnClick(userId, "accept") }
+            view.single_pending_request_reject_button.setOnClickListener{ acceptRejectOnClick(userId, "reject") }
+        }
+
+        private fun acceptRejectOnClick(userId:String,request: String) {
+            acceptButton.isEnabled = false
+            rejectButton.isEnabled = false
+
+            FirebaseDatabase.getInstance().getReference("Join-Class-Request/$classId/$userId/request").setValue(request).addOnSuccessListener {
+                Toast.makeText(context,"Request $request Successfully",Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener{exception ->
+                Toast.makeText(context,"Error : ${exception.message}",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

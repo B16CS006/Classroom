@@ -6,7 +6,7 @@ import android.content.IntentFilter
 import android.os.IBinder
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
-import com.btp.me.classroom.ClassHomeActivity
+import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MyBaseTaskService
 import com.btp.me.classroom.R
 import com.google.firebase.storage.FirebaseStorage
@@ -149,7 +149,7 @@ class MyDownloadingService : MyBaseTaskService() {
         dismissProgressNotification()
 
         // Make Intent to MainActivity
-        val intent = Intent(this, ClassHomeActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
                 .putExtra(EXTRA_DOWNLOAD_PATH, downloadPath)
                 .putExtra(EXTRA_BYTES_DOWNLOADED, bytesDownloaded)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)

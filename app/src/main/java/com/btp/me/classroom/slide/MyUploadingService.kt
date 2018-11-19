@@ -4,23 +4,13 @@ import android.app.Service
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
-import android.os.Build
-//import android.os.Build
 import android.os.IBinder
-//import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
-import android.widget.Toast
-import com.btp.me.classroom.Class.Assignment
-import com.btp.me.classroom.Class.Slide
-import com.btp.me.classroom.ClassHomeActivity
-//import com.btp.me.classroom.MainActivity
+import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MyBaseTaskService
 import com.btp.me.classroom.R
 import com.google.firebase.database.FirebaseDatabase
-//import com.google.firebase.quickstart.firebasestorage.R
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 
@@ -141,7 +131,7 @@ class MyUploadingService : MyBaseTaskService() {
     private fun showUploadFinishedNotification(downloadUrl: Uri?, fileUri: Uri?) {
         dismissProgressNotification()
 
-        val intent = Intent(this, ClassHomeActivity::class.java)
+        val intent = Intent(this, MainActivity::class.java)
                 .putExtra(EXTRA_DOWNLOAD_URL, downloadUrl)
                 .putExtra(EXTRA_FILE_URI, fileUri)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
