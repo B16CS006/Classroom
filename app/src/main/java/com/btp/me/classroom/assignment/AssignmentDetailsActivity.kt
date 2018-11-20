@@ -97,17 +97,21 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                             val marksList = ArrayList<StudentAssignmentDetails>()
 
                             for (member in database.child("marks").children) {
+                                Log.d(TAG, "Member : $member")
                                 if (dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student") {
                                     continue
                                 }
                                 val studentAssignmentDetails = StudentAssignmentDetails(
                                         member.child("link").value.toString(),
                                         member.child("marks").value.toString(),
-                                        member.child("name").value.toString(),
-                                        member.child("rollNumber").value.toString(),
+                                        dataSnapshot.child("${member.key.toString()}/name").value.toString(),
+                                        dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
                                         member.child("state").value.toString(),
-                                        member.key.toString()
+                                        member.key.toString(),
+                                        dataSnapshot.child("${member.key.toString()}/as").value.toString()
                                 )
+
+                                Log.d(TAG,"student assignment details : $studentAssignmentDetails")
                                 marksList.add(studentAssignmentDetails)
                             }
                             if (marksList.size == 0) {
@@ -264,26 +268,26 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
         val download: ImageButton = view.single_student_marks_assignment_details_download_button
 
+//        fun bind(studentAssignmentDetails: StudentAssignmentDetails, temp: Boolean) {
+//            view.visibility = View.GONE
+//            FirebaseDatabase.getInstance().getReference("Classroom/$classId/members/${mCurrentUser.uid}").addValueEventListener(object : ValueEventListener {
+//                override fun onCancelled(p0: DatabaseError) {
+//                    Log.d(TAG, "Error : ${p0.message}")
+//                }
+//
+//                override fun onDataChange(data: DataSnapshot) {
+//                    view.visibility = View.VISIBLE
+//                    studentAssignmentDetails.registeredAs = data.child("as").value.toString()
+//                    studentAssignmentDetails.name = data.child("name").value.toString()
+//                    studentAssignmentDetails.rollNumber = data.child("rollNumber").value.toString()
+//
+//                    bind(studentAssignmentDetails)
+//                }
+//
+//            })
+//        }
+
         fun bind(studentAssignmentDetails: StudentAssignmentDetails) {
-            view.visibility = View.GONE
-            FirebaseDatabase.getInstance().getReference("Classroom/$classId/members/${mCurrentUser.uid}").addValueEventListener(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError) {
-                    Log.d(TAG, "Error : ${p0.message}")
-                }
-
-                override fun onDataChange(data: DataSnapshot) {
-                    view.visibility = View.VISIBLE
-                    studentAssignmentDetails.registeredAs = data.child("as").value.toString()
-                    studentAssignmentDetails.name = data.child("name").value.toString()
-                    studentAssignmentDetails.rollNumber = data.child("rollNumber").value.toString()
-
-                    bind(studentAssignmentDetails, true)
-                }
-
-            })
-        }
-
-        fun bind(studentAssignmentDetails: StudentAssignmentDetails, temp: Boolean) {
             setName(studentAssignmentDetails.rollNumber)
             setMarks(studentAssignmentDetails.marks)
             setStudentDownloadButton(studentAssignmentDetails)
