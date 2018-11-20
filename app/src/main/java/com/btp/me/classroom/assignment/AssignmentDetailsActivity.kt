@@ -49,6 +49,64 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     private fun setAssignmentDetails() {
+
+
+//        mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onCancelled(p0: DatabaseError) {
+//                Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
+//                Log.d(TAG, "Error : ${p0.message}")
+//            }
+//
+//            @SuppressLint("SetTextI18n")
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                val type = dataSnapshot.child("${mCurrentUser.uid}/as").value.toString()
+//
+//                if (type == "teacher") {
+//                    assignment_details_marks.visibility = View.GONE
+//
+//                    val marksList = ArrayList<StudentAssignmentDetails>()
+//
+//                    for (member in dataSnapshot.children) {
+//                        Log.d(TAG, "Member : $member")
+//                        if (dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student") {
+//                            continue
+//                        }
+//                        val studentAssignmentDetails = StudentAssignmentDetails(
+//                                member.child("link").value.toString(),
+//                                member.child("marks").value.toString(),
+//                                dataSnapshot.child("${member.key.toString()}/name").value.toString(),
+//                                dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
+//                                member.child("state").value.toString(),
+//                                member.key.toString(),
+//                                dataSnapshot.child("${member.key.toString()}/as").value.toString()
+//                        )
+//
+//                        Log.d(TAG,"student assignment details : $studentAssignmentDetails")
+//                        marksList.add(studentAssignmentDetails)
+//                    }
+//                    if (marksList.size == 0) {
+//                        assignment_details_marks_linear_layout.visibility = View.GONE
+//                        assignment_details_marks_empty.visibility = View.VISIBLE
+//                    } else {
+//                        assignment_details_marks_linear_layout.visibility = View.VISIBLE
+//                        assignment_details_marks_empty.visibility = View.GONE
+//                        showStudentMarks(marksList)
+//                    }
+//                } else if (type == "student") {
+//                    var myMarks = database.child("marks/${mCurrentUser.uid}/marks").value.toString()
+//                    if (myMarks == "null")
+//                        myMarks = "0"
+//
+//                    assignment_details_marks.text = "Marks Obtained : $myMarks"
+//
+//                    assignment_details_marks_linear_layout.visibility = View.GONE
+//                    assignment_details_marks.visibility = View.VISIBLE
+//                    setSubmitButton()
+//                }
+//            }
+//        })
+
+
         mRootRef.child("Assignment/$classId/$assignment").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
@@ -79,7 +137,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                         error.printStackTrace()
                     }
                 }
-
 
                 mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) {
@@ -295,8 +352,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
         private fun setStudentDownloadButton(studentAssignmentDetails: StudentAssignmentDetails) {
             with(download) {
-                if (studentAssignmentDetails.link != "null") {
-                    if (studentAssignmentDetails.state == "submit") {
+                if (studentAssignmentDetails.state == "submit") {
+                    if (studentAssignmentDetails.link != "null") {
                         visibility = View.VISIBLE
                         isClickable = true
 
@@ -320,12 +377,12 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        setImageResource(R.drawable.ic_cross_red_24dp)
-                        visibility = View.VISIBLE
+                        visibility = View.INVISIBLE
                         isClickable = false
                     }
                 } else {
-                    visibility = View.INVISIBLE
+                    setImageResource(R.drawable.ic_cross_red_24dp)
+                    visibility = View.VISIBLE
                     isClickable = false
                 }
             }
