@@ -42,6 +42,8 @@ class JoinClass : AppCompatActivity() {
             if(detail.invalid)
                 return@setOnClickListener
 
+            detail.name = mCurrentUser?.displayName?:"Anonymous"
+
             mRootRef.child("Classroom/${detail.classId}/members").addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
                     Log.d(TAG,"Join Class : ${p0.message}")
@@ -64,6 +66,7 @@ class JoinClass : AppCompatActivity() {
                             map["as"] = "student"
                             map["request"] = "pending"
                             map["rollNumber"] = detail.rollNumber
+                            map["name"] = detail.name
                             mRootRef.child("Join-Class-Request/${detail.classId}/${mCurrentUser?.uid}").setValue(map).addOnSuccessListener {
                                 Log.d(TAG, "Request send")
                                 Toast.makeText(this@JoinClass, "Request send", Toast.LENGTH_SHORT).show()
@@ -98,6 +101,7 @@ class JoinClass : AppCompatActivity() {
     private class Detail{
         var classId:String = ""
         var rollNumber:String = ""
+        var name: String = ""
         var invalid:Boolean = false
     }
 

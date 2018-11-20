@@ -68,8 +68,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.value == null)
-                    return
+
+                classList.clear()
 
                 for(group in dataSnapshot.children){
                     if (group.value == null)

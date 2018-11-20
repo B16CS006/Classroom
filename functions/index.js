@@ -19,6 +19,7 @@ exports.join_class_request = functions.database.ref('Join-Class-Request/{classId
 	const as = snapshot.after.val().as;
 	const rollNumber = snapshot.after.val().rollNumber;
 	const request = snapshot.after.val().request;
+	const name = snapshot.after.val().name;
 
 	if(request == null || as == null){
 		conslole.log('requst or as is null');
@@ -42,7 +43,11 @@ exports.join_class_request = functions.database.ref('Join-Class-Request/{classId
 		const classEnrollPath = `Class-Enroll/${userId}/${classId}`;
 		const classroomPath = `Classroom/${classId}/members/${userId}`;
 
-		var classroomValue = {'as':as,'rollNumber':rollNumber}
+		var classroomValue = {
+			'as':as,
+			'rollNumber':rollNumber,
+			'name':name
+		}
 		var classEnrollValue = {'as':as}
 
 		if(as == "leave"){

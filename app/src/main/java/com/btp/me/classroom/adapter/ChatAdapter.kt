@@ -39,12 +39,12 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
 //        Log.d(TAG,"view Type : ${p0.itemViewType}")
 
         when (p0.itemViewType) {
-            MessageType.DATE -> (p0 as DateMessageViewHolder).bind(list.get(p1))
-            MessageType.MY_COMMAND -> (p0 as MyCommandViewHolder).bind(list.get(p1))
-            MessageType.MY_MESSAGE -> (p0 as MyMessageViewHolder).bind(list.get(p1))
-            MessageType.MY_FIRST_MESSAGE -> (p0 as MyFirstMessageViewHolder).bind(list.get(p1))
-            MessageType.OTHER_MESSAGE -> (p0 as OtherMessageViewHolder).bind(list.get(p1))
-            MessageType.OTHER_FIRST_MESSAGE -> (p0 as OtherFirstMessageViewHolder).bind(list.get(p1))
+            MessageType.DATE -> (p0 as DateMessageViewHolder).bind(list[p1])
+            MessageType.MY_COMMAND -> (p0 as MyCommandViewHolder).bind(list[p1])
+            MessageType.MY_MESSAGE -> (p0 as MyMessageViewHolder).bind(list[p1])
+            MessageType.MY_FIRST_MESSAGE -> (p0 as MyFirstMessageViewHolder).bind(list[p1])
+            MessageType.OTHER_MESSAGE -> (p0 as OtherMessageViewHolder).bind(list[p1])
+            MessageType.OTHER_FIRST_MESSAGE -> (p0 as OtherFirstMessageViewHolder).bind(list[p1])
 //            else -> (p0 as MyCommandViewHolder).bind(list.get(p1))
         }
 
@@ -144,7 +144,7 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
         private val timeView = view.findViewById<TextView>(R.id.other_first_time_view)
 
         fun bind(chatMessage: ChatMessage) {
-            setName(chatMessage.senderName)
+            setRollNumber(chatMessage.senderRollNumber, chatMessage.senderName)
             setMessage(chatMessage.message)
             setTime(chatMessage.time)
         }
@@ -152,6 +152,13 @@ class ChatAdapter(private val list: ArrayList<ChatMessage>) : RecyclerView.Adapt
         private fun setName(name: String) {
             nameView.text = name
             nameView.setTextColor(Color.parseColor(MyColor.chooseColor(name)))
+        }
+
+        private fun setRollNumber(rollNumber:String, name: String){
+            if(rollNumber == "null")
+                setName(name)
+            else
+                setName(rollNumber)
         }
 
         private fun setMessage(message: String) {

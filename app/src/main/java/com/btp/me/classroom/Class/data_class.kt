@@ -104,7 +104,16 @@ abstract class FileBuilder{
     }
 }
 
-data class ChatMessage(var senderId:String = "...",var visibility:String = "...", var time:String = "0", var message:String = "...", var type:String = "...",  var senderName:String = "...", var viewType:Int)
+data class ChatMessage(
+        var senderId:String = "..."
+        ,var visibility:String = "..."
+        ,var time:String = "0"
+        ,var message:String = "..."
+        ,var type:String = "..."
+        ,var senderName:String = "..."
+        ,var senderRollNumber:String = "..."
+        ,var viewType:Int
+)
 
 data class Assignment(
     var title: String = "",

@@ -31,21 +31,21 @@ import kotlin.collections.HashMap
 class PublicChatActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private var currentUser: FirebaseUser? = null
-//    private lateinit var classId:String
+    private lateinit var currentUser: FirebaseUser
 
-    private var isPendingRequestAccessed : Boolean= false
+    private var isTeacher : Boolean= false
     private var isPendingRequest: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_public_chat)
 
+        currentUser = FirebaseAuth.getInstance().currentUser?: return
+
+        if(classId == "null") finish()
+
         public_chat_recycler_list.setHasFixedSize(true)
         public_chat_recycler_list.layoutManager = LinearLayoutManager(this)
-
-        currentUser = FirebaseAuth.getInstance()?.currentUser ?: sendToHomepage()
-        if(classId == "null") finish()
 
         initialize()
 
@@ -56,19 +56,24 @@ class PublicChatActivity : AppCompatActivity() {
     private fun initialize(){
         setTitle()
         setToolbar()
-        getPendingRequestAccessed()
+     //   getPendingRequestAccessed()
         getPendingRequest()
         setUserName()
     }
 
     private fun setUserName() {
-        mRootRef.child("Users/${currentUser?.uid}/name").addListenerForSingleValueEvent(object : ValueEventListener {
+        mRootRef.child("Classroom/$classId/members/${currentUser.uid}").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 userName = "Anonymous"
+                rollNumber = "Anonymous"
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                userName = p0.value.toString()
+                Log.d(TAG,"User Name data cnaged : $p0")
+                userName = p0.child("name").value.toString()
+                rollNumber = p0.child("rollNumber").value.toString()
+                isTeacher = p0.child("as").value.toString() == "teacher"
+                invalidateOptionsMenu()
             }
 
         })
@@ -159,14 +164,14 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun sendToPendingRequestActivity() {
-        if (isPendingRequestAccessed)
+        if (isTeacher)
             startActivity(Intent(this, PendingRequestActivity::class.java))
         else{
             Toast.makeText(this,"Be Teacher First", Toast.LENGTH_SHORT).show()
         }
     }
 
-
+    //this can now done by setUserName
     private fun getPendingRequestAccessed(){
         mRootRef.child("Class-Enroll/${currentUser?.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -174,7 +179,7 @@ class PublicChatActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(data: DataSnapshot) {
-                isPendingRequestAccessed = data.value == "teacher"
+                isTeacher = data.value == "teacher"
                 invalidateOptionsMenu()
             }
 
@@ -212,6 +217,9 @@ class PublicChatActivity : AppCompatActivity() {
 
     private fun sendMessage(message: String, type: String, visibility: String) {
         val map = HashMap<String, String>()
+
+        Log.d(TAG,"userName : $userName, userRollNumber : $rollNumber, isTeacher : $isTeacher")
+
         if (userName == "null") return
 
 
@@ -229,10 +237,12 @@ class PublicChatActivity : AppCompatActivity() {
         map["visibility"] = visibility
         map["type"] = type
         map["time"] = dateTime.toString()
+        map["senderRollNumber"] = rollNumber
 
         val json = JSONObject(map).toString()
 
         mRootRef.child("Message/$classId/$date/$dateTime").setValue(json).addOnSuccessListener {
+            Log.d(TAG,"Successfully : $json")
 
         }.addOnFailureListener { exception ->
             Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show()
@@ -248,16 +258,13 @@ class PublicChatActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-//                public_chat_list.removeAllViews()
+                Log.d(TAG,"on data : $p0")
                 var previous = "null"
-//                Log.d(TAG,"datasnapshot all data : ${p0.value}")
 
                 val chatList = ArrayList<ChatMessage>()
 
                 for (dayDataSnapshot in p0.children) {
                     if (dayDataSnapshot.key == null || dayDataSnapshot.value == "null") continue
-
-//                    Log.d(TAG,"Json class : $dataSnapshot")
 
                     val dateFormat = SimpleDateFormat("MMMM dd, yyyy", Locale.ENGLISH)
                     val timeFormat = SimpleDateFormat("HH:mm", Locale.ENGLISH)
@@ -270,12 +277,14 @@ class PublicChatActivity : AppCompatActivity() {
                     for (dataSnapshot in dayDataSnapshot.children) {
                         if (dataSnapshot == null || dataSnapshot.value == "null") continue
 
+                        Log.d(TAG,"data data: $dataSnapshot")
+
                         val map = Gson().fromJson(dataSnapshot.value.toString(), ChatMessage::class.java)
 
                         map.time = timeFormat.format(Date(map.time.toLong()))
 
 
-                        if (map.visibility == "me" && map.senderId != currentUser?.uid) {
+                        if (map.visibility == "me" && map.senderId != currentUser.uid) {
                             continue
                         }
 
@@ -283,7 +292,7 @@ class PublicChatActivity : AppCompatActivity() {
                             previous = "null"
                             map.viewType = MessageType.MY_COMMAND
                         } else {
-                            if (map.senderId == currentUser?.uid) {
+                            if (map.senderId == currentUser.uid) {
                                 map.viewType = when (previous) {map.senderId -> MessageType.MY_MESSAGE; else -> MessageType.MY_FIRST_MESSAGE
                                 }
                             } else {
@@ -421,7 +430,7 @@ class PublicChatActivity : AppCompatActivity() {
         if(menu == null)
             return false
 
-        menu.findItem(R.id.pending_request).isVisible = isPendingRequestAccessed && isPendingRequest
+        menu.findItem(R.id.pending_request).isVisible = isTeacher && isPendingRequest
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -438,12 +447,12 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "chetan"
+        private const val TAG = "Public Chat Activity"
         private var userName = "null"
-
+        private var rollNumber = "null"
         private const val COMMAND_TAG = "."
 
-        private val commandList = arrayListOf<String>(
+        private val commandList = arrayListOf(
                 "whoami",
                 "classname",
                 "members",

@@ -154,6 +154,9 @@ class ClassMembersActivity: AppCompatActivity() {
         }
 
         private fun setRollNumber(rollNumber:String){
+            if (rollNumber == "null"){
+                view.single_people_roll_number.visibility = View.GONE
+            }
             view.single_people_roll_number.text = rollNumber
         }
 

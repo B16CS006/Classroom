@@ -1,6 +1,7 @@
 package com.btp.me.classroom
 
 import android.app.Activity
+import android.content.ComponentCallbacks2
 import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_create_class.*
 import java.io.ByteArrayOutputStream
@@ -37,10 +39,10 @@ class CreateClassActivity : AppCompatActivity() {
 
         mCurrentUser ?: sendToHomePage()
 
-        userMap["Classroom/$classId/name"] = "default"
-        userMap["Classroom/$classId/status"] = "default"
-        userMap["Classroom/$classId/profileImage"] = "default"
-        userMap["Classroom/$classId/thumbsProfileImage"] = "default"
+//        userMap["Classroom/$classId/name"] = "default"
+//        userMap["Classroom/$classId/status"] = "default"
+//        userMap["Classroom/$classId/profileImage"] = "default"
+//        userMap["Classroom/$classId/thumbsProfileImage"] = "default"
 
 
 //        mRootRef.child("Classroom/$classId").addListenerForSingleValueEvent(object :ValueEventListener{
@@ -78,16 +80,34 @@ class CreateClassActivity : AppCompatActivity() {
 
     private fun createClass() {
         mCurrentUser ?: sendToHomePage()
-        userMap["Class-Enroll/${mCurrentUser!!.uid}/$classId/as"] = "teacher"
-        userMap["Classroom/$classId/members/${mCurrentUser!!.uid}/as"] = "teacher"
-        mRootRef.updateChildren(userMap.toMap()).addOnSuccessListener {
-            Toast.makeText(this, "Class is successfully created.", Toast.LENGTH_LONG).show()
-            Log.d("chetan", "Class is successfully created")
-            finish()
-        }.addOnFailureListener { exception ->
-            Log.d("chetan", "Error ${exception.message}")
-            Toast.makeText(this, exception.message, Toast.LENGTH_LONG).show()
-        }
+
+        mRootRef.child("Users/${mCurrentUser?.uid}/name").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d("chetan","Error: ${p0.message}")
+                Toast.makeText(this@CreateClassActivity, "Failed : ${p0.message}", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if(p0.value == "null"){
+                    Log.d("chetan","Error: name is not set")
+                    Toast.makeText(this@CreateClassActivity, "Failed : name is not set", Toast.LENGTH_SHORT).show()
+                }else{
+                    userMap["Classroom/$classId/members/${mCurrentUser?.uid}/as"] = "teacher"
+                    userMap["Classroom/$classId/members/${mCurrentUser?.uid}/name"] = p0.value.toString()
+                    userMap["Class-Enroll/${mCurrentUser?.uid}/$classId/as"] = "teacher"
+
+                    mRootRef.updateChildren(userMap.toMap()).addOnSuccessListener {
+                        Toast.makeText(this@CreateClassActivity, "Class is successfully created.", Toast.LENGTH_LONG).show()
+                        Log.d("chetan", "Class is successfully created")
+                        finish()
+                    }.addOnFailureListener { exception ->
+                        Log.d("chetan", "Error ${exception.message}")
+                        Toast.makeText(this@CreateClassActivity, exception.message, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+
+        })
     }
 
     private fun sendToHomePage() {
