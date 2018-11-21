@@ -432,6 +432,8 @@ class PublicChatActivity : AppCompatActivity() {
 
         menu.findItem(R.id.pending_request).isVisible = isTeacher && isPendingRequest
 
+
+
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -439,7 +441,33 @@ class PublicChatActivity : AppCompatActivity() {
         if (item == null) return false
 
         when(item.itemId){
+            R.id.members -> {
+                sendMessage(commandList[2],"command","me")
+                sendToMembersActivity()
+            }
+
+            R.id.slide -> {
+                sendMessage(commandList[3],"command","me")
+                sendToSlideActivity()
+            }
+
+            R.id.new_assignment -> {
+                sendMessage(commandList[4],"command", "me")
+                sendToAssignmentUploadActivity()
+            }
+
+            R.id.assignment -> {
+                sendMessage(commandList[5],"command","me")
+                sendToAssignmentActivity()
+            }
+
+            R.id.leave -> {
+                sendMessage(commandList[6],"command","me")
+                leaveClassroom()
+            }
+
             R.id.pending_request -> {
+                sendMessage(commandList[7],"command","me")
                 sendToPendingRequestActivity()
             }
         }

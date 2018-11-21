@@ -10,4 +10,23 @@
         android:visible="false"
         android:title="Pending Request" />
 
+    <item
+        android:id="@+id/members"
+        android:title="Members" />
+
+    <item
+        android:id="@+id/slide"
+        android:title="Slide" />
+
+    <item
+        android:id="@+id/assignment"
+        android:title="Assignment" />
+
+    <item
+        android:id="@+id/new_assignment"
+        android:title="Upload New Assignment" />
+
+    <item
+        android:id="@+id/leave"
+        android:title="Leave Group" />
 </menu>
