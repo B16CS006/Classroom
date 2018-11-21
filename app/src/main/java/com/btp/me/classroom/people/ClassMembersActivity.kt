@@ -28,6 +28,11 @@ class ClassMembersActivity: AppCompatActivity() {
     private val mRootRef = FirebaseDatabase.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_members)
@@ -35,6 +40,8 @@ class ClassMembersActivity: AppCompatActivity() {
 //        databaseReference.keepSynced(true)
 
         title = "Members"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         if(currentUser == null){
             sendToHomepage()

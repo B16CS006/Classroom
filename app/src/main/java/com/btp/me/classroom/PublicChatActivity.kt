@@ -54,8 +54,8 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun initialize(){
-        setTitle()
         setToolbar()
+        setTitle()
      //   getPendingRequestAccessed()
         getPendingRequest()
         setUserName()
@@ -98,9 +98,11 @@ class PublicChatActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         setSupportActionBar(public_chat_toolbar)
-        with(public_chat_toolbar){
-            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
-        }
+//        with(public_chat_toolbar){
+//            setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+//        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
     }
 
     private fun getTypeMessage() {                                                // The Message typed by the user in input box
@@ -150,7 +152,11 @@ class PublicChatActivity : AppCompatActivity() {
             }
             commandList[7] ->{
                 sendMessage(commandList[7],"command","me")
-                sendToPendingRequestActivity()
+                if(isTeacher)
+                    sendToPendingRequestActivity()
+                else{
+                    Toast.makeText(this,"Be Teacher First", Toast.LENGTH_SHORT).show()
+                }
             }
 
             else ->{
@@ -431,6 +437,8 @@ class PublicChatActivity : AppCompatActivity() {
             return false
 
         menu.findItem(R.id.pending_request).isVisible = isTeacher && isPendingRequest
+
+        menu.findItem(R.id.new_assignment).isVisible = isTeacher
 
 
 

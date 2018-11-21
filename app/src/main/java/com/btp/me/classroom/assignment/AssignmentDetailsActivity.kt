@@ -38,11 +38,18 @@ private var assignment: String = ""
 
 class AssignmentDetailsActivity : AppCompatActivity() {
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_details)
 
         title = "Assignment Details"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         mCurrentUser = FirebaseAuth.getInstance()?.currentUser ?: return
         assignment = intent.getStringExtra("assignment")
@@ -120,7 +127,12 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 assignment_details_submission_date.text = database.child("submissionDate").value.toString()
                 assignment_details_max_marks.text = database.child("maxMarks").value.toString()
                 assignment_details_description.text = database.child("description").value.toString()
-                assignment_details_assignment_download_button.isEnabled = database.child("link").value.toString() != "null"
+
+                if(database.child("link").value.toString() != "null") {
+                    assignment_details_assignment_download_button.visibility = View.VISIBLE
+                }else{
+                    assignment_details_assignment_download_button.visibility = View.INVISIBLE
+                }
 
                 assignment_details_assignment_download_button.setOnClickListener {
                     try {

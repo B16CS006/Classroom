@@ -26,11 +26,18 @@ class PendingRequestActivity : AppCompatActivity() {
     private val mRootRef = FirebaseDatabase.getInstance().reference
     private lateinit var currentUser :FirebaseUser
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pending_request)
 
         title = "Pending Requests"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         currentUser = FirebaseAuth.getInstance()?.currentUser?:return
 

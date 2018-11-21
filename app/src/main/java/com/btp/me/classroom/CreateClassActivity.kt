@@ -30,11 +30,18 @@ class CreateClassActivity : AppCompatActivity() {
     private var userMap = HashMap<String, Any>()
     private val classId by lazy { mRootRef.child("Classroom").push().key }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_class)
 
         title = "Create New Class"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         mCurrentUser ?: sendToHomePage()
 

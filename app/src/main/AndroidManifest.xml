@@ -57,7 +57,8 @@
             android:theme="@style/NoTitleBar" />
         <activity
             android:name=".PublicChatActivity"
-            android:theme="@style/NoTitleBar" />
+            android:theme="@style/NoTitleBar"
+            android:parentActivityName=".MainActivity" />
 
         <activity android:name=".CreateClassActivity" />
         <activity android:name=".JoinClass" />

@@ -2,98 +2,156 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/assignment_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/assignment_details"
+    android:paddingEnd="16dp"
+    android:background="@color/background1"
+    android:paddingStart="16dp"
     android:orientation="vertical"
     tools:context="com.btp.me.classroom.assignment.AssignmentDetailsActivity">
 
-
-
     <TextView
         android:id="@+id/assignment_details_title"
-        android:text="Title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Title"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/assignment_details_linear_layout_due_date"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_title">
 
         <TextView
-            android:text="Due Date : "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Due Date : "
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/assignment_details_submission_date"
-            android:text="12/12/2018"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="12/12/2018"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/assignment_details_linear_layout_marks"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_due_date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_due_date">
 
         <TextView
-            android:text="Maximum Marks : "
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Maximum Marks : "
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/assignment_details_max_marks"
-            android:text="100"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="100"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
     </LinearLayout>
+
+
+    <!--<Button-->
+        <!--android:id="@+id/assignment_details_assignment_download_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:enabled="false"-->
+        <!--android:text="Download"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/assignment_details_linear_layout_marks"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@id/assignment_details_linear_layout_due_date" />-->
+
+    <ImageButton
+        android:id="@+id/assignment_details_assignment_download_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:background="#0000"
+        android:visibility="invisible"
+        android:src="@drawable/ic_cloud_download_blue_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/assignment_details_linear_layout_marks"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/assignment_details_linear_layout_due_date"
+        android:contentDescription="Download Button" />
 
     <TextView
         android:id="@+id/assignment_details_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="Description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_marks"/>
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="italic"
 
-    <Button
-        android:id="@+id/assignment_details_assignment_download_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Download"
-        android:enabled="false"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_description"/>
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_linear_layout_marks" />
+
 
     <LinearLayout
         android:id="@+id/assignment_details_marks_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button">
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_marginBottom="10dp"
+            android:text="List of Students :"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="70dp"
             android:weightSum="4">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="#000"
+                android:layout_weight="3"
                 android:text="Name"
-                android:layout_weight="3"/>
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
             <TextView
+                android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="#000"
+                android:layout_weight="1"
                 android:text="Marks"
-                android:layout_weight="1"/>
+                android:textColor="@color/black"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -107,12 +165,13 @@
         android:id="@+id/assignment_details_marks_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="No Student has Submitted Assignment"
-        android:textColor="#000"
-        android:textStyle="bold|italic"
+        android:layout_marginTop="30dp"
         android:gravity="center"
+        android:text="No Student has Submitted Assignment"
+        android:textColor="@color/warning"
+        android:textStyle="bold|italic"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description" />
 
 
     <!--<TableLayout-->
@@ -131,29 +190,42 @@
         android:id="@+id/assignment_details_marks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="0"
+        android:textColor="#008080"
+        android:textSize="16sp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_assignment_download_button"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_description" />
 
     <LinearLayout
         android:id="@+id/assignment_details_linear_layout_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/assignment_details_marks"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/assignment_details_add_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add"/>
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/assignment_details_marks">
 
         <Button
             android:id="@+id/assignment_details_submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mark as Done"/>
+            android:layout_weight="2"
+            android:background="@drawable/my_button"
+            android:text="Mark as Done"
+            android:textColor="@color/grey_300" />
+
+        <ImageButton
+            android:id="@+id/assignment_details_add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#0000"
+            android:padding="12dp"
+            android:src="@drawable/ic_attachment_green_24dp" />
 
     </LinearLayout>
 

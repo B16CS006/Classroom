@@ -24,6 +24,11 @@ class AssignmentActivity : AppCompatActivity() {
     private lateinit var currentUser:FirebaseUser
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment)
@@ -36,6 +41,8 @@ class AssignmentActivity : AppCompatActivity() {
 
     private fun initialize() {
         title = "Assignment"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         assignment_list.setHasFixedSize(true)
         assignment_list.layoutManager = LinearLayoutManager(this)

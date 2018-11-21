@@ -13,6 +13,8 @@
         android:title="Join Class" />
     <item
         android:id="@+id/main_logout_btn"
-        android:title="Logout" />
+        android:title="Logout"
+        android:icon="@drawable/ic_logout_white"
+        />
 
 </menu>

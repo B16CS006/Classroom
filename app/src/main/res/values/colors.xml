@@ -5,6 +5,10 @@
     <color name="colorAccent">#11785e</color>
     <color name="color1">#050066</color>
 
+    <color name="background1">#d3ffce</color>
+
+    <color name="black">#000000</color>
+    <color name="warning">#FF0000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
@@ -12,6 +16,6 @@
     <color name="chat_background">#e0e0e0</color>
     <color name="other_message_color">#fafafa</color>
     <color name="my_message_color">#69f0ae</color>
-    <color name="my_command_color">#ffd180</color>
+    <color name="my_command_color">#ffecb3</color>
     <color name="my_command_result_color">#e3f2fd</color>
 </resources>

@@ -19,11 +19,18 @@ class JoinClass : AppCompatActivity() {
     private val mRootRef = FirebaseDatabase.getInstance().reference
     private var mCurrentUser: FirebaseUser? = null
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_join_class)
 
         title = "Join Class"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         mCurrentUser = FirebaseAuth.getInstance().currentUser
 

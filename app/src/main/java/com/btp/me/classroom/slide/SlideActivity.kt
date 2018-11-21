@@ -33,6 +33,11 @@ class SlideActivity : AppCompatActivity() {
     private lateinit var currentUser: FirebaseUser
     private var mRootRef = FirebaseDatabase.getInstance().reference
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_slide)
@@ -116,9 +121,13 @@ class SlideActivity : AppCompatActivity() {
         })
     }
 
+
+
     private fun initialize() {
 
         title = "Slides"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         slide_list.setHasFixedSize(true)
         slide_list.layoutManager = LinearLayoutManager(this)

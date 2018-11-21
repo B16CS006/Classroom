@@ -24,11 +24,18 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
     private var fileUri:Uri? = null
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_upload)
 
         title = "Upload Assignment"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
         assignment_upload_file.setOnClickListener {
             startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)
