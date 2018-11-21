@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btp.me.classroom.Redundent.PeopleFragment">
+    tools:context=".people.ClassMembersActivity">
 
     <TextView
         android:id="@+id/peoples_teacher_text_view"
@@ -21,6 +21,7 @@
         android:id="@+id/peoples_teacher_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:maxHeight="200dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/peoples_teacher_text_view"/>

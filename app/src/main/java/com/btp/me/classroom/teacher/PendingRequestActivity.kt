@@ -30,6 +30,8 @@ class PendingRequestActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pending_request)
 
+        title = "Pending Requests"
+
         currentUser = FirebaseAuth.getInstance()?.currentUser?:return
 
         pending_request_list.setHasFixedSize(true)

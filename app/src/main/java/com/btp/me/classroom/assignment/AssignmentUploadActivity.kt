@@ -28,7 +28,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_upload)
 
-        title = "Assignments"
+        title = "Upload Assignment"
 
         assignment_upload_file.setOnClickListener {
             startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)

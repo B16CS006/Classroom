@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.btp.classroom.ClassMemberInfoActivity">
+    android:id="@+id/class_member_main"
+    android:visibility="gone"
+    tools:context=".MemberInfoActivity">
 
     <ImageView
         android:id="@+id/class_member_info_header_cover_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="#555"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,28 +48,63 @@
         app:layout_constraintTop_toBottomOf="@id/class_member_info_image" />
 
 
-    <TextView
-        android:id="@+id/class_member_info_roll_number"
+    <LinearLayout
+        android:id="@+id/class_member_info_roll_number_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Roll Number"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/class_member_info_name" >
+
+        <TextView
+            android:text=" ("
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#3e6bba"
+            android:textSize="24sp"
+            android:textStyle="bold"  />
+        <TextView
+            android:id="@+id/class_member_info_roll_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RollNumber"
+            android:textColor="#3e6bba"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=")"
+            android:textColor="#3e6bba"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/class_member_info_phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Phone Number"
         android:textColor="#4278ce"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/class_member_info_name" />
+        app:layout_constraintTop_toBottomOf="@id/class_member_info_roll_number_linear_layout" />
 
     <TextView
         android:id="@+id/class_member_info_as"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Student"
+        android:text="Registered As"
         android:textColor="#3a75dc"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/class_member_info_roll_number" />
+        app:layout_constraintTop_toBottomOf="@id/class_member_info_phone_number" />
 
 </android.support.constraint.ConstraintLayout>

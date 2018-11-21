@@ -2,45 +2,79 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingBottom="16dp"
+    android:paddingTop="16dp">
 
-    <ImageView
-        android:id="@+id/single_current_user_dot"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="15dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:src="@drawable/green_dot"/>
+    <!--<ImageView-->
+    <!--android:id="@+id/single_people_current_user"-->
+    <!--android:layout_width="10dp"-->
+    <!--android:layout_height="10dp"-->
+    <!--android:src="@drawable/green_dot"-->
+    <!--android:visibility="invisible"-->
+    <!--android:layout_weight="1"-->
+    <!--android:layout_gravity="center_vertical"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/single_people_current_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_marginStart="20dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="->"
+        android:textSize="16sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/single_current_user_dot">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/single_people_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_weight="2"
+        android:text="Person Name"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/single_people_current_user"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/single_people_roll_number_linear_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="20dp"
+        android:layout_weight="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/single_people_name"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="( "
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/single_people_roll_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Roll Number"/>
+            android:text="Roll Number"
+            android:textSize="16sp" />
 
         <TextView
-            android:text="->"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"/>
+            android:text=" )"
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/single_people_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="People Name"/>
     </LinearLayout>
 
 

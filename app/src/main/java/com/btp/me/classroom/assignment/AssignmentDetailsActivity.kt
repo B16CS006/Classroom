@@ -42,6 +42,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_details)
 
+        title = "Assignment Details"
+
         mCurrentUser = FirebaseAuth.getInstance()?.currentUser ?: return
         assignment = intent.getStringExtra("assignment")
 

@@ -13,8 +13,9 @@ import android.view.View
 import android.view.View.INVISIBLE
 import android.widget.*
 import com.bumptech.glide.Glide
-
 import com.google.firebase.auth.FirebaseAuth
+
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,8 +30,8 @@ import java.io.IOException
 import kotlin.collections.HashMap
 
 class RegisterActivity : AppCompatActivity() {
-    private var mStorageRef = FirebaseStorage.getInstance().reference
-    private var currentUser = FirebaseAuth.getInstance().currentUser
+    private var mRootRef = FirebaseStorage.getInstance().reference
+    private lateinit var currentUser:FirebaseUser
     private lateinit var mUserReference: DatabaseReference
 
     var userMap = HashMap<String,String>()
@@ -40,20 +41,15 @@ class RegisterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_register_activity)
         title = "Registration"
 
-        val currentUid = currentUser?.uid ?: finish()
+        currentUser = FirebaseAuth.getInstance().currentUser?:return
 
-
-
-        mUserReference = FirebaseDatabase.getInstance().getReference("Users/$currentUid")
+        mUserReference = FirebaseDatabase.getInstance().getReference("Users/${currentUser.uid}")
 
         mUserReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
                 val name = dataSnapshot.child("name").value?.toString()?: "default"
                 val status = dataSnapshot.child("status").value?.toString()?: "default"
-
-//                reg_name.hint = name
-//                reg_status.hint = status
 
                 reg_name.setText(name, TextView.BufferType.EDITABLE)
                 reg_status.setText(status, TextView.BufferType.EDITABLE)
@@ -72,8 +68,8 @@ class RegisterActivity : AppCompatActivity() {
                 userMap["thumbsImage"] = thumbsImgUri
                 userMap["fcm-token"] = "not assigned"
 
-                val glide_image:Any = when(thumbsImgUri){"default","null" -> R.drawable.ic_classroom else -> thumbsImgUri}
-                Glide.with(reg_image).load(glide_image).into(reg_image)
+                val glideImage:Any = when(thumbsImgUri){"default","null" -> R.drawable.ic_classroom else -> thumbsImgUri}
+                Glide.with(reg_image).load(glideImage).into(reg_image)
                 reg_progressBar.visibility = INVISIBLE
             }
 
@@ -116,6 +112,7 @@ class RegisterActivity : AppCompatActivity() {
         val token = sp.getString("fcm-token", "not assigned")
 
         userMap["fcm-token"] = token?: "not assigned"
+        userMap["phone"] = currentUser.phoneNumber.toString()
 
         mUserReference.updateChildren(userMap.toMap()).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -168,10 +165,10 @@ class RegisterActivity : AppCompatActivity() {
                 val thumbData = baos.toByteArray()
 
                 val currentUid = currentUser!!.uid
-                mStorageRef = FirebaseStorage.getInstance().reference
+                mRootRef = FirebaseStorage.getInstance().reference
 
-                val filePath = mStorageRef.child("profile_images").child("$currentUid.jpg")
-                val thumb_filePath = mStorageRef.child("profile_images").child("thumbs").child("$currentUid.jpg")
+                val filePath = mRootRef.child("profile_images").child("$currentUid.jpg")
+                val thumb_filePath = mRootRef.child("profile_images").child("thumbs").child("$currentUid.jpg")
 
 
                 filePath.putFile(imageUri!!).addOnSuccessListener {

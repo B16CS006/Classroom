@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.btp.classroom.ClassMemberInfoActivity
+import com.btp.me.classroom.MemberInfoActivity
 import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -26,8 +26,7 @@ import kotlinx.android.synthetic.main.single_people_layout.view.*
 class ClassMembersActivity: AppCompatActivity() {
 //    private var classId:String? = null
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private val databaseReference = mRootRef.child("Classroom/$classId/members")
-    private val mCurrentUser = FirebaseAuth.getInstance().currentUser
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,9 @@ class ClassMembersActivity: AppCompatActivity() {
 
 //        databaseReference.keepSynced(true)
 
-        if(mCurrentUser == null){
+        title = "Members"
+
+        if(currentUser == null){
             sendToHomepage()
             return
         }else if(classId == "null"){
@@ -53,7 +54,7 @@ class ClassMembersActivity: AppCompatActivity() {
         val teachersList = ArrayList<HashMap<String,String>>()
         val studentsList = ArrayList<HashMap<String,String>>()
 
-        databaseReference.addValueEventListener(object : ValueEventListener{
+        mRootRef.child("Classroom/$classId/members").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG,"Database Reference for People on data changed, ${p0.message}")
             }
@@ -75,7 +76,7 @@ class ClassMembersActivity: AppCompatActivity() {
                     map["name"] = people.child("name").value.toString()
                     map["rollNumber"] = people.child("rollNumber").value.toString()
 
-                    if(mCurrentUser.uid == map["userId"])
+                    if(currentUser.uid == map["userId"])
                         map["who"] = "me"
 
                     when(map["as"]){
@@ -146,8 +147,8 @@ class ClassMembersActivity: AppCompatActivity() {
         fun bind(map: HashMap<String,String>){  
             setName(map["name"]!!)
             setRollNumber(map["rollNumber"]!!)
-            setCurrentUserDot(map["who"])
-            onClick()
+            setCurrentUserIcon(map["who"])
+            onClick(map["name"]!!, map["userId"]!!, map["rollNumber"]!!, map["as"]!!)
         }
 
         private fun setName(name:String){
@@ -155,20 +156,31 @@ class ClassMembersActivity: AppCompatActivity() {
         }
 
         private fun setRollNumber(rollNumber:String){
+
             if (rollNumber == "null"){
-                view.single_people_roll_number.visibility = View.GONE
+                view.single_people_roll_number_linear_layout.visibility = View.GONE
+            }else{
+                view.single_people_roll_number_linear_layout.visibility = View.VISIBLE
+                view.single_people_roll_number.text = rollNumber
             }
-            view.single_people_roll_number.text = rollNumber
         }
 
-        private fun setCurrentUserDot(me:String?){
+        private fun setCurrentUserIcon(me:String?){
             if(me == "me")
-                view.single_current_user_dot.visibility = View.VISIBLE
+                view.single_people_current_user.visibility = View.VISIBLE
+            else
+                view.single_people_current_user.visibility = View.INVISIBLE
         }
 
-        private fun onClick(){
+        private fun onClick(name:String, userId:String,rollNumber: String, registeredAs:String){
             view.setOnClickListener{
-                context.startActivity(Intent(context, ClassMemberInfoActivity::class.java))
+                val memberInfotainment = Intent(context, MemberInfoActivity::class.java)
+                memberInfotainment.putExtra("userId", userId)
+                Log.d("info", "registered : $registeredAs : userId : $userId rollNumber : $rollNumber")
+                memberInfotainment.putExtra("registeredAs", registeredAs)
+                memberInfotainment.putExtra("rollNumber", rollNumber)
+                memberInfotainment.putExtra("name", name)
+                context.startActivity(memberInfotainment)
             }
         }
     }
