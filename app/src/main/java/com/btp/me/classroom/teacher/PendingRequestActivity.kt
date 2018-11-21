@@ -1,6 +1,5 @@
 package com.btp.me.classroom.teacher
 
-import android.content.ComponentCallbacks2
 import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -79,10 +78,12 @@ class PendingRequestActivity : AppCompatActivity() {
                     val array =  ArrayList<String>()
                     array.add(user.child("as").value.toString())
                     array.add(user.child("rollNumber").value.toString())
+                    array.add(user.child("name").value.toString())
                     array.add(user.key.toString())
 
                     Log.d(TAG,"AS : ${user.child("as").value.toString()}")
                     Log.d(TAG,"roll : ${user.child("rollNumber").value.toString()}")
+                    Log.d(TAG,"name : ${user.child("name").value.toString()}")
                     Log.d(TAG,"uid : ${user.key.toString()}")
 
                     pendingRequestList.add(array)
@@ -113,31 +114,36 @@ class PendingRequestActivity : AppCompatActivity() {
 
 
         fun bind(list:ArrayList<String>){
+
+            //as, rollNumber, name, uid
+
             bind(list[2],list[1])
-            onClick(list[2])
+            onClick(list[3])
         }
 
-        fun bind(userId: String, rollNumber: String){
-            setName(userId)
+        fun bind(name: String, rollNumber: String){
+            setName(name)
             setRollNumber(rollNumber)
         }
 
-        private fun setName(userId: String){
-            view.visibility = View.GONE
+        private fun setName(name: String){
+            nameView.text = name
 
-            FirebaseDatabase.getInstance().getReference("Users/$userId/name").addValueEventListener(object : ValueEventListener{
-                override fun onCancelled(p0: DatabaseError) {
-                    Log.d(TAG,"Error : ${p0.message}")
-                    nameView.text = "$userId -Be aware"
-                    view.visibility = View.VISIBLE
-                }
-
-                override fun onDataChange(data: DataSnapshot) {
-                    view.visibility = View.VISIBLE
-                    nameView.text = when(data.value){ null -> userId; else -> data.value.toString() }
-                }
-
-            })
+//            view.visibility = View.GONE
+//
+//            FirebaseDatabase.getInstance().getReference("Users/$name/name").addValueEventListener(object : ValueEventListener{
+//                override fun onCancelled(p0: DatabaseError) {
+//                    Log.d(TAG,"Error : ${p0.message}")
+//                    nameView.text = "$name -Be aware"
+//                    view.visibility = View.VISIBLE
+//                }
+//
+//                override fun onDataChange(data: DataSnapshot) {
+//                    view.visibility = View.VISIBLE
+//                    nameView.text = when(data.value){ null -> name; else -> data.value.toString() }
+//                }
+//
+//            })
         }
 
         private fun setRollNumber(rollNumber:String){

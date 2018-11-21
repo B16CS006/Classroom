@@ -31,24 +31,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".PhoneAuthActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoTitleBar" />
         <activity
             android:name=".MemberInfoActivity"
-            android:theme="@style/NoTitleBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/NoTitleBar" />
         <activity
             android:name=".PhoneAuthenticationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/NoTitleBar" />
-
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".HomepageActivity"
             android:theme="@style/NoTitleBar" />
@@ -57,9 +54,8 @@
             android:theme="@style/NoTitleBar" />
         <activity
             android:name=".PublicChatActivity"
-            android:theme="@style/NoTitleBar"
-            android:parentActivityName=".MainActivity" />
-
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/NoTitleBar" />
         <activity android:name=".CreateClassActivity" />
         <activity android:name=".JoinClass" />
         <activity android:name=".people.ClassMembersActivity" />
@@ -67,7 +63,7 @@
         <activity android:name=".assignment.AssignmentUploadActivity" />
         <activity android:name=".assignment.AssignmentActivity" />
         <activity android:name=".teacher.PendingRequestActivity" />
-
+        <activity android:name=".teacher.ClassMarksActivity"></activity>
     </application>
 
 </manifest>

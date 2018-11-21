@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.btp.me.classroom.MemberInfoActivity
 import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity
@@ -27,6 +28,7 @@ class ClassMembersActivity: AppCompatActivity() {
 //    private var classId:String? = null
     private val mRootRef = FirebaseDatabase.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
+    private var isTeacher: Boolean = false
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -83,8 +85,10 @@ class ClassMembersActivity: AppCompatActivity() {
                     map["name"] = people.child("name").value.toString()
                     map["rollNumber"] = people.child("rollNumber").value.toString()
 
-                    if(currentUser.uid == map["userId"])
+                    if(currentUser.uid == map["userId"]) {
                         map["who"] = "me"
+                       isTeacher = map["as"] == "teacher"
+                    }
 
                     when(map["as"]){
                         "teacher" -> teachersList.add(map)
@@ -120,7 +124,7 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Teacher adapter on create viewHolder")
                 return PeopleViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity)
+                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity, isTeacher)
             }
 
             override fun getItemCount() = teachersList.size
@@ -135,7 +139,7 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Student adapter on create viewHolder")
                 return PeopleViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity)
+                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity, isTeacher)
             }
 
             override fun getItemCount() = studentsList.size
@@ -149,13 +153,22 @@ class ClassMembersActivity: AppCompatActivity() {
         peoples_students_list.adapter = studentAdapter
     }
 
-    private class PeopleViewHolder(val view:View, val context: Context): RecyclerView.ViewHolder(view){
+    private class PeopleViewHolder(val view:View, val context: Context, val isTeacher:Boolean): RecyclerView.ViewHolder(view){
 
         fun bind(map: HashMap<String,String>){  
             setName(map["name"]!!)
             setRollNumber(map["rollNumber"]!!)
             setCurrentUserIcon(map["who"])
+            setExitButton()
             onClick(map["name"]!!, map["userId"]!!, map["rollNumber"]!!, map["as"]!!)
+        }
+
+        private fun setExitButton(){
+            if (isTeacher){
+                view.single_people_exit_button.visibility = View.VISIBLE
+            }else{
+                view.single_people_exit_button.visibility = View.INVISIBLE
+            }
         }
 
         private fun setName(name:String){
@@ -180,6 +193,20 @@ class ClassMembersActivity: AppCompatActivity() {
         }
 
         private fun onClick(name:String, userId:String,rollNumber: String, registeredAs:String){
+
+            view.single_people_exit_button.setOnClickListener{
+                val map = HashMap<String, String>()
+                map["request"] = "accept"
+                map["as"] = "leave"
+                FirebaseDatabase.getInstance().getReference("Join-Class-Request/$classId/$userId").setValue(map).addOnSuccessListener {
+                    Log.d(TAG, "Request send")
+                    Toast.makeText(context, "Request to Leave", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener { exception ->
+                    Log.d(TAG, "Error : ${exception.message}")
+                    Toast.makeText(context, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             view.setOnClickListener{
                 val memberInfotainment = Intent(context, MemberInfoActivity::class.java)
                 memberInfotainment.putExtra("userId", userId)

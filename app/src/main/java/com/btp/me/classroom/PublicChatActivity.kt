@@ -221,6 +221,10 @@ class PublicChatActivity : AppCompatActivity() {
         }
     }
 
+//    private fun calculateMaximumMarks(userId:String){
+//        mRootRef.child("Classroom/")
+//    }
+
     private fun sendMessage(message: String, type: String, visibility: String) {
         val map = HashMap<String, String>()
 
