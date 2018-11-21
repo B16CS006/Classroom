@@ -72,7 +72,7 @@ class RegisterActivity : AppCompatActivity() {
                 userMap["thumbsImage"] = thumbsImgUri
                 userMap["fcm-token"] = "not assigned"
 
-                val glide_image:Any = when(thumbsImgUri){"default","null" -> R.drawable.default_avatar else -> thumbsImgUri}
+                val glide_image:Any = when(thumbsImgUri){"default","null" -> R.drawable.ic_classroom else -> thumbsImgUri}
                 Glide.with(reg_image).load(glide_image).into(reg_image)
                 reg_progressBar.visibility = INVISIBLE
             }
@@ -186,9 +186,9 @@ class RegisterActivity : AppCompatActivity() {
 
                                     reg_progressBar.visibility = INVISIBLE
                                     Toast.makeText(this, "Successfully uploaded", Toast.LENGTH_LONG).show()
-                                    val glide_image:Any = when(thumbs_uri.toString()){"default","null" -> R.drawable.default_avatar else -> thumbs_uri}
+                                    val glide_image:Any = when(thumbs_uri.toString()){"default","null" -> R.drawable.ic_classroom else -> thumbs_uri}
                                     Glide.with(reg_image).load(glide_image).into(reg_image)
-//                                    Picasso.get().load(thumbs_uri).placeholder(R.drawable.default_avatar).into(reg_image)
+//                                    Picasso.get().load(thumbs_uri).placeholder(R.drawable.ic_classroom).into(reg_image)
                                 }
                             } else {
                                 reg_progressBar.visibility = INVISIBLE

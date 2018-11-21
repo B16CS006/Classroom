@@ -2,11 +2,9 @@ package com.btp.me.classroom
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -64,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         mRootRef.child("Class-Enroll/${mCurrentUser?.uid}").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@MainActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
-                Log.d(TAG,"class-enroll on cancleled ${p0.message}")
+                Log.d(TAG,"class-enroll on canceled ${p0.message}")
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -166,19 +164,18 @@ class MainActivity : AppCompatActivity() {
 
                     setVisibility(true)
                     bind(classAttribute)
-
                 }
-
             })
         }
 
         fun bind(_class: ClassAttribute) {
             Log.d("chetan", "ClassViewHolder")
             with(_class) {
-                setBackground(this.registeredAs)
+//                setBackground(this.registeredAs)
                 setName(this.name)
                 setStatus(this.status)
                 setProfileImage(this.profileImage)
+                setRegisteredAs(this.registeredAs)
 
             }
         }
@@ -198,17 +195,22 @@ class MainActivity : AppCompatActivity() {
             view.background = gd
         }
 
-        private fun setName(string: String) {
-            view.class_single_name.text = string
+        private fun setName(name: String) {
+            view.class_single_name.text = name
         }
 
-        private fun setStatus(string: String) {
-            view.class_single_status.text = string
+        private fun setStatus(status: String) {
+            view.class_single_status.text = status
         }
 
-        private fun setProfileImage(string: String) {
-            val glideImage:Any = when(string){"default","null" -> R.drawable.default_avatar else -> string}
+        private fun setProfileImage(image: String) {
+            val glideImage:Any = when(image){"default","null" -> R.drawable.ic_classroom else -> image}
             Glide.with(view.class_single_image).load(glideImage).into(view.class_single_image)
+        }
+
+        private fun setRegisteredAs(registeredAs:String){
+            val glideImage:Any = when(registeredAs){"teacher" -> R.drawable.ic_teacher else -> R.drawable.ic_student}
+            Glide.with(view.class_single_registered_as).load(glideImage).into(view.class_single_registered_as)
         }
     }
 

@@ -1,7 +1,6 @@
 package com.btp.me.classroom
 
 import android.app.Activity
-import android.content.ComponentCallbacks2
 import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
@@ -50,7 +49,7 @@ class CreateClassActivity : AppCompatActivity() {
 //                val imgUri: String = dataSnapshot.child("thumbsProfileImage").value?.toString()?: "default"
 //                Log.d("chetan", "Class Profile Image Link : $imgUri")
 //                Glide.with(create_class_image).load(imgUri).into(create_class_image)
-//                Picasso.get().load(imgUri).placeholder(R.drawable.default_avatar).into(create_class_image)
+//                Picasso.get().load(imgUri).placeholder(R.drawable.ic_classroom).into(create_class_image)
 //            }
 //
 //            override fun onCancelled(p0: DatabaseError) {
@@ -140,7 +139,7 @@ class CreateClassActivity : AppCompatActivity() {
                         val uploadTask = thumb_filePath.putBytes(thumbData)
                         uploadTask.addOnSuccessListener { thumb_task ->
                             thumb_filePath.downloadUrl.addOnSuccessListener { thumbs_uri ->
-                                val glide_image: Any = when (thumbs_uri.toString()) {"default", "null" -> R.drawable.default_avatar
+                                val glide_image: Any = when (thumbs_uri.toString()) {"default", "null" -> R.drawable.ic_classroom
                                     else -> thumbs_uri
                                 }
                                 Glide.with(create_class_image).load(glide_image).into(create_class_image)
