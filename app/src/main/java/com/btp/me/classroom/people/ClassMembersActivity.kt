@@ -1,5 +1,6 @@
 package com.btp.me.classroom.people
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,8 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
+import com.btp.classroom.ClassMemberInfoActivity
 import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -112,7 +112,7 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Teacher adapter on create viewHolder")
                 return PeopleViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.single_people_layout, parent, false))
+                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity)
             }
 
             override fun getItemCount() = teachersList.size
@@ -127,7 +127,7 @@ class ClassMembersActivity: AppCompatActivity() {
             override fun onCreateViewHolder(parent: ViewGroup, p1: Int): PeopleViewHolder {
 //                Log.d(TAG, "Student adapter on create viewHolder")
                 return PeopleViewHolder(LayoutInflater.from(parent.context)
-                        .inflate(R.layout.single_people_layout, parent, false))
+                        .inflate(R.layout.single_people_layout, parent, false), this@ClassMembersActivity)
             }
 
             override fun getItemCount() = studentsList.size
@@ -141,12 +141,13 @@ class ClassMembersActivity: AppCompatActivity() {
         peoples_students_list.adapter = studentAdapter
     }
 
-    class PeopleViewHolder(val view:View): RecyclerView.ViewHolder(view){
+    private class PeopleViewHolder(val view:View, val context: Context): RecyclerView.ViewHolder(view){
 
-        fun bind(map: HashMap<String,String>){
+        fun bind(map: HashMap<String,String>){  
             setName(map["name"]!!)
             setRollNumber(map["rollNumber"]!!)
             setCurrentUserDot(map["who"])
+            onClick()
         }
 
         private fun setName(name:String){
@@ -163,6 +164,12 @@ class ClassMembersActivity: AppCompatActivity() {
         private fun setCurrentUserDot(me:String?){
             if(me == "me")
                 view.single_current_user_dot.visibility = View.VISIBLE
+        }
+
+        private fun onClick(){
+            view.setOnClickListener{
+                context.startActivity(Intent(context, ClassMemberInfoActivity::class.java))
+            }
         }
     }
 
