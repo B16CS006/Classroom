@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:weightSum="5"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_weight="3"
+        android:text="tilte"
+        android:id="@+id/single_student_marks_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_weight="1"
+        android:text="marks"
+        android:id="@+id/single_student_marks_marks"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+    android:layout_weight="1"
+    android:text="MaxMarks"
+    android:id="@+id/single_student_marks_max_marks"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content" />
+
+</LinearLayout>

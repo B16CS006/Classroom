@@ -15,6 +15,10 @@
         android:title="Members" />
 
     <item
+        android:id="@+id/marks"
+        android:title="Marks" />
+
+    <item
         android:id="@+id/slide"
         android:title="Slide" />
 

@@ -16,6 +16,7 @@ import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.adapter.ChatAdapter
 import com.btp.me.classroom.people.ClassMembersActivity
 import com.btp.me.classroom.slide.SlideActivity
+import com.btp.me.classroom.student.StudentMarksActivity
 import com.btp.me.classroom.teacher.PendingRequestActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -152,13 +153,13 @@ class PublicChatActivity : AppCompatActivity() {
             }
             commandList[7] ->{
                 sendMessage(commandList[7],"command","me")
-                if(isTeacher)
-                    sendToPendingRequestActivity()
-                else{
-                    Toast.makeText(this,"Be Teacher First", Toast.LENGTH_SHORT).show()
-                }
+                sendToPendingRequestActivity()
             }
 
+            commandList[8] -> {
+                sendMessage(commandList[8], "command", "me")
+                sendToMarksActivity()
+            }
             else ->{
                 Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
                 return true
@@ -482,8 +483,21 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[7],"command","me")
                 sendToPendingRequestActivity()
             }
+
+            R.id.marks ->{
+                sendMessage(commandList[8], "command", "me")
+                sendToMarksActivity()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun sendToMarksActivity() {
+        if (isTeacher){
+            Toast.makeText(this,"Teacher",Toast.LENGTH_SHORT).show()
+        }else{
+            startActivity(Intent(this, StudentMarksActivity::class.java))
+        }
     }
 
     companion object {
@@ -500,7 +514,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "new assignment",
                 "assignment",
                 "leave",
-                "pending request"
+                "pending request",
+                "marks"
         )
 
 

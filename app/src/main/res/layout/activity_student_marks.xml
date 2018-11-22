@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.btp.me.classroom.student.StudentMarksActivity">
+
+    <TextView
+        android:text="Name"
+        android:id="@+id/student_marks_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:text="Roll Number"
+        android:id="@+id/student_marks_roll_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/student_marks_name"/>
+
+    <TextView
+        android:text="No Assignment are provided in this class"
+        android:textColor="@color/warning"
+        android:visibility="gone"
+        android:id="@+id/student_marks_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/student_marks_roll_number"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/student_marks_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/student_marks_roll_number"/>
+
+</android.support.constraint.ConstraintLayout>

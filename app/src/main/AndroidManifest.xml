@@ -63,7 +63,8 @@
         <activity android:name=".assignment.AssignmentUploadActivity" />
         <activity android:name=".assignment.AssignmentActivity" />
         <activity android:name=".teacher.PendingRequestActivity" />
-        <activity android:name=".teacher.ClassMarksActivity"></activity>
+        <activity android:name=".teacher.ClassMarksActivity" />
+        <activity android:name=".student.StudentMarksActivity"></activity>
     </application>
 
 </manifest>
