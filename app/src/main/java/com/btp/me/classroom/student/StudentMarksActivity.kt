@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
@@ -24,28 +25,37 @@ class StudentMarksActivity : AppCompatActivity() {
     private lateinit var currentUser:FirebaseUser
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
+    private val assignmentMarksList = ArrayList<StudentMarks>()
+    private val examMarksList = ArrayList<StudentMarks>()
+    private val marksList = ArrayList<StudentMarks>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_marks)
 
-        initialize()
 
         currentUser = FirebaseAuth.getInstance().currentUser?:return
 
-        val studentMarksList = ArrayList<StudentMarks>()
+        initialize()
 
         val marksAdapter = object :RecyclerView.Adapter<StudentMarksViewHolder>(){
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudentMarksViewHolder {
                 return StudentMarksViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.single_student_marks, parent, false))
             }
 
-            override fun getItemCount() = studentMarksList.size
+            override fun getItemCount() = marksList.size
 
             override fun onBindViewHolder(holder: StudentMarksViewHolder, position: Int) {
-                holder.bind(studentMarksList[position])
+                holder.bind(marksList[position])
             }
 
+//            override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+//                super.onAttachedToRecyclerView(recyclerView)
+//            }
+
         }
+
+        student_marks_list.adapter = marksAdapter
 
         mRootRef.child("Assignment/$classId").addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -53,74 +63,97 @@ class StudentMarksActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                assignmentMarksList.clear()
+                marksList.clear()
                 for (assignmentSnapshot in dataSnapshot.children){
 
-                    val studentMarks = StudentMarks()
+                    val studentMarks = StudentMarks(
+                            assignmentSnapshot.child("title").value.toString(),
+                            assignmentSnapshot.child("marks/${currentUser.uid}/marks").value.toString(),
+                            assignmentSnapshot.child("maxMarks").value.toString()
+                    )
+                    Log.d(TAG, "student_marks max marks max marks asdf : ${studentMarks.marks}")
 
-                    studentMarks.title = assignmentSnapshot.child("title").value.toString()
-                    studentMarks.maxMarks = assignmentSnapshot.child("maxMarks").value.toString()
-                    val marks = assignmentSnapshot.child("marks/${currentUser.uid}/marks").value.toString()
-
-                    if(marks=="null")
+                    if(studentMarks.marks=="null")
                         studentMarks.marks = 0.toString()
-                    else
-                        studentMarks.marks = marks
 
-                    studentMarksList.add(studentMarks)
+                    assignmentMarksList.add(studentMarks)
                 }
 
-                mRootRef.child("Examination/$classId").addValueEventListener(object : ValueEventListener{
-                    override fun onCancelled(p0: DatabaseError) {
-                        Log.d(TAG, "Error : ${p0.message}")
-                    }
+                marksList.add(StudentMarks("TITLE","MARKS", "TOTAL"))
+                marksList.addAll(assignmentMarksList)
+                marksList.addAll(examMarksList)
+                marksAdapter.notifyDataSetChanged()
+            }
+        })
 
-                    override fun onDataChange(dataSnapshot2: DataSnapshot) {
-                        for (examDataSnapShot in dataSnapshot2.children){
-                            val studentMarks = StudentMarks()
-
-                            studentMarks.title = examDataSnapShot.child("title").value.toString()
-                            studentMarks.maxMarks = examDataSnapShot.child("maxMarks").value.toString()
-                            val marks = examDataSnapShot.child("marks/${currentUser.uid}/marks").value.toString()
-
-                            if(marks=="null")
-                                studentMarks.marks = 0.toString()
-                            else
-                                studentMarks.marks = marks
-
-                            studentMarksList.add(studentMarks)
-                        }
-
-                        if(studentMarksList.size != 0){
-                            student_marks_empty_list.visibility = View.GONE
-                            student_marks_list.visibility = View.VISIBLE
-                            student_marks_list.adapter = marksAdapter
-                        }else{
-                            student_marks_empty_list.visibility = View.VISIBLE
-                            student_marks_list.visibility = View.GONE
-                        }
-                    }
-
-                })
+        mRootRef.child("Examination/$classId").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Error : ${p0.message}")
             }
 
+            override fun onDataChange(dataSnapshot2: DataSnapshot) {
+                marksList.clear()
+                examMarksList.clear()
+                for (examDataSnapShot in dataSnapshot2.children){
+                    val studentMarks = StudentMarks(
+                            examDataSnapShot.child("title").value.toString(),
+                            examDataSnapShot.child("marks/${currentUser.uid}/marks").value.toString(),
+                            examDataSnapShot.child("maxMarks").value.toString()
+                    )
+
+                    if(studentMarks.marks=="null")
+                        studentMarks.marks = 0.toString()
+
+                    examMarksList.add(studentMarks)
+                }
+
+                marksList.add(StudentMarks("TITLE","MARKS", "TOTAL"))
+                marksList.addAll(assignmentMarksList)
+                marksList.addAll(examMarksList)
+                marksAdapter.notifyDataSetChanged()
+            }
         })
 
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     private fun initialize() {
         title = "Marks"
+        getCurrentDetails()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         student_marks_list.setHasFixedSize(true)
         student_marks_list.layoutManager = LinearLayoutManager(this)
     }
 
-    private class StudentMarks{
-        var title:String = ""
-        var marks:String = ""
-        var maxMarks:String = ""
+    private fun getCurrentDetails(){
+        mRootRef.child("Classroom/$classId/members/${currentUser.uid}").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Error while retrieve data : ${p0.message}")
+                student_marks_main.visibility = View.GONE
+                Toast.makeText(this@StudentMarksActivity, "Error : Something Went Wrong", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                student_marks_name.text = p0.child("name").value.toString()
+                student_marks_roll_number.text = p0.child("rollNumber").value.toString()
+                student_marks_main.visibility = View.VISIBLE
+            }
+        })
     }
+
+    private data class StudentMarks(var title: String, var marks: String, var maxMarks: String)
 
     private class StudentMarksViewHolder(val view:View):RecyclerView.ViewHolder(view){
         fun bind(studentMarks: StudentMarks){
+            Log.d(TAG, "Student_marks bind : ${studentMarks.title} : ${studentMarks.marks} : ${studentMarks.maxMarks}")
             setTitle(studentMarks.title)
             setMarks(studentMarks.marks)
             setMaxMarks(studentMarks.maxMarks)

@@ -41,7 +41,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
             startActivityForResult(Intent.createChooser(IntentResult.forPDF(),"Select Document"),0)
         }
 
-        assignment_upload_submit.setOnClickListener {
+        assignment_upload_submit.setOnClickListener { _ ->
 
 //            if (assignment_title.text.isBlank() || assignment_submission_date.text.isBlank() || assignment_max_marks.text.isBlank()) {
 //                Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_LONG).show()
@@ -67,7 +67,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
 
             val maxMarks = when {
                 assignment_upload_max_marks.text.isNotBlank() -> assignment_upload_max_marks.text.toString()
-                else -> "0" //TODO set hint to 100 also
+                else -> "0" //TODO set hint to 0 also
             }
 
             val submissionDate = when {
@@ -79,7 +79,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
                 //todo date is always future date
             }
 
-            val assignment = Assignment(title, description, submissionDate, maxMarks)
+            val assignment = Assignment(title, description, submissionDate, maxMarks = maxMarks)
 
             //todo also check this is working or not , no need of this as we finished this activity whether a assignment is uploaded successfully or not
             assignment_upload_title.text.clear()

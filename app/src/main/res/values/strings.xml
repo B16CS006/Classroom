@@ -110,4 +110,9 @@
     <string name="no_internet">Right now, Your Internet connection is not supporting you.</string>
     <string name="mobile">7727931260</string>
     <string name="classroom_profile_picture">Classroom Profile Picture</string>
+    <string name="total">TOTAL</string>
+    <string name="marks">MARKS</string>
+    <string name="title">TITLE</string>
+    <string name="roll_number">Roll Number</string>
+    <string name="no_assignment_provided">No Assignment are provided in this class</string>
 </resources>

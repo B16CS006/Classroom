@@ -2,36 +2,60 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/student_marks_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background1"
     tools:context="com.btp.me.classroom.student.StudentMarksActivity">
 
     <TextView
-        android:text="Name"
         android:id="@+id/student_marks_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/username"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/student_marks_roll_number"
+        app:layout_constraintEnd_toEndOf="@+id/student_marks_roll_number"
+        app:layout_constraintStart_toStartOf="@id/student_marks_roll_number"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:text="Roll Number"
         android:id="@+id/student_marks_roll_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/student_marks_name"/>
+        android:layout_marginBottom="26dp"
+        android:text="@string/roll_number"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/student_marks_list"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/student_marks_name" />
 
     <TextView
-        android:text="No Assignment are provided in this class"
-        android:textColor="@color/warning"
-        android:visibility="gone"
         android:id="@+id/student_marks_empty_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/student_marks_roll_number"/>
+        android:layout_marginTop="33dp"
+        android:text="@string/no_assignment_provided"
+        android:textColor="@color/warning"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/student_marks_list" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/student_marks_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/student_marks_roll_number"/>
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/student_marks_roll_number" />
 
 </android.support.constraint.ConstraintLayout>
