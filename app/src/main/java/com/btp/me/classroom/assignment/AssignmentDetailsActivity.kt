@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.btp.me.classroom.Class.FileBuilder.Companion.createFile
 import com.btp.me.classroom.Class.StudentAssignmentDetails
+import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.IntentResult
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
@@ -29,7 +30,7 @@ import kotlinx.android.synthetic.main.single_students_marks_assignment_details.v
 import java.io.File
 import java.io.IOException
 
-private lateinit var mCurrentUser: FirebaseUser
+private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
 private val mRootRef = FirebaseDatabase.getInstance().reference
 private const val REQUEST_CODE_ADD = 0
 
@@ -47,11 +48,15 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_details)
 
+        if (currentUser == null){
+            sendToHomepage()
+            return
+        }
+
         title = "Assignment Details"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        mCurrentUser = FirebaseAuth.getInstance()?.currentUser ?: return
         assignment = intent.getStringExtra("assignment")
 
         setAssignmentDetails()
@@ -68,7 +73,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 //
 //            @SuppressLint("SetTextI18n")
 //            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val type = dataSnapshot.child("${mCurrentUser.uid}/as").value.toString()
+//                val type = dataSnapshot.child("${mCurrentUser!!.uid}/as").value.toString()
 //
 //                if (type == "teacher") {
 //                    assignment_details_marks.visibility = View.GONE
@@ -102,7 +107,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 //                        showStudentMarks(marksList)
 //                    }
 //                } else if (type == "student") {
-//                    var myMarks = database.child("marks/${mCurrentUser.uid}/marks").value.toString()
+//                    var myMarks = database.child("marks/${mCurrentUser!!.uid}/marks").value.toString()
 //                    if (myMarks == "null")
 //                        myMarks = "0"
 //
@@ -160,7 +165,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
                     @SuppressLint("SetTextI18n")
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
-                        val type = dataSnapshot.child("${mCurrentUser.uid}/as").value.toString()
+                        val type = dataSnapshot.child("${currentUser!!.uid}/as").value.toString()
 
                         if (type == "teacher") {
                             assignment_details_marks.visibility = View.GONE
@@ -194,7 +199,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                                 showStudentMarks(marksList)
                             }
                         } else if (type == "student") {
-                            var myMarks = database.child("marks/${mCurrentUser.uid}/marks").value.toString()
+                            var myMarks = database.child("marks/${currentUser!!.uid}/marks").value.toString()
                             if (myMarks == "null")
                                 myMarks = "0"
 
@@ -233,7 +238,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
     private fun setSubmitButton() {
 
-        mRootRef.child("Assignment/$classId/$assignment/marks/${mCurrentUser.uid}/state").addValueEventListener(object : ValueEventListener {
+        mRootRef.child("Assignment/$classId/$assignment/marks/${currentUser!!.uid}/state").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "Error : ${p0.message}")
@@ -295,7 +300,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 return
             }
         }
-        mRootRef.child("Assignment/$classId/$assignment/marks/${mCurrentUser.uid}").updateChildren(map.toMap()).addOnSuccessListener {
+        mRootRef.child("Assignment/$classId/$assignment/marks/${currentUser!!.uid}").updateChildren(map.toMap()).addOnSuccessListener {
             Toast.makeText(this, "Assignment Uploaded Successfully", Toast.LENGTH_SHORT).show()
             Log.d(TAG, "Assignment is successfully uploaded")
         }.addOnFailureListener { exception ->
@@ -305,6 +310,15 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
     }
 
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
+
+
     private fun upload(uri: Uri, map: HashMap<String, String?>) {
         Log.d(TAG, "uploading Uri : $uri")
 
@@ -312,7 +326,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
         val uploadingIntent = Intent(this, MyUploadingService::class.java)
 
-        val userId = mCurrentUser.uid
+        val userId = currentUser!!.uid
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath", "Assignment/$classId/$assignment/$userId")
@@ -323,7 +337,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         startService(uploadingIntent)
                 ?: Log.d(TAG, "At this this no activity is running")
     }
-
 
     @SuppressLint("SetTextI18n")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

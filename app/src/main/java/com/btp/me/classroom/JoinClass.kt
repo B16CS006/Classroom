@@ -1,5 +1,6 @@
 package com.btp.me.classroom
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +18,7 @@ class JoinClass : AppCompatActivity() {
 //    private val type = arrayOf("Student","Teacher")
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private var mCurrentUser: FirebaseUser? = null
+    private val mCurrentUser by lazy { FirebaseAuth.getInstance().currentUser }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -32,10 +33,9 @@ class JoinClass : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        mCurrentUser = FirebaseAuth.getInstance().currentUser
-
         if(mCurrentUser == null){
-            finish()
+            sendToHomepage()
+            return
         }
 
 ////        For Selecting the type to join the new class
@@ -49,7 +49,7 @@ class JoinClass : AppCompatActivity() {
             if(detail.invalid)
                 return@setOnClickListener
 
-            detail.name = mCurrentUser?.displayName?:"Anonymous"
+            detail.name = mCurrentUser!!.displayName?:"Anonymous"
 
             mRootRef.child("Classroom/${detail.classId}/members").addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onCancelled(p0: DatabaseError) {
@@ -74,7 +74,7 @@ class JoinClass : AppCompatActivity() {
                             map["request"] = "pending"
                             map["rollNumber"] = detail.rollNumber
                             map["name"] = detail.name
-                            mRootRef.child("Join-Class-Request/${detail.classId}/${mCurrentUser?.uid}").setValue(map).addOnSuccessListener {
+                            mRootRef.child("Join-Class-Request/${detail.classId}/${mCurrentUser!!.uid}").setValue(map).addOnSuccessListener {
                                 Log.d(TAG, "Request send")
                                 Toast.makeText(this@JoinClass, "Request send", Toast.LENGTH_SHORT).show()
                                 finish()
@@ -104,6 +104,15 @@ class JoinClass : AppCompatActivity() {
         detail.invalid = false
         return detail
     }
+
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
+
 
     private class Detail{
         var classId:String = ""

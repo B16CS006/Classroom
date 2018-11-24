@@ -32,7 +32,7 @@ import kotlin.collections.HashMap
 class PublicChatActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private lateinit var currentUser: FirebaseUser
+    private val currentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
 
     private var isTeacher : Boolean= false
     private var isPendingRequest: Boolean = false
@@ -41,7 +41,10 @@ class PublicChatActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_public_chat)
 
-        currentUser = FirebaseAuth.getInstance().currentUser?: return
+        if(currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         if(classId == "null") finish()
 
@@ -63,7 +66,7 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     private fun setUserName() {
-        mRootRef.child("Classroom/$classId/members/${currentUser.uid}").addValueEventListener(object : ValueEventListener {
+        mRootRef.child("Classroom/$classId/members/${currentUser!!.uid}").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 userName = "Anonymous"
                 rollNumber = "Anonymous"
@@ -180,7 +183,7 @@ class PublicChatActivity : AppCompatActivity() {
 
     //this can now done by setUserName
     private fun getPendingRequestAccessed(){
-        mRootRef.child("Class-Enroll/${currentUser?.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
+        mRootRef.child("Class-Enroll/${currentUser!!.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG,"Error : ${p0.message}")
             }
@@ -212,7 +215,7 @@ class PublicChatActivity : AppCompatActivity() {
         val map = HashMap<String, String>()
         map["request"] = "accept"
         map["as"] = "leave"
-        mRootRef.child("Join-Class-Request/$classId/${currentUser?.uid}").setValue(map).addOnSuccessListener {
+        mRootRef.child("Join-Class-Request/$classId/${currentUser!!.uid}").setValue(map).addOnSuccessListener {
             Log.d(TAG, "Request send")
             Toast.makeText(this, "Request to Leave", Toast.LENGTH_SHORT).show()
             finish()
@@ -244,7 +247,7 @@ class PublicChatActivity : AppCompatActivity() {
 
         map["message"] = message
         map["senderName"] = userName
-        map["senderId"] = currentUser?.uid.toString()
+        map["senderId"] = currentUser!!.uid.toString()
         map["visibility"] = visibility
         map["type"] = type
         map["time"] = dateTime.toString()
@@ -295,7 +298,7 @@ class PublicChatActivity : AppCompatActivity() {
                         map.time = timeFormat.format(Date(map.time.toLong()))
 
 
-                        if (map.visibility == "me" && map.senderId != currentUser.uid) {
+                        if (map.visibility == "me" && map.senderId != currentUser!!.uid) {
                             continue
                         }
 
@@ -303,7 +306,7 @@ class PublicChatActivity : AppCompatActivity() {
                             previous = "null"
                             map.viewType = MessageType.MY_COMMAND
                         } else {
-                            if (map.senderId == currentUser.uid) {
+                            if (map.senderId == currentUser!!.uid) {
                                 map.viewType = when (previous) {map.senderId -> MessageType.MY_MESSAGE; else -> MessageType.MY_FIRST_MESSAGE
                                 }
                             } else {

@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
 import com.btp.me.classroom.Class.FileBuilder.Companion.createFile
+import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.IntentResult
 import com.btp.me.classroom.R
@@ -30,7 +31,7 @@ import java.util.*
 
 class SlideActivity : AppCompatActivity() {
 
-    private lateinit var currentUser: FirebaseUser
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private var mRootRef = FirebaseDatabase.getInstance().reference
 
     override fun onSupportNavigateUp(): Boolean {
@@ -42,7 +43,10 @@ class SlideActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_slide)
 
-        currentUser = FirebaseAuth.getInstance()?.currentUser ?: return
+        if (currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         initialize()
 
@@ -121,8 +125,6 @@ class SlideActivity : AppCompatActivity() {
         })
     }
 
-
-
     private fun initialize() {
 
         title = "Slides"
@@ -132,7 +134,7 @@ class SlideActivity : AppCompatActivity() {
         slide_list.setHasFixedSize(true)
         slide_list.layoutManager = LinearLayoutManager(this)
 
-        mRootRef.child("Class-Enroll/${currentUser.uid}/$classId/as").addValueEventListener(object : ValueEventListener {
+        mRootRef.child("Class-Enroll/${currentUser!!.uid}/$classId/as").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "Error : ${p0.message}")
             }
@@ -173,7 +175,7 @@ class SlideActivity : AppCompatActivity() {
 //        uploadingIntent.putExtra("classId", classId)
 //        uploadingIntent.putExtra("userId", currentUser!!.uid)
 
-        val userId = currentUser.uid ?: return
+        val userId = currentUser!!.uid ?: return
         val currentTime = System.currentTimeMillis().toString()
 
         uploadingIntent.putExtra("fileUri", uri)
@@ -185,6 +187,15 @@ class SlideActivity : AppCompatActivity() {
         startService(uploadingIntent)
                 ?: Log.d("chetan", "At this this no activity is running")
     }
+
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
+
 
     private class SlideViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val download: ImageButton = view.file_single_download

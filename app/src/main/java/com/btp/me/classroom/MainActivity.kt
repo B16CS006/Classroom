@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.single_classroom_layout.view.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mCurrentUser: FirebaseUser
+    private val mCurrentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
@@ -29,7 +29,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mCurrentUser = FirebaseAuth.getInstance().currentUser?:return
+        if(mCurrentUser == null){
+            sendToHomepage()
+            return
+        }
 
 
         main_class_list.setHasFixedSize(true)
@@ -54,7 +57,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mRootRef.child("Class-Enroll/${mCurrentUser.uid}").addValueEventListener(object : ValueEventListener{
+        mRootRef.child("Class-Enroll/${mCurrentUser!!.uid}").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
 //                Toast.makeText(this@MainActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
                 Log.d(TAG,"class-enroll on canceled ${p0.message}")
@@ -88,7 +91,12 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        mRootRef.child("Users/${mCurrentUser.uid}/register").addListenerForSingleValueEvent(object : ValueEventListener{
+        if(mCurrentUser == null){
+            sendToHomepage()
+            return
+        }
+
+        mRootRef.child("Users/${mCurrentUser!!.uid}/register").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "error : ${p0.message}")
             }
@@ -116,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         startActivity(Intent(this, CreateClassActivity::class.java))
     }
 
-    private fun sendToHomePage() {
+    private fun sendToHomepage() {
         startActivity(Intent(this, HomepageActivity::class.java))
         finish()
     }
@@ -143,7 +151,7 @@ class MainActivity : AppCompatActivity() {
 
             R.id.main_logout_btn -> {
                 FirebaseAuth.getInstance().signOut()
-                sendToHomePage()
+                sendToHomepage()
             }
 
             R.id.main_join_class_btn -> {

@@ -1,5 +1,6 @@
 package com.btp.me.classroom
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -18,16 +19,16 @@ import kotlinx.android.synthetic.main.activity_class_member_info.*
 class MemberInfoActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private lateinit var currentUser:FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_member_info)
 
-        if(classId == "null")
+        if(classId == "null") {
+            finish()
             return
+        }
 
-        currentUser = FirebaseAuth.getInstance().currentUser?: return
 
         val memberUID = intent.getStringExtra("userId") ?: return
         Log.d(TAG, "user Id : $memberUID")

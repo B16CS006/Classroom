@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.btp.me.classroom.Class.Assignment
+import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
@@ -21,7 +22,7 @@ import kotlinx.android.synthetic.main.single_assignment_layout.view.*
 
 class AssignmentActivity : AppCompatActivity() {
 
-    private lateinit var currentUser:FirebaseUser
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
     override fun onSupportNavigateUp(): Boolean {
@@ -33,7 +34,10 @@ class AssignmentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment)
 
-        currentUser = FirebaseAuth.getInstance()?.currentUser?:return
+        if (currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         initialize()
 
@@ -52,7 +56,7 @@ class AssignmentActivity : AppCompatActivity() {
 
     private fun initializeFloatingButton() {
         assignment_upload_button.hide()
-        mRootRef.child("Class-Enroll/${currentUser.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
+        mRootRef.child("Class-Enroll/${currentUser!!.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "Error : ${p0.message}")
             }
@@ -158,6 +162,15 @@ class AssignmentActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
+
 
     private class AssignmentViewHolder(val view:View):RecyclerView.ViewHolder(view){
         fun bind(assignment: Assignment) {

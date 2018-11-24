@@ -25,7 +25,6 @@ import java.io.IOException
 
 class CreateClassActivity : AppCompatActivity() {
 
-    private val mStorageRef by lazy { FirebaseStorage.getInstance().reference }
     private val mCurrentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private val mRootRef by lazy { FirebaseDatabase.getInstance().reference }
 
@@ -42,7 +41,7 @@ class CreateClassActivity : AppCompatActivity() {
 
         initialize()
 
-        mCurrentUser ?: sendToHomePage()
+        mCurrentUser ?: sendToHomepage()
 
         create_class_image.setOnClickListener {
             val galleryIntent = Intent()
@@ -88,7 +87,7 @@ class CreateClassActivity : AppCompatActivity() {
     }
 
     private fun createClass() {
-        mCurrentUser ?: sendToHomePage()
+        mCurrentUser ?: sendToHomepage()
 
         mRootRef.child("Users/${mCurrentUser?.uid}/name").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
@@ -119,13 +118,13 @@ class CreateClassActivity : AppCompatActivity() {
         })
     }
 
-    private fun sendToHomePage() {
+    private fun sendToHomepage() {
         startActivity(Intent(this, HomepageActivity::class.java))
         finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        mCurrentUser ?: sendToHomePage()
+        mCurrentUser ?: sendToHomepage()
         super.onActivityResult(requestCode, resultCode, data)
 
         if(resultCode == Activity.RESULT_OK && data != null && data.data != null){

@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.single_people_layout.view.*
 class ClassMembersActivity: AppCompatActivity() {
 //    private var classId:String? = null
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private val currentUser = FirebaseAuth.getInstance().currentUser
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private var isTeacher: Boolean = false
 
     override fun onSupportNavigateUp(): Boolean {
@@ -85,7 +85,7 @@ class ClassMembersActivity: AppCompatActivity() {
                     map["name"] = people.child("name").value.toString()
                     map["rollNumber"] = people.child("rollNumber").value.toString()
 
-                    if(currentUser.uid == map["userId"]) {
+                    if(currentUser!!.uid == map["userId"]) {
                         map["who"] = "me"
                        isTeacher = map["as"] == "teacher"
                     }

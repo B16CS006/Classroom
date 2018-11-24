@@ -29,7 +29,7 @@ import kotlin.collections.HashMap
 
 class UserProfileActivity : AppCompatActivity() {
     private var mRootRef = FirebaseStorage.getInstance().reference
-    private lateinit var currentUser: FirebaseUser
+    private val currentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
     private lateinit var mUserReference: DatabaseReference
 
     private val imageListener by lazy {  object :ValueEventListener{
@@ -57,7 +57,10 @@ class UserProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_activity)
 
-        currentUser = FirebaseAuth.getInstance().currentUser ?: return
+        if(currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         initialize()
 
@@ -94,7 +97,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         reg_scroll_view.visibility = View.INVISIBLE
 
-        mUserReference = FirebaseDatabase.getInstance().getReference("Users/${currentUser.uid}")
+        mUserReference = FirebaseDatabase.getInstance().getReference("Users/${currentUser!!.uid}")
 
         mUserReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -137,7 +140,7 @@ class UserProfileActivity : AppCompatActivity() {
         mUserReference.addValueEventListener(imageListener)
     }
 
-    private fun sendToHomePage() {
+    private fun sendToHomepage() {
         startActivity(Intent(this, HomepageActivity::class.java))
         finish()
     }
@@ -147,7 +150,7 @@ class UserProfileActivity : AppCompatActivity() {
         val token = sp.getString("fcm-token", "null") ?: "null"
 
         userMap["fcm-token"] = token
-        userMap["phone"] = currentUser.phoneNumber.toString()
+        userMap["phone"] = currentUser!!.phoneNumber.toString()
 
         mUserReference.updateChildren(userMap.toMap()).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -157,7 +160,7 @@ class UserProfileActivity : AppCompatActivity() {
 //                val mainIntent = Intent(this, MainActivity::class.java)
 //                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
 //                startActivity(mainIntent)
-//                Toast.makeText(this, "Welcome ${currentUser.displayName}!", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Welcome ${currentUser!!.displayName}!", Toast.LENGTH_LONG).show()
                 finish()
             } else {
                 Log.d("chetan", task.exception!!.toString())
@@ -171,7 +174,7 @@ class UserProfileActivity : AppCompatActivity() {
                 .setDisplayName(s)
                 .build()
 
-        currentUser.updateProfile(profileUpdates).addOnCompleteListener { task ->
+        currentUser!!.updateProfile(profileUpdates).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 Log.d("chetan", "User profile updated.")
             }
@@ -185,8 +188,8 @@ class UserProfileActivity : AppCompatActivity() {
         val uploadingIntent = Intent(this, MyUploadingService::class.java)
 
         uploadingIntent.putExtra("fileUri", uri)
-        uploadingIntent.putExtra("storagePath", "UsersProfile/${currentUser.uid}")
-        uploadingIntent.putExtra("databasePath", "Users/${currentUser.uid}")
+        uploadingIntent.putExtra("storagePath", "UsersProfile/${currentUser!!.uid}")
+        uploadingIntent.putExtra("databasePath", "Users/${currentUser!!.uid}")
         uploadingIntent.putExtra("data", data)
         uploadingIntent.putExtra("link", "image")
 

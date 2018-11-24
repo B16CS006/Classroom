@@ -1,5 +1,6 @@
 package com.btp.me.classroom.student
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
 import com.google.firebase.auth.FirebaseAuth
@@ -22,7 +24,7 @@ import kotlinx.android.synthetic.main.single_student_marks.view.*
 
 class StudentMarksActivity : AppCompatActivity() {
 
-    private lateinit var currentUser:FirebaseUser
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
     private val assignmentMarksList = ArrayList<StudentMarks>()
@@ -33,8 +35,10 @@ class StudentMarksActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_marks)
 
-
-        currentUser = FirebaseAuth.getInstance().currentUser?:return
+        if (currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         initialize()
 
@@ -69,7 +73,7 @@ class StudentMarksActivity : AppCompatActivity() {
 
                     val studentMarks = StudentMarks(
                             assignmentSnapshot.child("title").value.toString(),
-                            assignmentSnapshot.child("marks/${currentUser.uid}/marks").value.toString(),
+                            assignmentSnapshot.child("marks/${currentUser!!.uid}/marks").value.toString(),
                             assignmentSnapshot.child("maxMarks").value.toString()
                     )
                     Log.d(TAG, "student_marks max marks max marks asdf : ${studentMarks.marks}")
@@ -98,7 +102,7 @@ class StudentMarksActivity : AppCompatActivity() {
                 for (examDataSnapShot in dataSnapshot2.children){
                     val studentMarks = StudentMarks(
                             examDataSnapShot.child("title").value.toString(),
-                            examDataSnapShot.child("marks/${currentUser.uid}/marks").value.toString(),
+                            examDataSnapShot.child("marks/${currentUser!!.uid}/marks").value.toString(),
                             examDataSnapShot.child("maxMarks").value.toString()
                     )
 
@@ -133,7 +137,7 @@ class StudentMarksActivity : AppCompatActivity() {
     }
 
     private fun getCurrentDetails(){
-        mRootRef.child("Classroom/$classId/members/${currentUser.uid}").addListenerForSingleValueEvent(object : ValueEventListener{
+        mRootRef.child("Classroom/$classId/members/${currentUser!!.uid}").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "Error while retrieve data : ${p0.message}")
                 student_marks_main.visibility = View.GONE
@@ -148,6 +152,15 @@ class StudentMarksActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
+
 
     private data class StudentMarks(var title: String, var marks: String, var maxMarks: String)
 

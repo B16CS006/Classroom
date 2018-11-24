@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.single_pending_request.view.*
 class PendingRequestActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private lateinit var currentUser :FirebaseUser
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -38,7 +37,6 @@ class PendingRequestActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-        currentUser = FirebaseAuth.getInstance()?.currentUser?:return
 
         pending_request_list.setHasFixedSize(true)
         pending_request_list.layoutManager = LinearLayoutManager(this)

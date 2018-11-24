@@ -8,11 +8,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
 import com.btp.me.classroom.Class.Assignment
+import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.IntentResult
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
 import com.btp.me.classroom.slide.MyUploadingService
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.FirebaseDatabase
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_assignment_upload.*
@@ -20,7 +22,7 @@ import kotlinx.android.synthetic.main.activity_assignment_upload.*
 class AssignmentUploadActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
-    private var currentUser = FirebaseAuth.getInstance().currentUser
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
 
     private var fileUri:Uri? = null
 
@@ -32,6 +34,11 @@ class AssignmentUploadActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assignment_upload)
+
+        if (currentUser == null){
+            sendToHomepage()
+            return
+        }
 
         title = "Upload Assignment"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -124,7 +131,7 @@ class AssignmentUploadActivity : AppCompatActivity() {
 //        uploadingIntent.putExtra("userId", currentUser!!.uid)
 
         val currentTime = System.currentTimeMillis().toString()
-        val userId = currentUser?.uid?:return
+        val userId = currentUser!!.uid
 
         uploadingIntent.putExtra("fileUri", uri)
         uploadingIntent.putExtra("storagePath","Assignment/$classId/$userId/$currentTime")
@@ -136,5 +143,11 @@ class AssignmentUploadActivity : AppCompatActivity() {
                 ?: Log.d("chetan", "At this this no activy is running")
     }
 
-
+    private fun sendToHomepage(): FirebaseUser? {
+        val intent = Intent(this, HomepageActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+        finish()
+        return null
+    }
 }

@@ -43,7 +43,7 @@
 //        })
 //
 //        if(mCurrentUser == null){
-//            sendToHomePage()
+//            sendToHomepage()
 //            return
 //        }
 //
@@ -60,7 +60,7 @@
 //    private fun checkPendingRequest(){
 //    }
 //
-//    private fun sendToHomePage() {
+//    private fun sendToHomepage() {
 //        Log.d("chetan","User is null")
 //        startActivity(Intent(this, HomepageActivity::class.java))
 //        finish()
@@ -75,7 +75,7 @@
 //    private fun check() {
 //        val currentUser = mCurrentUser?.uid
 //
-//        if(currentUser == null){ sendToHomePage(); return}
+//        if(currentUser == null){ sendToHomepage(); return}
 //        else if(classId == "null"){ sendToMainActivity(); return}
 //
 //        mRootRef.child("Class-Enroll/$currentUser/$classId/as").addValueEventListener(object : ValueEventListener{
