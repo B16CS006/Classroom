@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onDataChange(p0: DataSnapshot) {
                 if (!(p0.exists() && p0.value == "yes")){
-                    val registerIntent = Intent(this@MainActivity, RegisterActivity::class.java)
+                    val registerIntent = Intent(this@MainActivity, UserProfileActivity::class.java)
                     registerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                     startActivity(registerIntent)
                     finish()
@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId){
             R.id.main_setting_btn -> {
-                startActivity(Intent(this, RegisterActivity::class.java))
+                startActivity(Intent(this, UserProfileActivity::class.java))
             }
 
             R.id.main_logout_btn -> {

@@ -44,7 +44,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/NoTitleBar" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".UserProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".HomepageActivity"

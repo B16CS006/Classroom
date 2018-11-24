@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_register_activity.*
 
 import kotlin.collections.HashMap
 
-class RegisterActivity : AppCompatActivity() {
+class UserProfileActivity : AppCompatActivity() {
     private var mRootRef = FirebaseStorage.getInstance().reference
     private lateinit var currentUser: FirebaseUser
     private lateinit var mUserReference: DatabaseReference
@@ -36,7 +36,7 @@ class RegisterActivity : AppCompatActivity() {
         override fun onCancelled(databaseError: DatabaseError) {
             reg_progressBar.visibility = View.INVISIBLE
             reg_scroll_view.visibility = View.VISIBLE
-            Toast.makeText(this@RegisterActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
             Log.d("chetan", "error : ${databaseError.message}")
         }
 
@@ -82,8 +82,15 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     private fun initialize() {
         title = "User Profile"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         reg_scroll_view.visibility = View.INVISIBLE
 
@@ -122,7 +129,7 @@ class RegisterActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
                 reg_progressBar.visibility = View.INVISIBLE
                 reg_scroll_view.visibility = View.VISIBLE
-                Toast.makeText(this@RegisterActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
                 Log.d("chetan", "error : ${databaseError.message}")
             }
         })
