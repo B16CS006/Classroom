@@ -138,7 +138,7 @@ class MainActivity : AppCompatActivity() {
 
         when (item.itemId){
             R.id.main_setting_btn -> {
-                startActivity(Intent(this, RegisterActivity::class.java))
+
             }
 
             R.id.main_logout_btn -> {

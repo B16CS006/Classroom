@@ -129,6 +129,7 @@ class RegisterActivity : AppCompatActivity() {
                 Log.d("chetan", "data imagge : $dataSnapshot")
                 val thumbsImgUri = dataSnapshot.child("thumbImage").value?.toString()?: dataSnapshot.child("image").value.toString()
 
+
                 if(thumbsImgUri != "null")
                     Glide.with(reg_image).load(thumbsImgUri).into(reg_image)
 
@@ -153,10 +154,10 @@ class RegisterActivity : AppCompatActivity() {
 
                 setDisplayName(userMap["name"])
 
-//                val mainIntent = Intent(this, MainActivity::class.java)
-//                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                startActivity(mainIntent)
-//                Toast.makeText(this, "Welcome ${currentUser.displayName}!", Toast.LENGTH_LONG).show()
+                val mainIntent = Intent(this, MainActivity::class.java)
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(mainIntent)
+                Toast.makeText(this, "Welcome ${currentUser.displayName}!", Toast.LENGTH_LONG).show()
                 finish()
             } else {
                 Log.d("chetan", task.exception!!.toString())
