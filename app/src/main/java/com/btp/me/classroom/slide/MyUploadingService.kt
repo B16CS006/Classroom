@@ -34,6 +34,7 @@ class MyUploadingService : MyBaseTaskService() {
             val json = intent.getStringExtra("data")
             val storagePath = intent.getStringExtra("storagePath")
             val databasePath = intent.getStringExtra("databasePath")
+            val link = intent.getStringExtra("link")?:"link"
 
             val gson = GsonBuilder().setPrettyPrinting().create()
             val data: HashMap<String, Any> = gson.fromJson(json, object : TypeToken<HashMap<String, Any>>() {}.type)
@@ -45,17 +46,18 @@ class MyUploadingService : MyBaseTaskService() {
                         Intent.FLAG_GRANT_READ_URI_PERMISSION//)
 //            }
 
-            uploadFromUri(fileUri, storagePath, databasePath, data)
+            uploadFromUri(fileUri, storagePath, databasePath, data, link)
 
         }
 
         return Service.START_REDELIVER_INTENT
     }
 
-    private fun uploadFromUri(fileUri: Uri, storagePath: String, databasePath: String, data:HashMap<String,Any>) {
+    private fun uploadFromUri(fileUri: Uri, storagePath: String, databasePath: String, data:HashMap<String,Any>, link:String) {
         Log.d(TAG, "uploadFromUri:src:" + fileUri.toString())
         Log.d(TAG, "Storage Path : $storagePath")
         Log.d(TAG, "Database Path : $databasePath")
+        Log.d(TAG, "Database Link : $link")
 
         taskStarted()
         showProgressNotification(getString(R.string.progress_uploading), 0, 0, R.drawable.ic_cloud_upload_white_24dp)
@@ -78,7 +80,7 @@ class MyUploadingService : MyBaseTaskService() {
             fileRef.downloadUrl
         }.addOnSuccessListener { downloadUri ->
             Log.d(TAG, "uploadFromUri: getDownloadUri success")
-            data["link"] = downloadUri.toString()
+            data[link] = downloadUri.toString()
             updateDatabase(fileName!!, databasePath,data)
 //            broadcastUploadFinished(downloadUri, fileUri)
             showUploadFinishedNotification(downloadUri, fileUri)

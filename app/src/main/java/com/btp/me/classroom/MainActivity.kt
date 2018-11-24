@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.single_classroom_layout.view.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var mCurrentUser: FirebaseUser? = null
+    private lateinit var mCurrentUser: FirebaseUser
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
@@ -30,12 +30,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mCurrentUser = FirebaseAuth.getInstance().currentUser
+        mCurrentUser = FirebaseAuth.getInstance().currentUser?:return
 
-        if (mCurrentUser == null) {
-            sendToHomePage()
-            return
-        }
 
         main_class_list.setHasFixedSize(true)
         main_class_list.layoutManager = LinearLayoutManager(this)
@@ -59,9 +55,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        mRootRef.child("Class-Enroll/${mCurrentUser?.uid}").addValueEventListener(object : ValueEventListener{
+        mRootRef.child("Class-Enroll/${mCurrentUser.uid}").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                Toast.makeText(this@MainActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@MainActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
                 Log.d(TAG,"class-enroll on canceled ${p0.message}")
             }
 
@@ -92,19 +88,27 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (mCurrentUser == null) {
-            sendToHomePage()
-            return
-        }
+
+        mRootRef.child("Users/${mCurrentUser.uid}/register").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "error : ${p0.message}")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (!(p0.exists() && p0.value == "yes")){
+                    val registerIntent = Intent(this@MainActivity, RegisterActivity::class.java)
+                    registerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(registerIntent)
+                    finish()
+                }
+            }
+
+        })
     }
 
     private fun sendToClassHomeActivity(id: String) {
-//        val startIntent = Intent(this, ClassHomeActivity::class.java)
-//        startIntent.putExtra("classId", id)
-//        startActivity(startIntent)
 
         val chatIntent = Intent(this,PublicChatActivity::class.java)
-//        chatIntent.putExtra(MainActivity.CLASSID,id)
         classId = id
         startActivity(chatIntent)
     }
@@ -159,8 +163,9 @@ class MainActivity : AppCompatActivity() {
                     classAttribute.id = list[0]
                     classAttribute.registeredAs = list[1]
                     classAttribute.status = data.child("status").value.toString()
-                    classAttribute.profileImage = data.child("profileImage").value.toString()
+                    classAttribute.profileImage = data.child("thumbImage").value?.toString() ?: data.child("image").value.toString()
                     classAttribute.name = data.child("name").value.toString()
+
 
                     setVisibility(true)
                     bind(classAttribute)
@@ -204,7 +209,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun setProfileImage(image: String) {
-            val glideImage:Any = when(image){"default","null" -> R.drawable.ic_classroom else -> image}
+            Log.d(TAG, "image mian : $image")
+            val glideImage:Any = when(image){"default","null", "" -> R.drawable.ic_classroom else -> image}
             Glide.with(view.class_single_image).load(glideImage).into(view.class_single_image)
         }
 

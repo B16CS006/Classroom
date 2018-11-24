@@ -63,7 +63,7 @@ class MemberInfoActivity : AppCompatActivity() {
                     class_member_info_roll_number_linear_layout.visibility = View.GONE
                 }
 
-                val image = dataSnapshot.child("thumbsImage").value.toString()
+                val image = dataSnapshot.child("thumbImage").value.toString()
                 val glideImage:Any = when(image) {"default","null" -> R.drawable.ic_default_profile else -> image}
                 Glide.with(class_member_info_image).load(glideImage).into(class_member_info_image)
             }

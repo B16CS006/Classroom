@@ -229,7 +229,7 @@ class PhoneAuthenticationActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun sendToRegister() {
-        val mainIntent = Intent(this, RegisterActivity::class.java)
+        val mainIntent = Intent(this, MainActivity::class.java)
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(mainIntent)
         finish()

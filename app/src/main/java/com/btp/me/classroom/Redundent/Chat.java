@@ -144,7 +144,7 @@ public class Chat extends AppCompatActivity {
 //                    override fun onDataChange(dataSnapshot: DataSnapshot) {
 //
 ////                        if(dataSnapshot)
-//                        val imageUri = dataSnapshot.child("profileImage").value.toString()
+//                        val imageUri = dataSnapshot.child("image").value.toString()
 //                        val className = dataSnapshot.child("name").value.toString()
 //                        val classStatus = dataSnapshot.child("status").value.toString()
 //                        holder.setName(className)
