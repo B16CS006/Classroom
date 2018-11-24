@@ -5,13 +5,13 @@ import android.util.Log
 import java.io.File
 import java.io.IOException
 
-class ClassAttribute {
-    var id:String = ""
-    var name:String = ""
-    var status:String = ""
-    var profileImage:String = ""
-    var registeredAs = ""
-}
+class ClassAttribute(
+    var id:String = "",
+    var name:String = "",
+    var status:String = "",
+    var profileImage:String = "",
+    var registeredAs:String = ""
+)
 
 //class Assignment{
 //    var title:String = "default"

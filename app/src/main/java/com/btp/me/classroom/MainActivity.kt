@@ -23,8 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     private val mRootRef = FirebaseDatabase.getInstance().reference
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -230,7 +228,7 @@ class MainActivity : AppCompatActivity() {
 
         private fun setRegisteredAs(registeredAs:String){
             val glideImage:Any = when(registeredAs){"teacher" -> R.drawable.ic_teacher else -> R.drawable.ic_student}
-            Glide.with(view.class_single_registered_as).load(glideImage).into(view.class_single_registered_as)
+//            Glide.with(view.class_single_registered_as).load(glideImage).into(view.class_single_registered_as)
         }
     }
 

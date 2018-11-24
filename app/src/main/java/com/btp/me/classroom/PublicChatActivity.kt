@@ -218,6 +218,7 @@ class PublicChatActivity : AppCompatActivity() {
         mRootRef.child("Join-Class-Request/$classId/${currentUser!!.uid}").setValue(map).addOnSuccessListener {
             Log.d(TAG, "Request send")
             Toast.makeText(this, "Request to Leave", Toast.LENGTH_SHORT).show()
+
             finish()
         }.addOnFailureListener { exception ->
             Log.d(TAG, "Error : ${exception.message}")
@@ -259,7 +260,7 @@ class PublicChatActivity : AppCompatActivity() {
             Log.d(TAG,"Successfully : $json")
 
         }.addOnFailureListener { exception ->
-            Toast.makeText(this, R.string.no_internet, Toast.LENGTH_LONG).show()
+//            Toast.makeText(this, R.string.no_internet, Toast.LENGTH_SHORT).show()
             Log.d(TAG, "No internet connection : ${exception.message}")
         }
     }
