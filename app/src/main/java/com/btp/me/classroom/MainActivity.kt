@@ -36,6 +36,33 @@ class MainActivity : AppCompatActivity() {
         main_class_list.setHasFixedSize(true)
         main_class_list.layoutManager = LinearLayoutManager(this)
 
+        main_create_class.setOnClickListener { sendToCreateClassActivity() }
+
+//        mClassroomReference.keepSynced(true)
+//        mClassEnrollReference.keepSynced(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if(mCurrentUser == null){
+            sendToHomepage()
+            return
+        }
+
+        mRootRef.child("Users/${mCurrentUser!!.uid}/register").addValueEventListener(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "error : ${p0.message}")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (!(p0.exists() && p0.value == "yes")){
+                    startActivity( Intent(this@MainActivity, UserProfileActivity::class.java))
+                }
+            }
+
+        })
+
         val classList = ArrayList<ArrayList<String>>()
 
         val classListAdapter = object : RecyclerView.Adapter<ClassViewHolder>(){
@@ -80,35 +107,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        main_create_class.setOnClickListener { sendToCreateClassActivity() }
-
-//        mClassroomReference.keepSynced(true)
-//        mClassEnrollReference.keepSynced(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if(mCurrentUser == null){
-            sendToHomepage()
-            return
-        }
-
-        mRootRef.child("Users/${mCurrentUser!!.uid}/register").addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onCancelled(p0: DatabaseError) {
-                Log.d(TAG, "error : ${p0.message}")
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                if (!(p0.exists() && p0.value == "yes")){
-                    val registerIntent = Intent(this@MainActivity, UserProfileActivity::class.java)
-                    registerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                    startActivity(registerIntent)
-                    finish()
-                }
-            }
-
-        })
     }
 
     private fun sendToClassHomeActivity(id: String) {

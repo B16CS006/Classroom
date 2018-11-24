@@ -32,25 +32,6 @@ class UserProfileActivity : AppCompatActivity() {
     private val currentUser: FirebaseUser? by lazy { FirebaseAuth.getInstance().currentUser }
     private lateinit var mUserReference: DatabaseReference
 
-    private val imageListener by lazy {  object :ValueEventListener{
-        override fun onCancelled(databaseError: DatabaseError) {
-            reg_progressBar.visibility = View.INVISIBLE
-            reg_scroll_view.visibility = View.VISIBLE
-            Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
-            Log.d("chetan", "error : ${databaseError.message}")
-        }
-
-        override fun onDataChange(dataSnapshot: DataSnapshot) {
-            Log.d("chetan", "data imagge : $dataSnapshot")
-            val thumbsImgUri = dataSnapshot.child("thumbImage").value?.toString()?: dataSnapshot.child("image").value.toString()
-
-
-            if(thumbsImgUri != "null")
-                Glide.with(reg_image).load(thumbsImgUri).into(reg_image)
-
-        }
-    }}
-
     var userMap = HashMap<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,11 +118,30 @@ class UserProfileActivity : AppCompatActivity() {
             }
         })
 
-        mUserReference.addValueEventListener(imageListener)
+        mUserReference.addValueEventListener(object :ValueEventListener{
+            override fun onCancelled(databaseError: DatabaseError) {
+                reg_progressBar.visibility = View.INVISIBLE
+                reg_scroll_view.visibility = View.VISIBLE
+                Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
+                Log.d("chetan", "error : ${databaseError.message}")
+            }
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.d("chetan", "data imagge : $dataSnapshot")
+                val thumbsImgUri = dataSnapshot.child("thumbImage").value?.toString()?: dataSnapshot.child("image").value.toString()
+
+
+                if(thumbsImgUri != "null")
+                    Glide.with(reg_image).load(thumbsImgUri).into(reg_image)
+
+            }
+        })
     }
 
     private fun sendToHomepage() {
-        startActivity(Intent(this, HomepageActivity::class.java))
+        val homeIntent = Intent(this, HomepageActivity::class.java)
+        homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(Intent(homeIntent))
         finish()
     }
 
@@ -156,11 +156,6 @@ class UserProfileActivity : AppCompatActivity() {
             if (task.isSuccessful) {
 
                 setDisplayName(userMap["name"])
-
-//                val mainIntent = Intent(this, MainActivity::class.java)
-//                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-//                startActivity(mainIntent)
-//                Toast.makeText(this, "Welcome ${currentUser!!.displayName}!", Toast.LENGTH_LONG).show()
                 finish()
             } else {
                 Log.d("chetan", task.exception!!.toString())
@@ -270,9 +265,5 @@ class UserProfileActivity : AppCompatActivity() {
         userMap.clear()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mUserReference.removeEventListener(imageListener)
-    }
 
 }
