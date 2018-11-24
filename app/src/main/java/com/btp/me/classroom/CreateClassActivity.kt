@@ -32,11 +32,6 @@ class CreateClassActivity : AppCompatActivity() {
     private var userMap = HashMap<String, Any>()
     private val classId by lazy { mRootRef.child("Classroom").push().key }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_class)
@@ -67,6 +62,11 @@ class CreateClassActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fields can not be empty", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
     private fun initialize() {
@@ -212,8 +212,8 @@ class CreateClassActivity : AppCompatActivity() {
                 ?: Log.d("chetan", "At this this no activity is running")
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         userMap.clear()
 
         mRootRef.child("Classroom/$classId/name").addListenerForSingleValueEvent(object : ValueEventListener{

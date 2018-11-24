@@ -34,10 +34,10 @@ abstract class MessageType {
 
 abstract class MyColor{
     companion object {
-        val colorCode = arrayListOf<String>("#FFA631","#5D8CAE","#008000","#FFFF00","#00FFFF","#875F9A","#2ABB9B","#A17917","#C93756","#FA8072")
-        val colorName = arrayListOf<String>("orange","ultraMarine","green","yellow","aqua","purple","jungleGreen","brown","crimson","salmon")
+        private val colorCode = arrayListOf<String>("#FFA631","#5D8CAE","#008000","#FFFF00","#00FFFF","#875F9A","#2ABB9B","#A17917","#C93756","#FA8072")
+        private val colorName = arrayListOf<String>("orange","ultraMarine","green","yellow","aqua","purple","jungleGreen","brown","crimson","salmon")
 
-        val colorCount = colorCode.size
+        private val colorCount = colorCode.size
 
         fun chooseColor(string:String): String{
             var sum = 0
