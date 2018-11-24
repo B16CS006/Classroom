@@ -3,18 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/main_account_setting_btn"
-        android:title="Account Settings" />
-    <item
-        android:id="@+id/main_all_users_btn"
-        android:title="All Users" />
-    <item
         android:id="@+id/main_join_class_btn"
         android:title="Join Class" />
     <item
+        android:id="@+id/main_setting_btn"
+        android:title="Settings" />
+    <item
         android:id="@+id/main_logout_btn"
         android:title="Logout"
-        android:icon="@drawable/ic_logout_white"
-        />
-
+        android:icon="@drawable/ic_logout_white" />
 </menu>

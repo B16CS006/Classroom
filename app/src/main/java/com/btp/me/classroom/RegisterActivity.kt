@@ -153,10 +153,10 @@ class RegisterActivity : AppCompatActivity() {
 
                 setDisplayName(userMap["name"])
 
-                val mainIntent = Intent(this, MainActivity::class.java)
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(mainIntent)
-                Toast.makeText(this, "Welcome ${currentUser.displayName}!", Toast.LENGTH_LONG).show()
+//                val mainIntent = Intent(this, MainActivity::class.java)
+//                mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+//                startActivity(mainIntent)
+//                Toast.makeText(this, "Welcome ${currentUser.displayName}!", Toast.LENGTH_LONG).show()
                 finish()
             } else {
                 Log.d("chetan", task.exception!!.toString())

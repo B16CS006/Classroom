@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import com.btp.me.classroom.Class.ClassAttribute
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -137,12 +136,19 @@ class MainActivity : AppCompatActivity() {
 
         item ?: return false
 
-        when {
-            item.itemId == R.id.main_logout_btn -> {
+        when (item.itemId){
+            R.id.main_setting_btn -> {
+                startActivity(Intent(this, RegisterActivity::class.java))
+            }
+
+            R.id.main_logout_btn -> {
                 FirebaseAuth.getInstance().signOut()
                 sendToHomePage()
             }
-            item.itemId == R.id.main_join_class_btn -> startActivity(Intent(this,JoinClass::class.java))
+
+            R.id.main_join_class_btn -> {
+                startActivity(Intent(this,JoinClass::class.java))
+            }
         }
         return true
     }
