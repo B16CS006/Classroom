@@ -124,7 +124,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         mRootRef.child("Assignment/$classId/$assignment").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "Error : ${p0.message}")
+                Log.d(TAG, "Assignment Error : ${p0.message}")
             }
 
             override fun onDataChange(database: DataSnapshot) {
@@ -160,7 +160,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) {
                         Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
-                        Log.d(TAG, "Error : ${p0.message}")
+                        Log.d(TAG, "Assignment Error : ${p0.message}")
                     }
 
                     @SuppressLint("SetTextI18n")
@@ -241,7 +241,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         mRootRef.child("Assignment/$classId/$assignment/marks/${currentUser!!.uid}/state").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
-                Log.d(TAG, "Error : ${p0.message}")
+                Log.d(TAG, "Assignment Error : ${p0.message}")
             }
 
             @SuppressLint("SetTextI18n")
@@ -305,7 +305,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
             Log.d(TAG, "Assignment is successfully uploaded")
         }.addOnFailureListener { exception ->
             Toast.makeText(this, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
-            Log.d(TAG, "Error : ${exception.message}")
+            Log.d(TAG, "Assignment_1 Error : ${exception.message}")
         }
 
     }

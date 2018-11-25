@@ -40,7 +40,7 @@ class MemberInfoActivity : AppCompatActivity() {
 
         mRootRef.child("Users/$memberUID").addListenerForSingleValueEvent(object :ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                Log.d(TAG, "Error : ${p0.message}")
+                Log.d(TAG, "Member_info Error : ${p0.message}")
                 Toast.makeText(this@MemberInfoActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
             }
 

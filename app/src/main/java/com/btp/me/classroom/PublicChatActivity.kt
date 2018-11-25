@@ -87,7 +87,6 @@ class PublicChatActivity : AppCompatActivity() {
         mRootRef.child("Classroom/$classId/name").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "No Internet connections")
-                Toast.makeText(this@PublicChatActivity, R.string.no_internet, Toast.LENGTH_LONG).show()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -221,8 +220,7 @@ class PublicChatActivity : AppCompatActivity() {
 
             finish()
         }.addOnFailureListener { exception ->
-            Log.d(TAG, "Error : ${exception.message}")
-            Toast.makeText(this, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, "Leave classroom Error : ${exception.message}")
         }
     }
 
@@ -268,8 +266,8 @@ class PublicChatActivity : AppCompatActivity() {
     private fun getSendMessageFromDatabase() {
         mRootRef.child("Message/$classId").orderByKey().limitToLast(10).addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "No Internet Connection")
-                Toast.makeText(this@PublicChatActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()
+                Log.d(TAG, "Error : ${error.message}")
+//                Toast.makeText(this@PublicChatActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()//
             }
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -512,7 +510,7 @@ class PublicChatActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "Public Chat Activity"
+        private const val TAG = "Public_Chat_Activity"
         private var userName = "null"
         private var rollNumber = "null"
         private const val COMMAND_TAG = "."

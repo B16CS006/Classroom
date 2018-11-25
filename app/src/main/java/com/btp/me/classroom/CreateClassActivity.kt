@@ -74,7 +74,7 @@ class CreateClassActivity : AppCompatActivity() {
         mRootRef.child("Classroom/$classId").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(databaseError: DatabaseError) {
                 Toast.makeText(this@CreateClassActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
-                Log.d("chetan", "error : ${databaseError.message}")
+                Log.d("chetan", "Create_class error : ${databaseError.message}")
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -91,7 +91,7 @@ class CreateClassActivity : AppCompatActivity() {
 
         mRootRef.child("Users/${mCurrentUser?.uid}/name").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                Log.d("chetan","Error: ${p0.message}")
+                Log.d("chetan","create_class_1 Error: ${p0.message}")
                 Toast.makeText(this@CreateClassActivity, "Failed : ${p0.message}", Toast.LENGTH_SHORT).show()
             }
 
@@ -109,7 +109,7 @@ class CreateClassActivity : AppCompatActivity() {
                         Log.d("chetan", "Class is successfully created")
                         finish()
                     }.addOnFailureListener { exception ->
-                        Log.d("chetan", "Error ${exception.message}")
+                        Log.d("chetan", "create_class_2 Error ${exception.message}")
                         Toast.makeText(this@CreateClassActivity, exception.message, Toast.LENGTH_LONG).show()
                     }
                 }

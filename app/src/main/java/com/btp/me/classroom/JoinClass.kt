@@ -179,8 +179,7 @@ class JoinClass : AppCompatActivity() {
             Log.d(TAG, "Request send")
             Toast.makeText(this@JoinClass, "Request send", Toast.LENGTH_SHORT).show()
         }.addOnFailureListener { exception ->
-            Log.d(TAG, "Error : ${exception.message}")
-            Toast.makeText(this@JoinClass, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
+            Log.d(TAG, " Join Class Error : ${exception.message}")
         }
     }
 

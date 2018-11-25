@@ -60,7 +60,7 @@ class PendingRequestActivity : AppCompatActivity() {
 
         mRootRef.child("Join-Class-Request/$classId").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
-                Log.d(TAG, "Error : ${p0.message}")
+                Log.d(TAG, "Pending_request Error : ${p0.message}")
                 Toast.makeText(this@PendingRequestActivity,"Error : ${p0.message}",Toast.LENGTH_SHORT).show()
             }
 
@@ -165,6 +165,7 @@ class PendingRequestActivity : AppCompatActivity() {
             FirebaseDatabase.getInstance().getReference("Join-Class-Request/$classId/$userId/request").setValue(request).addOnSuccessListener {
                 Toast.makeText(context,"Request $request Successfully",Toast.LENGTH_SHORT).show()
             }.addOnFailureListener{exception ->
+                Log.d(TAG, "Pending_request_1 error : ${exception.message}")
                 Toast.makeText(context,"Error : ${exception.message}",Toast.LENGTH_SHORT).show()
             }
         }

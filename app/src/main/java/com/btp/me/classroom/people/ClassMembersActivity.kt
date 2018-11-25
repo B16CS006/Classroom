@@ -202,7 +202,7 @@ class ClassMembersActivity: AppCompatActivity() {
                     Log.d(TAG, "Request send")
                     Toast.makeText(context, "Request to Leave", Toast.LENGTH_SHORT).show()
                 }.addOnFailureListener { exception ->
-                    Log.d(TAG, "Error : ${exception.message}")
+                    Log.d(TAG, "Create_Member Error : ${exception.message}")
                     Toast.makeText(context, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
                 }
             }

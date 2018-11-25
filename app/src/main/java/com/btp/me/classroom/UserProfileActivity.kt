@@ -113,7 +113,7 @@ class UserProfileActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
                 user_profile_progressBar.visibility = View.INVISIBLE
                 user_profile_scroll_view.visibility = View.VISIBLE
-                Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@UserProfileActivity, "User_Profile Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
                 Log.d("chetan", "error : ${databaseError.message}")
             }
         })
@@ -122,7 +122,7 @@ class UserProfileActivity : AppCompatActivity() {
             override fun onCancelled(databaseError: DatabaseError) {
                 user_profile_progressBar.visibility = View.INVISIBLE
                 user_profile_scroll_view.visibility = View.VISIBLE
-                Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@UserProfileActivity, "User_Profile_1 Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
                 Log.d("chetan", "error : ${databaseError.message}")
             }
 
@@ -158,7 +158,7 @@ class UserProfileActivity : AppCompatActivity() {
                 setDisplayName(userMap["name"])
                 finish()
             } else {
-                Log.d("chetan", task.exception!!.toString())
+                Log.d("chetan", "User_Profile_3 ${task.exception!!.toString()}")
                 Toast.makeText(this, task.exception!!.toString(), Toast.LENGTH_LONG).show()
             }
         }

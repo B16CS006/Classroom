@@ -1,7 +1,9 @@
 package com.btp.me.classroom
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -9,6 +11,7 @@ import android.text.InputType
 import android.util.Log
 import android.widget.EditText
 import com.btp.me.classroom.MainActivity.Companion.classId
+import com.btp.me.classroom.slide.MyUploadingService
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -53,7 +56,10 @@ class ClassProfileActivity : AppCompatActivity() {
         }
 
         class_profile_image.setOnClickListener{
-
+            val gallaryIntent = Intent()
+            gallaryIntent.type = "image/*"
+            gallaryIntent.action = Intent.ACTION_GET_CONTENT
+            startActivityForResult(Intent.createChooser(gallaryIntent, "Select Image"), 1)
         }
     }
 
@@ -153,6 +159,31 @@ class ClassProfileActivity : AppCompatActivity() {
         homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(Intent(homeIntent))
         finish()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            if (requestCode == 1) {
+                upload(data.data!!)
+            }
+        }
+    }
+
+    private fun upload(uri: Uri) {
+        val data = """{"image": ""}"""
+        Log.d("chetan", "uploading Uri : $uri")
+        val uploadingIntent = Intent(this, MyUploadingService::class.java)
+
+        uploadingIntent.putExtra("fileUri", uri)
+        uploadingIntent.putExtra("storagePath", "ClassProfile/$classId")
+        uploadingIntent.putExtra("databasePath", "Classroom/$classId")
+        uploadingIntent.putExtra("data", data)
+        uploadingIntent.putExtra("link", "image")
+
+        uploadingIntent.action = MyUploadingService.ACTION_UPLOAD
+        startService(uploadingIntent)
+                ?: Log.d("chetan", "At this this no activity is running")
     }
 
     companion object {
