@@ -53,8 +53,8 @@ class ExaminationDetailsActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 maximumMarks = dataSnapshot.child("maxMarks").value.toString()
                 examination_details_max_marks.text = maximumMarks
-                examination_details_title.text = dataSnapshot.child("title").value.toString()
-                examination_details_description.text = dataSnapshot.child("description").value.toString()
+                examination_details_title.text = dataSnapshot.child("title").value?.toString()
+                examination_details_description.text = dataSnapshot.child("description").value?.toString()
 
                 mRootRef.child("Classroom/$classId/members").addValueEventListener(object :ValueEventListener{
                     override fun onCancelled(p0: DatabaseError) {
@@ -105,6 +105,11 @@ class ExaminationDetailsActivity : AppCompatActivity() {
 
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     private fun showStudentMarks(markList: ArrayList<StudentAssignmentDetails>) {
         Log.d(TAG, "showStudentmarks ${markList.size}")
         examination_details_student_list.setHasFixedSize(true)
@@ -129,6 +134,7 @@ class ExaminationDetailsActivity : AppCompatActivity() {
     }
 
     private fun getDialogBox(userId:String?){
+        Log.d(TAG, "Examination/$classId/$examId/marks/$userId/marks")
         if (userId == null)
             return
 
@@ -137,7 +143,7 @@ class ExaminationDetailsActivity : AppCompatActivity() {
             hint = "Marks"
             setEms(5)
             maxEms = 10
-            inputType = InputType.TYPE_NUMBER_FLAG_SIGNED
+            inputType = InputType.TYPE_CLASS_NUMBER
         }
 
         val alertDialog = AlertDialog.Builder(this)
@@ -158,7 +164,7 @@ class ExaminationDetailsActivity : AppCompatActivity() {
                 text.isEmpty() -> editText.error = "Can't be Empty"
 
                 text.toLong() <= maximumMarks.toLong() -> {
-                    mRootRef.child("Assignment/$classId/$examId/marks/$userId/marks").setValue(text).addOnCompleteListener { task->
+                    mRootRef.child("Examination/$classId/$examId/marks/$userId/marks").setValue(text).addOnCompleteListener { task->
                         Log.d(TAG, "Update marks ${task.isSuccessful}")
                     }
                     dialog.dismiss()
@@ -178,11 +184,6 @@ class ExaminationDetailsActivity : AppCompatActivity() {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         startActivity(intent)
         finish()
-    }
-
-    override fun onNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onNavigateUp()
     }
 
     private fun initialize() {

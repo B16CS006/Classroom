@@ -83,6 +83,11 @@ class ExaminationActivity : AppCompatActivity() {
         })
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
+
     private fun sendToExamDetailActivity(examId: String?) {
         if (examId == null) {
             return

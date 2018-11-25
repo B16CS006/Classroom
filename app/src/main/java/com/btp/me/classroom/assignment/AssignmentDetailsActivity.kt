@@ -70,7 +70,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     private fun setAssignmentDetails() {
-        mRootRef.child("Assignment/$classId/$assignment").addListenerForSingleValueEvent(object : ValueEventListener {
+        mRootRef.child("Assignment/$classId/$assignment").addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
                 Log.d(TAG, "Assignment Error : ${p0.message}")
@@ -80,9 +80,9 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                 maximumMarks = database.child("maxMarks").value.toString()
 
                 assignment_details_max_marks.text = maximumMarks
-                assignment_details_title.text = database.child("title").value.toString()
-                assignment_details_submission_date.text = database.child("submissionDate").value.toString()
-                assignment_details_description.text = database.child("description").value.toString()
+                assignment_details_title.text = database.child("title").value?.toString()
+                assignment_details_submission_date.text = database.child("submissionDate").value?.toString()
+                assignment_details_description.text = database.child("description").value?.toString()
 
                 if(database.child("link").value.toString() != "null") {
                     assignment_details_assignment_download_button.visibility = View.VISIBLE
@@ -108,7 +108,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                     }
                 }
 
-                mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object : ValueEventListener {
+                mRootRef.child("Classroom/$classId/members").addValueEventListener(object : ValueEventListener {
                     override fun onCancelled(p0: DatabaseError) {
                         Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
                         Log.d(TAG, "Assignment Error : ${p0.message}")
@@ -117,6 +117,8 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                     @SuppressLint("SetTextI18n")
                     override fun onDataChange(dataSnapshot: DataSnapshot) {
                         val type = dataSnapshot.child("${currentUser!!.uid}/as").value.toString()
+
+                        Log.d(TAG, "type : $type")
 
                         if (type == "teacher") {
                             assignment_details_marks.visibility = View.GONE
@@ -129,11 +131,11 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                                     continue
                                 }
                                 val studentAssignmentDetails = StudentAssignmentDetails(
-                                        link = member.child("link").value.toString(),
+                                        link = database.child("link").value.toString(),
                                         marks = member.child("marks").value.toString(),
                                         name = dataSnapshot.child("${member.key.toString()}/name").value.toString(),
                                         rollNumber = dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
-                                        state = member.child("state").value.toString(),
+                                        state = database.child("state").value.toString(),
                                         userId = member.key.toString(),
                                         registeredAs = dataSnapshot.child("${member.key.toString()}/as").value.toString()
                                 )
@@ -166,6 +168,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     private fun getDialogBox(userId:String?){
+        Log.d(TAG, "Assignment/$classId/$assignment/marks/$userId/marks")
         if (userId == null)
             return
 
@@ -174,7 +177,7 @@ class AssignmentDetailsActivity : AppCompatActivity() {
             hint = "Marks"
             setEms(5)
             maxEms = 10
-            inputType = InputType.TYPE_NUMBER_FLAG_SIGNED
+            inputType = InputType.TYPE_CLASS_NUMBER
         }
 
         val alertDialog = AlertDialog.Builder(this)
@@ -315,7 +318,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         return null
     }
 
-
     private fun upload(uri: Uri, map: HashMap<String, String?>) {
         Log.d(TAG, "uploading Uri : $uri")
 
@@ -348,25 +350,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     private class StudentMarksViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         val download: ImageButton = view.single_student_marks_assignment_details_download_button
-
-//        fun bind(studentAssignmentDetails: StudentAssignmentDetails, temp: Boolean) {
-//            view.visibility = View.GONE
-//            FirebaseDatabase.getInstance().getReference("Classroom/$classId/members/${mCurrentUser.uid}").addValueEventListener(object : ValueEventListener {
-//                override fun onCancelled(p0: DatabaseError) {
-//                    Log.d(TAG, "Error : ${p0.message}")
-//                }
-//
-//                override fun onDataChange(data: DataSnapshot) {
-//                    view.visibility = View.VISIBLE
-//                    studentAssignmentDetails.registeredAs = data.child("as").value.toString()
-//                    studentAssignmentDetails.name = data.child("name").value.toString()
-//                    studentAssignmentDetails.rollNumber = data.child("rollNumber").value.toString()
-//
-//                    bind(studentAssignmentDetails)
-//                }
-//
-//            })
-//        }
 
         fun bind(studentAssignmentDetails: StudentAssignmentDetails) {
             setName(studentAssignmentDetails.rollNumber)
@@ -425,6 +408,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val TAG = "Assignment Details"
+        const val TAG = "Assignment_Details"
     }
 }
