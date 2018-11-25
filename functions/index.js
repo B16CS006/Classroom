@@ -1,3 +1,4 @@
+
 'use strict';
 
 const functions = require('firebase-functions');
@@ -17,7 +18,7 @@ exports.join_class_request = functions.database.ref('Join-Class-Request/{classId
 	const classId = context.params.classId;
 	
 	const as = snapshot.after.val().as;
-	const rollNumber = snapshot.after.val().rollNumber;
+	var rollNumber = snapshot.after.val().rollNumber;
 	const request = snapshot.after.val().request;
 	const name = snapshot.after.val().name;
 
@@ -42,6 +43,9 @@ exports.join_class_request = functions.database.ref('Join-Class-Request/{classId
 
 		const classEnrollPath = `Class-Enroll/${userId}/${classId}`;
 		const classroomPath = `Classroom/${classId}/members/${userId}`;
+
+		if(as == 'teacher')
+			rollNumber = null;
 
 		var classroomValue = {
 			'as':as,
@@ -69,25 +73,20 @@ exports.join_class_request = functions.database.ref('Join-Class-Request/{classId
 /*
 exports.join_class_request_conform = functions.database.ref('/Join-Class-Request/conform/{userId}/{classId}').onCreate((snapshot,context) =>{
 	var type = snapshot.val();
-
 	if(!(type == 'leave' || type == 'student' || type == 'teacher')){
 		console.log('Argument is not valid : Type -> ', type);
 		return snapshot.ref.set(null);
 	}
-
 	const userId = context.params.userId;
 	const classId = context.params.classId;
 	console.log('UserId : ',userId, ', ClassId : ', classId, ', Type : ',type);
-
 	var classEnrollPath = `Class-Enroll/${userId}/${classId}/as`;
 	var classroomPath = `Classroom/${classId}/members/${userId}/as`;
-
 	if(type == "leave"){
 		type = null;
 		classEnrollPath = `Class-Enroll/${userId}/${classId}`;
 		classroomPath = `Classroom/${classId}/members/${userId}`;
 	}
-
 	return admin.database().ref(classEnrollPath).set(type).then((snapshot2) =>{
 		console.log('Class-Enroll value is changed');
 		return admin.database().ref(classroomPath).set(type).then((snapshot3) => {

@@ -81,7 +81,7 @@ class CreateClassActivity : AppCompatActivity() {
                 val thumbsImgUri = dataSnapshot.child("thumbImage").value?.toString()?: dataSnapshot.child("image").value.toString()
 
                 if (thumbsImgUri != "null")
-                Glide.with(create_class_image).load(thumbsImgUri).into(create_class_image)
+                Glide.with(applicationContext).load(thumbsImgUri).into(create_class_image)
             }
         })
     }

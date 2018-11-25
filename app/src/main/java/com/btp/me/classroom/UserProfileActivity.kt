@@ -132,7 +132,7 @@ class UserProfileActivity : AppCompatActivity() {
 
 
                 if(thumbsImgUri != "null")
-                    Glide.with(user_profile_image).load(thumbsImgUri).into(user_profile_image)
+                    Glide.with(applicationContext).load(thumbsImgUri).into(user_profile_image)
 
             }
         })

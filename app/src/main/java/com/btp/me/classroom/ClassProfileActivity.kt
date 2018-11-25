@@ -1,11 +1,13 @@
 package com.btp.me.classroom
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
+import android.support.v7.app.AlertDialog
+import android.text.InputType
 import android.util.Log
-import android.widget.TextView
+import android.widget.EditText
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +31,34 @@ class ClassProfileActivity : AppCompatActivity() {
         }
 
         initialize()
+
+        class_profile_name.setOnClickListener{
+            val editText = EditText(this)
+            with(editText) {
+                hint = "Class Name"
+                setEms(10)
+                maxEms = 10
+                inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
+            }
+            getDialogBox(editText, 0)
+        }
+
+        class_profile_status.setOnClickListener{
+            val editText = EditText(this)
+            with(editText){
+                hint = "Class Description"
+                inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            }
+            getDialogBox(editText, 1)
+        }
+
+        class_profile_image.setOnClickListener{
+
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -60,12 +90,62 @@ class ClassProfileActivity : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val image = dataSnapshot.child("thumbImage").value?.toString() ?: dataSnapshot.child("image").value.toString()
 
-                Glide.with(class_profile_image).load(when(image){
+                Glide.with(applicationContext).load(when(image){
                     "null","default","" -> R.drawable.ic_classroom
                     else -> image
                 }).into(class_profile_image)
             }
         })
+    }
+
+    private fun getDialogBox(editText: EditText, type:Int){
+
+        //0 -> className change
+        //1 -> classStatus change
+
+        val alertDialog = AlertDialog.Builder(this)
+
+        with(alertDialog){
+            setTitle(when(type){
+                0-> "Enter Class Name"
+                else -> "Enter Class Description"
+            })
+            setView(editText)
+            alertDialog.setPositiveButton("Change") { _: DialogInterface, _: Int -> }
+            alertDialog.setNegativeButton("Cancel"){_: DialogInterface,_: Int -> }
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            val text = editText.text.toString()
+            if(text.isNotEmpty()){
+                when(type){
+                    0-> updateClassName(text)
+                    else-> updateClassStatus(text)
+                }
+                dialog.dismiss()
+            }else{
+                editText.error = "Can't be Empty"
+            }
+        }
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener{
+            dialog.cancel()
+        }
+    }
+
+    private fun updateClassName(name: String) {
+        mRootRef.child("Classroom/$classId/name").setValue(name).addOnCompleteListener { task->
+            Log.d(TAG, "Name : ${task.isSuccessful}")
+        }
+    }
+
+    private fun updateClassStatus(status:String){
+        mRootRef.child("Classroom/$classId/status").setValue(status).addOnCompleteListener { task->
+            Log.d(TAG, "Name : ${task.isSuccessful}")
+        }
     }
 
     private fun sendToHomepage() {

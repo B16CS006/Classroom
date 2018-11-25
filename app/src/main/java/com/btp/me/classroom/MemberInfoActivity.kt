@@ -66,7 +66,7 @@ class MemberInfoActivity : AppCompatActivity() {
 
                 val image = dataSnapshot.child("thumbImage").value.toString()
                 val glideImage:Any = when(image) {"default","null" -> R.drawable.ic_default_profile else -> image}
-                Glide.with(class_member_info_image).load(glideImage).into(class_member_info_image)
+                Glide.with(applicationContext).load(glideImage).into(class_member_info_image)
             }
         })
     }

@@ -1,5 +1,6 @@
 package com.btp.me.classroom
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         val classListAdapter = object : RecyclerView.Adapter<ClassViewHolder>(){
             override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ClassViewHolder {
                 return ClassViewHolder(LayoutInflater.from(p0.context)
-                        .inflate(R.layout.single_classroom_layout, p0, false))
+                        .inflate(R.layout.single_classroom_layout, p0, false), applicationContext)
             }
 
             override fun getItemCount() = classList.size
@@ -157,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private class ClassViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    private class ClassViewHolder(val view: View, val ctx :Context) : RecyclerView.ViewHolder(view) {
 
         fun bind(list:ArrayList<String>){
 
@@ -185,6 +186,10 @@ class MainActivity : AppCompatActivity() {
 
         fun bind(_class: ClassAttribute) {
             Log.d("chetan", "ClassViewHolder")
+            Log.d("chetan", "classid : ${_class.name}")
+            Log.d("chetan", "classid : ${_class.id}")
+            Log.d("chetan", "classid : ${_class.profileImage}")
+            Log.d("chetan", "classid : ${_class.status}")
             with(_class) {
 //                setBackground(this.registeredAs)
                 setName(this.name)
@@ -221,12 +226,12 @@ class MainActivity : AppCompatActivity() {
         private fun setProfileImage(image: String) {
             Log.d(TAG, "image mian : $image")
             val glideImage:Any = when(image){"default","null", "" -> R.drawable.ic_classroom else -> image}
-            Glide.with(view.class_single_image).load(glideImage).into(view.class_single_image)
+            Glide.with(ctx).load(glideImage).into(view.class_single_image)
         }
 
         private fun setRegisteredAs(registeredAs:String){
             val glideImage:Any = when(registeredAs){"teacher" -> R.drawable.ic_teacher else -> R.drawable.ic_student}
-            Glide.with(view.class_single_registered_as).load(glideImage).into(view.class_single_registered_as)
+            Glide.with(ctx).load(glideImage).into(view.class_single_registered_as)
         }
     }
 

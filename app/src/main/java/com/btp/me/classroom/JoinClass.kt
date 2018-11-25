@@ -50,53 +50,6 @@ class JoinClass : AppCompatActivity() {
         }
 
         initialize()
-
- /*       join_class_button.setOnClickListener{
-            val detail = extractDataFromView()
-
-            if(detail.invalid)
-                return@setOnClickListener
-
-            detail.name = mCurrentUser!!.displayName?:"Anonymous"
-
-            mRootRef.child("Classroom/${detail.classId}/members").addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onCancelled(p0: DatabaseError) {
-                    Log.d(TAG,"Join Class : ${p0.message}")
-                    Toast.makeText(this@JoinClass,"Check you Internet Connection",Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    when {
-                        dataSnapshot.value == null -> {
-                            Log.d(TAG,"Invalid class code")
-                            Toast.makeText(this@JoinClass,"Invalid Class Code",Toast.LENGTH_SHORT).show()
-                            return
-                        }
-                        dataSnapshot.hasChild(mCurrentUser!!.uid) -> {
-                            Log.d(TAG,"You are already a member of this class")
-                            Toast.makeText(this@JoinClass,"You are already a member of this class",Toast.LENGTH_SHORT).show()
-                        }
-                        else -> {
-                            val map = HashMap<String, String>()
-                            map["as"] = "student"
-                            map["request"] = "pending"
-                            map["rollNumber"] = detail.rollNumber
-                            map["name"] = detail.name
-                            mRootRef.child("Join-Class-Request/${detail.classId}/${mCurrentUser!!.uid}").setValue(map).addOnSuccessListener {
-                                Log.d(TAG, "Request send")
-                                Toast.makeText(this@JoinClass, "Request send", Toast.LENGTH_SHORT).show()
-                                finish()
-                            }.addOnFailureListener { exception ->
-                                Log.d(TAG, "Error : ${exception.message}")
-                                Toast.makeText(this@JoinClass, "Error : ${exception.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }
-                }
-
-            })
-
-        }*/
     }
 
     override fun onStart() {
@@ -105,7 +58,7 @@ class JoinClass : AppCompatActivity() {
         val classList = ArrayList<ClassAttribute>()
         val classListAdapter = object : RecyclerView.Adapter<ClassViewHolder>(){
             override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ClassViewHolder {
-                return ClassViewHolder(LayoutInflater.from(p0.context).inflate(R.layout.single_classroom_layout, p0, false))
+                return ClassViewHolder(LayoutInflater.from(p0.context).inflate(R.layout.single_classroom_layout, p0, false), applicationContext)
             }
 
             override fun getItemCount() = classList.size
@@ -247,7 +200,7 @@ class JoinClass : AppCompatActivity() {
 //        var invalid:Boolean = false
 //    )
 
-    private class ClassViewHolder(val view:View): RecyclerView.ViewHolder(view){
+    private class ClassViewHolder(val view:View, val ctx: Context): RecyclerView.ViewHolder(view){
         fun bind(classAttribute: ClassAttribute){
             setImage(classAttribute.profileImage)
             setName(classAttribute.name)
@@ -259,7 +212,7 @@ class JoinClass : AppCompatActivity() {
         private fun setStatus(status: String){ view.class_single_status.text = status }
         private fun setImage(image:String){
             val glideImage:Any = when(image){"default","null", "" -> R.drawable.ic_classroom else -> image}
-            Glide.with(view.class_single_image).load(glideImage).into(view.class_single_image)
+            Glide.with(ctx).load(glideImage).into(view.class_single_image)
         }
 
     }

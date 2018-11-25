@@ -385,8 +385,6 @@ class PublicChatActivity : AppCompatActivity() {
 */
 
     private fun sendToMainActivity() {
-        val intent = Intent(this,MainActivity::class.java)
-        startActivity(intent)
         finish()
     }
 
