@@ -550,7 +550,7 @@ class PublicChatActivity : AppCompatActivity() {
                 "leave",
                 "pending request",
                 "marks",
-                "setting",
+                "settings",
                 "examination"
         )
 
