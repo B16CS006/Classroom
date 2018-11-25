@@ -7,7 +7,7 @@
     android:paddingEnd="16dp"
     android:background="@color/background1"
     android:paddingStart="16dp"
-    tools:context="com.btp.me.classroom.assignment.ExaminationDetailsActivity">
+    tools:context="com.btp.me.classroom.examination.ExaminationDetailsActivity">
 
     <TextView
         android:id="@+id/examination_details_title"

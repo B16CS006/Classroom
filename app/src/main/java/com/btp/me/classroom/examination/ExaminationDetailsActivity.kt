@@ -1,14 +1,18 @@
-package com.btp.me.classroom.assignment
+package com.btp.me.classroom.examination
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import com.btp.me.classroom.Class.StudentAssignmentDetails
 import com.btp.me.classroom.HomepageActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
@@ -18,7 +22,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_assignment_details.*
 import kotlinx.android.synthetic.main.activity_examination_details.*
 import kotlinx.android.synthetic.main.single_students_marks_assignment_details.view.*
 
@@ -115,9 +118,53 @@ class ExaminationDetailsActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(p0: StudentExamDetailsViewHolder, p1: Int) {
                 p0.bind(markList[p1])
+                p0.view.setOnClickListener {
+                    getDialogBox(markList[p1].userId)
+                }
             }
         }
         examination_details_student_list.adapter = studentMarkAdapter
+    }
+
+    private fun getDialogBox(userId:String?){
+        if (userId == null)
+            return
+
+        val editText = EditText(this)
+        with(editText) {
+            hint = "Marks"
+            setEms(5)
+            maxEms = 10
+            inputType = InputType.TYPE_NUMBER_FLAG_SIGNED
+        }
+
+        val alertDialog = AlertDialog.Builder(this)
+
+        with(alertDialog){
+            setTitle("Enter Marks")
+            setView(editText)
+            alertDialog.setPositiveButton("Change") { _: DialogInterface, _: Int -> }
+            alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { _ ->
+            val text = editText.text.toString()
+            if(text.isNotEmpty()){
+                mRootRef.child("Examination/$classId/$examId/marks/$userId/marks").setValue(text).addOnCompleteListener {task->
+                    Log.d(TAG, "Update marks ${task.isSuccessful}")
+                }
+                dialog.dismiss()
+            }else{
+                editText.error = "Can't be Empty"
+            }
+        }
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener{
+            dialog.cancel()
+        }
     }
 
     private fun sendToHomepage() {

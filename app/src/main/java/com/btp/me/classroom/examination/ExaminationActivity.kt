@@ -1,4 +1,4 @@
-package com.btp.me.classroom.assignment
+package com.btp.me.classroom.examination
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -13,6 +13,7 @@ import com.btp.me.classroom.Class.Assignment
 import com.btp.me.classroom.MainActivity
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.R
+import com.btp.me.classroom.assignment.AssignmentUploadActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -87,7 +88,7 @@ class ExaminationActivity : AppCompatActivity() {
             return
         }
 
-        val intent = Intent(this,ExaminationDetailsActivity::class.java)
+        val intent = Intent(this, ExaminationDetailsActivity::class.java)
         intent.putExtra("examId",examId)
         startActivity(intent)
 

@@ -14,7 +14,7 @@ import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.adapter.ChatAdapter
-import com.btp.me.classroom.assignment.ExaminationActivity
+import com.btp.me.classroom.examination.ExaminationActivity
 import com.btp.me.classroom.people.ClassMembersActivity
 import com.btp.me.classroom.slide.SlideActivity
 import com.btp.me.classroom.student.StudentMarksActivity
@@ -519,7 +519,7 @@ class PublicChatActivity : AppCompatActivity() {
             return
         }
 
-        startActivity(Intent(this,ExaminationActivity::class.java))
+        startActivity(Intent(this, ExaminationActivity::class.java))
     }
 
     private fun sendToClassProfileActivity() {
