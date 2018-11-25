@@ -39,7 +39,9 @@ class ExaminationDetailsActivity : AppCompatActivity() {
 
         initialize()
 
-        mRootRef.child("Examination/$classId/").addValueEventListener(object : ValueEventListener{
+        Log.d(TAG, "Exam Id : $examId")
+
+        mRootRef.child("Examination/$classId/$examId").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "Error : ${p0.message}")
             }
@@ -55,35 +57,38 @@ class ExaminationDetailsActivity : AppCompatActivity() {
                     }
 
                     override fun onDataChange(studentDataSnapshot: DataSnapshot) {
-                        val type = dataSnapshot.child("${currentUser!!.uid}/as").value.toString()
+                        val type = studentDataSnapshot.child("${currentUser!!.uid}/as").value.toString()
+
+                        Log.d(TAG, "type : $studentDataSnapshot")
 
                         if(type == "teacher"){
                             examination_details_marks.visibility = View.GONE
                             val markList = ArrayList<StudentAssignmentDetails>()
 
                             for (student in studentDataSnapshot.children){
-                                if (dataSnapshot.child("${student.key.toString()}/as").value.toString() != "student") {
+                                Log.d(TAG, "student : $student")
+                                if (student.child("as").value.toString() != "student") {
                                     continue
                                 }
+                                val id = student.key.toString()
                                 val studentAssignmentDetails = StudentAssignmentDetails(
-                                        marks = student.child("marks").value.toString(),
-                                        name = dataSnapshot.child("${student.key.toString()}/name").value.toString(),
-                                        rollNumber = dataSnapshot.child("${student.key.toString()}/rollNumber").value.toString(),
-                                        userId = student.key.toString(),
-                                        registeredAs = dataSnapshot.child("${student.key.toString()}/as").value.toString()
+                                        marks = dataSnapshot.child("marks/$id/marks").value.toString(),
+                                        name = student.child("name").value.toString(),
+                                        rollNumber = student.child("rollNumber").value.toString(),
+                                        userId = student.key.toString()
                                 )
 
                                 markList.add(studentAssignmentDetails)
-                                showStudentMarks(markList)
                             }
+                            showStudentMarks(markList)
                         }else if(type == "student"){
                             var myMarks = dataSnapshot.child("marks/${currentUser!!.uid}/marks").value.toString()
                             if (myMarks == "null"){
                                 myMarks = "0"
                             }
                             examination_details_marks.text = "Marks Obtained : $myMarks"
-                            assignment_details_marks.visibility = View.VISIBLE
-                            assignment_details_marks_linear_layout.visibility = View.GONE
+                            examination_details_marks.visibility = View.VISIBLE
+                            examination_details_marks_linear_layout.visibility = View.GONE
                         }
                     }
 
@@ -96,8 +101,10 @@ class ExaminationDetailsActivity : AppCompatActivity() {
     }
 
     private fun showStudentMarks(markList: ArrayList<StudentAssignmentDetails>) {
+        Log.d(TAG, "showStudentmarks ${markList.size}")
         examination_details_student_list.setHasFixedSize(true)
         examination_details_student_list.layoutManager = LinearLayoutManager(this)
+        examination_details_marks_linear_layout.visibility = View.VISIBLE
 
         val studentMarkAdapter = object : RecyclerView.Adapter<StudentExamDetailsViewHolder>(){
             override fun onCreateViewHolder(p0: ViewGroup, p1: Int): StudentExamDetailsViewHolder {
@@ -110,7 +117,6 @@ class ExaminationDetailsActivity : AppCompatActivity() {
                 p0.bind(markList[p1])
             }
         }
-
         examination_details_student_list.adapter = studentMarkAdapter
     }
 
@@ -137,6 +143,7 @@ class ExaminationDetailsActivity : AppCompatActivity() {
         fun bind(studentAssignmentDetails: StudentAssignmentDetails){
             setRollNumber(studentAssignmentDetails.rollNumber)
             setMarks(studentAssignmentDetails.marks)
+            view.single_student_marks_assignment_details_download_button.visibility = View.INVISIBLE
         }
 
         private fun setMarks(marks: String?) {

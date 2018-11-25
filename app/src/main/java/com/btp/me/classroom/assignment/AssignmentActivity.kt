@@ -193,15 +193,24 @@ class AssignmentActivity : AppCompatActivity() {
 
         private fun setTitle(string:String?){
 
-            view.single_assignment_title.text = string
+            view.single_assignment_title.text = when(string){
+                "null" -> null
+                else -> string
+            }
         }
 
         private fun setDescription(string:String?){
-            view.single_assignment_description.text = string
+            view.single_assignment_description.text = when(string){
+                "null" -> null
+                else -> string
+            }
         }
 
         private fun setSubmissionDate(string:String?){
-            view.single_assignment_submission_date.text = string
+            view.single_assignment_submission_date.text = when(string){
+                "null" -> null
+                else -> string
+            }
         }
     }
 

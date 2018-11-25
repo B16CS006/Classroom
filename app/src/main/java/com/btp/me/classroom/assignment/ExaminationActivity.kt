@@ -147,14 +147,21 @@ class ExaminationActivity : AppCompatActivity() {
         fun bind(exam: Assignment) {
             setTitle(exam.title)
             setDescription(exam.description)
+            view.single_assignment_submission_date.visibility = View.INVISIBLE
         }
 
         private fun setTitle(title: String?) {
-            view.single_assignment_title.text = title
+            view.single_assignment_title.text =when(title){
+                "null" -> null
+                else -> title
+            }
         }
 
         private fun setDescription(description: String?) {
-            view.single_assignment_description.text = description
+            view.single_assignment_description.text = when(description){
+                "null" -> null
+                else -> description
+            }
         }
     }
 
