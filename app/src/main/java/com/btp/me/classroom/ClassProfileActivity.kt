@@ -23,49 +23,20 @@ import kotlinx.android.synthetic.main.activity_class_profile.*
 class ClassProfileActivity : AppCompatActivity() {
 
     private val mRootRef by lazy { FirebaseDatabase.getInstance().reference }
+    private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_class_profile)
 
-        if(FirebaseAuth.getInstance().currentUser == null){
+        if(currentUser == null){
             sendToHomepage()
             return
         }
 
         initialize()
-
-        class_profile_name.setOnClickListener{
-            val editText = EditText(this)
-            with(editText) {
-                hint = "Class Name"
-                setEms(10)
-                maxEms = 10
-                inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
-            }
-            getDialogBox(editText, 0)
-        }
-
-        class_profile_status.setOnClickListener{
-            val editText = EditText(this)
-            with(editText){
-                hint = "Class Description"
-                inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-            }
-            getDialogBox(editText, 1)
-        }
-
-        class_profile_image.setOnClickListener{
-            val gallaryIntent = Intent()
-            gallaryIntent.type = "image/*"
-            gallaryIntent.action = Intent.ACTION_GET_CONTENT
-            startActivityForResult(Intent.createChooser(gallaryIntent, "Select Image"), 1)
-        }
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
@@ -76,6 +47,44 @@ class ClassProfileActivity : AppCompatActivity() {
         title = "Class Profile"
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        mRootRef.child("Classroom/$classId/members/${currentUser!!.uid}/as").addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onCancelled(p0: DatabaseError) {
+                Log.d(TAG, "Error : ${p0.message}")
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                if (p0.exists() && p0.value.toString() == "teacher"){
+                    class_profile_name.setOnClickListener{
+                        val editText = EditText(this@ClassProfileActivity)
+                        with(editText) {
+                            hint = "Class Name"
+                            setEms(10)
+                            maxEms = 10
+                            inputType = InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                        }
+                        getDialogBox(editText, 0)
+                    }
+
+                    class_profile_status.setOnClickListener{
+                        val editText = EditText(this@ClassProfileActivity)
+                        with(editText){
+                            hint = "Class Description"
+                            inputType = InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+                        }
+                        getDialogBox(editText, 1)
+                    }
+
+                    class_profile_image.setOnClickListener{
+                        val gallaryIntent = Intent()
+                        gallaryIntent.type = "image/*"
+                        gallaryIntent.action = Intent.ACTION_GET_CONTENT
+                        startActivityForResult(Intent.createChooser(gallaryIntent, "Select Image"), 1)
+                    }
+                }
+            }
+
+        })
 
         mRootRef.child("Classroom/$classId").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
