@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.btp.me.classroom.assignment.ExaminationActivity">
+
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/examination_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:visibility="gone"
+    android:paddingBottom="150dp"  />
+
+<TextView
+    android:id="@+id/examination_empty"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="top|center_horizontal"
+    android:text="No Result are uploaded."
+    android:textColor="#938f8f"
+    android:textSize="16sp"
+    android:visibility="gone" />
+
+<android.support.design.widget.FloatingActionButton
+    android:id="@+id/examination_create_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="10dp"
+    android:visibility="gone"
+    android:src="@android:drawable/ic_input_add"/>
+
+</android.support.constraint.ConstraintLayout>

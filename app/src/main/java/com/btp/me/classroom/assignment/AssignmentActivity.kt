@@ -45,7 +45,6 @@ class AssignmentActivity : AppCompatActivity() {
 
     private fun initialize() {
         title = "Assignment"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         assignment_list.setHasFixedSize(true)
@@ -55,7 +54,6 @@ class AssignmentActivity : AppCompatActivity() {
     }
 
     private fun initializeFloatingButton() {
-        assignment_upload_button.hide()
         mRootRef.child("Class-Enroll/${currentUser!!.uid}/$classId/as").addValueEventListener(object : ValueEventListener{
             override fun onCancelled(p0: DatabaseError) {
                 Log.d(TAG, "Error : ${p0.message}")
@@ -137,9 +135,13 @@ class AssignmentActivity : AppCompatActivity() {
         })
     }
 
-    private fun sendToAssignmentDetails(assignment: String) {
+    private fun sendToAssignmentDetails(assignment: String?) {
         if (classId == "null") {
             sendToMainActivity()
+            return
+        }
+
+        if (assignment == null){
             return
         }
 
@@ -189,21 +191,22 @@ class AssignmentActivity : AppCompatActivity() {
             }
         }
 
-        private fun setTitle(string:String){
+        private fun setTitle(string:String?){
+
             view.single_assignment_title.text = string
         }
 
-        private fun setDescription(string:String){
+        private fun setDescription(string:String?){
             view.single_assignment_description.text = string
         }
 
-        private fun setSubmissionDate(string:String){
+        private fun setSubmissionDate(string:String?){
             view.single_assignment_submission_date.text = string
         }
     }
 
     companion object {
-        const val TAG = "Assignment Activity"
+        const val TAG = "Assignment_Activity"
     }
 
 

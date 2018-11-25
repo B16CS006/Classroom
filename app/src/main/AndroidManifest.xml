@@ -65,7 +65,9 @@
         <activity android:name=".teacher.PendingRequestActivity" />
         <activity android:name=".teacher.ClassMarksActivity" />
         <activity android:name=".student.StudentMarksActivity" />
-        <activity android:name=".ClassProfileActivity"></activity>
+        <activity android:name=".ClassProfileActivity" />
+        <activity android:name=".assignment.ExaminationActivity" />
+        <activity android:name=".assignment.ExaminationDetailsActivity"></activity>
     </application>
 
 </manifest>

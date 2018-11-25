@@ -53,13 +53,16 @@ class AssignmentDetailsActivity : AppCompatActivity() {
             return
         }
 
-        title = "Assignment Details"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-
-        assignment = intent.getStringExtra("assignment")
+        initialize()
 
         setAssignmentDetails()
+    }
+
+    private fun initialize() {
+        title = "Assignment Details"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        assignment = intent.getStringExtra("assignment")
     }
 
     private fun setAssignmentDetails() {

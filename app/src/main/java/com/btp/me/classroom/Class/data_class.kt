@@ -116,11 +116,11 @@ data class ChatMessage(
 )
 
 data class Assignment(
-    var title: String = "",
-    var description: String = "",
-    var submissionDate: String = "",
-    var uploadingDate: String = "",
-    var maxMarks: String = "",
+    var title: String? = null,
+    var description: String? = null,
+    var submissionDate: String? = null,
+    var uploadingDate: String? = null,
+    var maxMarks: String? = null,
     var link: String? = null
 )
 
