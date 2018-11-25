@@ -27,6 +27,10 @@
         android:title="Slide" />
 
     <item
+        android:id="@+id/examination"
+        android:title="Examination" />
+
+    <item
         android:id="@+id/assignment"
         android:title="Assignment" />
 

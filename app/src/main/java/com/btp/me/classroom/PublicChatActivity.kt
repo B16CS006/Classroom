@@ -14,6 +14,7 @@ import com.btp.me.classroom.Class.ChatMessage
 import com.btp.me.classroom.Class.MessageType
 import com.btp.me.classroom.MainActivity.Companion.classId
 import com.btp.me.classroom.adapter.ChatAdapter
+import com.btp.me.classroom.assignment.ExaminationActivity
 import com.btp.me.classroom.people.ClassMembersActivity
 import com.btp.me.classroom.slide.SlideActivity
 import com.btp.me.classroom.student.StudentMarksActivity
@@ -161,6 +162,16 @@ class PublicChatActivity : AppCompatActivity() {
             commandList[8] -> {
                 sendMessage(commandList[8], "command", "me")
                 sendToMarksActivity()
+            }
+
+            commandList[9] -> {
+                sendMessage(commandList[9], "command", "me")
+                sendToClassProfileActivity()
+            }
+
+            commandList[10] -> {
+                sendMessage(commandList[10], "command", "me")
+                sendToExaminationActivity()
             }
             else ->{
                 Toast.makeText(this,"No Such Command Found",Toast.LENGTH_LONG).show()
@@ -493,8 +504,22 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[9], "command", "me")
                 sendToClassProfileActivity()
             }
+
+            R.id.examination -> {
+                sendMessage(commandList[10], "command", "me")
+                sendToExaminationActivity()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun sendToExaminationActivity() {
+        if (classId == "null") {
+            sendToMainActivity()
+            return
+        }
+
+        startActivity(Intent(this,ExaminationActivity::class.java))
     }
 
     private fun sendToClassProfileActivity() {
@@ -525,7 +550,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "leave",
                 "pending request",
                 "marks",
-                "setting"
+                "setting",
+                "examination"
         )
 
 
