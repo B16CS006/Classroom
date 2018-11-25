@@ -11,6 +11,10 @@
         android:title="Pending Request" />
 
     <item
+        android:id="@+id/setting"
+        android:title="Setting" />
+
+    <item
         android:id="@+id/members"
         android:title="Members" />
 

@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_register_activity.*
+import kotlinx.android.synthetic.main.activity_user_profile.*
 
 import kotlin.collections.HashMap
 
@@ -36,7 +36,7 @@ class UserProfileActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_register_activity)
+        setContentView(R.layout.activity_user_profile)
 
         if(currentUser == null){
             sendToHomepage()
@@ -45,15 +45,15 @@ class UserProfileActivity : AppCompatActivity() {
 
         initialize()
 
-        reg_image.setOnClickListener {
+        user_profile_image.setOnClickListener {
             val gallaryIntent = Intent()
             gallaryIntent.type = "image/*"
             gallaryIntent.action = Intent.ACTION_GET_CONTENT
             startActivityForResult(Intent.createChooser(gallaryIntent, "Select Image"), 1)
         }
-        reg_continue_btn.setOnClickListener {
-            val name = reg_name.text.toString()
-            val status = reg_status.text.toString()
+        user_profile_update_btn.setOnClickListener {
+            val name = user_profile_name.text.toString()
+            val status = user_profile_status.text.toString()
 
             if (!TextUtils.isEmpty(name) && !TextUtils.isEmpty(status)) {
                 userMap["name"] = name
@@ -76,7 +76,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        reg_scroll_view.visibility = View.INVISIBLE
+        user_profile_scroll_view.visibility = View.INVISIBLE
 
         mUserReference = FirebaseDatabase.getInstance().getReference("Users/${currentUser!!.uid}")
 
@@ -85,8 +85,8 @@ class UserProfileActivity : AppCompatActivity() {
 
                 Log.d("chetan", "Register : $dataSnapshot")
                 if (!dataSnapshot.exists()) {
-                    reg_progressBar.visibility = View.INVISIBLE
-                    reg_scroll_view.visibility = View.VISIBLE
+                    user_profile_progressBar.visibility = View.INVISIBLE
+                    user_profile_scroll_view.visibility = View.VISIBLE
                     return
                 }
 
@@ -95,8 +95,8 @@ class UserProfileActivity : AppCompatActivity() {
 
 
 
-                reg_name.setText(name, TextView.BufferType.EDITABLE)
-                reg_status.setText(status, TextView.BufferType.EDITABLE)
+                user_profile_name.setText(name, TextView.BufferType.EDITABLE)
+                user_profile_status.setText(status, TextView.BufferType.EDITABLE)
 
                 val fcmToken = dataSnapshot.child("fcm-token").value.toString()
 
@@ -106,13 +106,13 @@ class UserProfileActivity : AppCompatActivity() {
 
                 Log.d("chetan", "Registerk: $userMap")
 
-                reg_progressBar.visibility = INVISIBLE
-                reg_scroll_view.visibility = View.VISIBLE
+                user_profile_progressBar.visibility = INVISIBLE
+                user_profile_scroll_view.visibility = View.VISIBLE
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                reg_progressBar.visibility = View.INVISIBLE
-                reg_scroll_view.visibility = View.VISIBLE
+                user_profile_progressBar.visibility = View.INVISIBLE
+                user_profile_scroll_view.visibility = View.VISIBLE
                 Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
                 Log.d("chetan", "error : ${databaseError.message}")
             }
@@ -120,8 +120,8 @@ class UserProfileActivity : AppCompatActivity() {
 
         mUserReference.addValueEventListener(object :ValueEventListener{
             override fun onCancelled(databaseError: DatabaseError) {
-                reg_progressBar.visibility = View.INVISIBLE
-                reg_scroll_view.visibility = View.VISIBLE
+                user_profile_progressBar.visibility = View.INVISIBLE
+                user_profile_scroll_view.visibility = View.VISIBLE
                 Toast.makeText(this@UserProfileActivity, "Error : ${databaseError.message}", Toast.LENGTH_LONG).show()
                 Log.d("chetan", "error : ${databaseError.message}")
             }
@@ -132,7 +132,7 @@ class UserProfileActivity : AppCompatActivity() {
 
 
                 if(thumbsImgUri != "null")
-                    Glide.with(reg_image).load(thumbsImgUri).into(reg_image)
+                    Glide.with(user_profile_image).load(thumbsImgUri).into(user_profile_image)
 
             }
         })

@@ -492,8 +492,17 @@ class PublicChatActivity : AppCompatActivity() {
                 sendMessage(commandList[8], "command", "me")
                 sendToMarksActivity()
             }
+
+            R.id.setting -> {
+                sendMessage(commandList[9], "command", "me")
+                sendToClassProfileActivity()
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun sendToClassProfileActivity() {
+        startActivity(Intent(this, ClassProfileActivity::class.java))
     }
 
     private fun sendToMarksActivity() {
@@ -519,7 +528,8 @@ class PublicChatActivity : AppCompatActivity() {
                 "assignment",
                 "leave",
                 "pending request",
-                "marks"
+                "marks",
+                "setting"
         )
 
 

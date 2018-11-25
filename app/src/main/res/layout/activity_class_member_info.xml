@@ -11,8 +11,8 @@
     <ImageView
         android:id="@+id/class_member_info_header_cover_image"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#555"
+        android:layout_height="220dp"
+        android:background="@color/background1"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
