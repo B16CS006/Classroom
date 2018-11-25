@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.single_students_marks_assignment_details.v
 class ExaminationDetailsActivity : AppCompatActivity() {
 
     private var examId = ""
+    private var maximumMarks = "0"
     private val currentUser by lazy { FirebaseAuth.getInstance().currentUser }
     private val mRootRef  = FirebaseDatabase.getInstance().reference
 
@@ -50,8 +51,9 @@ class ExaminationDetailsActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                maximumMarks = dataSnapshot.child("maxMarks").value.toString()
+                examination_details_max_marks.text = maximumMarks
                 examination_details_title.text = dataSnapshot.child("title").value.toString()
-                examination_details_max_marks.text = dataSnapshot.child("maxMarks").value.toString()
                 examination_details_description.text = dataSnapshot.child("description").value.toString()
 
                 mRootRef.child("Classroom/$classId/members").addValueEventListener(object :ValueEventListener{
@@ -152,13 +154,17 @@ class ExaminationDetailsActivity : AppCompatActivity() {
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { _ ->
             val text = editText.text.toString()
-            if(text.isNotEmpty()){
-                mRootRef.child("Examination/$classId/$examId/marks/$userId/marks").setValue(text).addOnCompleteListener {task->
-                    Log.d(TAG, "Update marks ${task.isSuccessful}")
+            when {
+                text.isEmpty() -> editText.error = "Can't be Empty"
+
+                text.toLong() <= maximumMarks.toLong() -> {
+                    mRootRef.child("Assignment/$classId/$examId/marks/$userId/marks").setValue(text).addOnCompleteListener { task->
+                        Log.d(TAG, "Update marks ${task.isSuccessful}")
+                    }
+                    dialog.dismiss()
                 }
-                dialog.dismiss()
-            }else{
-                editText.error = "Can't be Empty"
+
+                else -> editText.error = "should be less than to Maximum Marks"
             }
         }
 

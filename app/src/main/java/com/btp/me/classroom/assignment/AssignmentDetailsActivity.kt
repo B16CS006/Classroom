@@ -2,12 +2,15 @@ package com.btp.me.classroom.assignment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +39,7 @@ private const val REQUEST_CODE_ADD = 0
 
 private var fileUri: Uri? = null
 private var assignment: String = ""
+private var maximumMarks = "0"
 
 class AssignmentDetailsActivity : AppCompatActivity() {
 
@@ -66,64 +70,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
     }
 
     private fun setAssignmentDetails() {
-
-
-//        mRootRef.child("Classroom/$classId/members").addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onCancelled(p0: DatabaseError) {
-//                Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
-//                Log.d(TAG, "Error : ${p0.message}")
-//            }
-//
-//            @SuppressLint("SetTextI18n")
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                val type = dataSnapshot.child("${mCurrentUser!!.uid}/as").value.toString()
-//
-//                if (type == "teacher") {
-//                    assignment_details_marks.visibility = View.GONE
-//
-//                    val marksList = ArrayList<StudentAssignmentDetails>()
-//
-//                    for (member in dataSnapshot.children) {
-//                        Log.d(TAG, "Member : $member")
-//                        if (dataSnapshot.child("${member.key.toString()}/as").value.toString() != "student") {
-//                            continue
-//                        }
-//                        val studentAssignmentDetails = StudentAssignmentDetails(
-//                                member.child("link").value.toString(),
-//                                member.child("marks").value.toString(),
-//                                dataSnapshot.child("${member.key.toString()}/name").value.toString(),
-//                                dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
-//                                member.child("state").value.toString(),
-//                                member.key.toString(),
-//                                dataSnapshot.child("${member.key.toString()}/as").value.toString()
-//                        )
-//
-//                        Log.d(TAG,"student assignment details : $studentAssignmentDetails")
-//                        marksList.add(studentAssignmentDetails)
-//                    }
-//                    if (marksList.size == 0) {
-//                        assignment_details_marks_linear_layout.visibility = View.GONE
-//                        assignment_details_marks_empty.visibility = View.VISIBLE
-//                    } else {
-//                        assignment_details_marks_linear_layout.visibility = View.VISIBLE
-//                        assignment_details_marks_empty.visibility = View.GONE
-//                        showStudentMarks(marksList)
-//                    }
-//                } else if (type == "student") {
-//                    var myMarks = database.child("marks/${mCurrentUser!!.uid}/marks").value.toString()
-//                    if (myMarks == "null")
-//                        myMarks = "0"
-//
-//                    assignment_details_marks.text = "Marks Obtained : $myMarks"
-//
-//                    assignment_details_marks_linear_layout.visibility = View.GONE
-//                    assignment_details_marks.visibility = View.VISIBLE
-//                    setSubmitButton()
-//                }
-//            }
-//        })
-
-
         mRootRef.child("Assignment/$classId/$assignment").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 Toast.makeText(this@AssignmentDetailsActivity, "Error : ${p0.message}", Toast.LENGTH_SHORT).show()
@@ -131,9 +77,11 @@ class AssignmentDetailsActivity : AppCompatActivity() {
             }
 
             override fun onDataChange(database: DataSnapshot) {
+                maximumMarks = database.child("maxMarks").value.toString()
+
+                assignment_details_max_marks.text = maximumMarks
                 assignment_details_title.text = database.child("title").value.toString()
                 assignment_details_submission_date.text = database.child("submissionDate").value.toString()
-                assignment_details_max_marks.text = database.child("maxMarks").value.toString()
                 assignment_details_description.text = database.child("description").value.toString()
 
                 if(database.child("link").value.toString() != "null") {
@@ -181,13 +129,13 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                                     continue
                                 }
                                 val studentAssignmentDetails = StudentAssignmentDetails(
-                                        member.child("link").value.toString(),
-                                        member.child("marks").value.toString(),
-                                        dataSnapshot.child("${member.key.toString()}/name").value.toString(),
-                                        dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
-                                        member.child("state").value.toString(),
-                                        member.key.toString(),
-                                        dataSnapshot.child("${member.key.toString()}/as").value.toString()
+                                        link = member.child("link").value.toString(),
+                                        marks = member.child("marks").value.toString(),
+                                        name = dataSnapshot.child("${member.key.toString()}/name").value.toString(),
+                                        rollNumber = dataSnapshot.child("${member.key.toString()}/rollNumber").value.toString(),
+                                        state = member.child("state").value.toString(),
+                                        userId = member.key.toString(),
+                                        registeredAs = dataSnapshot.child("${member.key.toString()}/as").value.toString()
                                 )
 
                                 Log.d(TAG,"student assignment details : $studentAssignmentDetails")
@@ -207,7 +155,6 @@ class AssignmentDetailsActivity : AppCompatActivity() {
                                 myMarks = "0"
 
                             assignment_details_marks.text = "Marks Obtained : $myMarks"
-
                             assignment_details_marks_linear_layout.visibility = View.GONE
                             assignment_details_marks.visibility = View.VISIBLE
                             setSubmitButton()
@@ -218,8 +165,52 @@ class AssignmentDetailsActivity : AppCompatActivity() {
         })
     }
 
-    private fun showStudentMarks(marksList: ArrayList<StudentAssignmentDetails>) {
+    private fun getDialogBox(userId:String?){
+        if (userId == null)
+            return
 
+        val editText = EditText(this)
+        with(editText) {
+            hint = "Marks"
+            setEms(5)
+            maxEms = 10
+            inputType = InputType.TYPE_NUMBER_FLAG_SIGNED
+        }
+
+        val alertDialog = AlertDialog.Builder(this)
+
+        with(alertDialog){
+            setTitle("Enter Marks")
+            setView(editText)
+            alertDialog.setPositiveButton("Change") { _: DialogInterface, _: Int -> }
+            alertDialog.setNegativeButton("Cancel"){ _: DialogInterface, _: Int -> }
+        }
+
+        val dialog = alertDialog.create()
+        dialog.show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener { _ ->
+            val text = editText.text.toString()
+            when {
+                text.isEmpty() -> editText.error = "Can't be Empty"
+
+                text.toLong() <= maximumMarks.toLong() -> {
+                    mRootRef.child("Assignment/$classId/$assignment/marks/$userId/marks").setValue(text).addOnCompleteListener { task->
+                        Log.d(TAG, "Update marks ${task.isSuccessful}")
+                    }
+                    dialog.dismiss()
+                }
+
+                else -> editText.error = "should be less than to Maximum Marks"
+            }
+        }
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener{
+            dialog.cancel()
+        }
+    }
+
+    private fun showStudentMarks(marksList: ArrayList<StudentAssignmentDetails>) {
         assignment_details_marks_recycler_view.setHasFixedSize(true)
         assignment_details_marks_recycler_view.layoutManager = LinearLayoutManager(this)
 
@@ -234,6 +225,9 @@ class AssignmentDetailsActivity : AppCompatActivity() {
 
             override fun onBindViewHolder(holder: StudentMarksViewHolder, position: Int) {
                 holder.bind(marksList[position])
+                holder.view.setOnClickListener { _->
+                    getDialogBox(marksList[position].userId)
+                }
             }
         }
         assignment_details_marks_recycler_view.adapter = studentMarksAdapter
