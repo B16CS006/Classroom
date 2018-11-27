@@ -13,8 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Welcome to Classroom"
-        android:textColor="@color/grey_300"
+        android:textColor="@color/white"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/home_start"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,23 +23,29 @@
 
     <Button
         android:id="@+id/home_start"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:text="Start"
-        android:background="#fff"
+        android:background="@drawable/round_corner_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/home_stop"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/home_stop"
-        android:layout_width="150dp"
+        android:layout_width="match_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
         android:layout_height="wrap_content"
-        android:text="Stop"
-        android:background="#fff"
-        app:layout_constraintBottom_toBottomOf="@id/home_start"
+        android:text="Another Start"
+        android:visibility="invisible"
+        android:background="@drawable/round_corner_button"
+        app:layout_constraintBottom_toTopOf="@id/home_start"
+        android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/home_start" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

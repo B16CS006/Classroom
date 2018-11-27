@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.drawable.AnimationDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import kotlinx.android.synthetic.main.activity_homepage_activity.*
 
 class HomepageActivity : AppCompatActivity() {
@@ -23,14 +24,23 @@ class HomepageActivity : AppCompatActivity() {
         animationDrawable.setEnterFadeDuration(5000)
         animationDrawable.setExitFadeDuration(2000)
 
+        home_start.setOnLongClickListener {
+            home_stop.visibility = View.VISIBLE
+            return@setOnLongClickListener true
+        }
+
+        home_stop.setOnLongClickListener {
+            home_stop.visibility = View.INVISIBLE
+            return@setOnLongClickListener true
+        }
 
         home_start.setOnClickListener {
-            val regIndent = Intent(this, PhoneAuthActivity::class.java)
+            val regIndent = Intent(this, PhoneAuthenticationActivity::class.java)
             startActivity(regIndent)
         }
 
         home_stop.setOnClickListener {
-            val regIndent = Intent(this, PhoneAuthenticationActivity::class.java)
+            val regIndent = Intent(this, PhoneAuthActivity::class.java)
             startActivity(regIndent)
         }
     }
